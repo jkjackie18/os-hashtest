@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OneStream split-data test</title>
+<style>
+body{margin:0;font:13px/1.45 "Segoe UI",system-ui,sans-serif;background:#F4F6FB;color:#121A33}
+.wrap{padding:10px 14px;display:grid;gap:8px}
+h1{font-size:15px;margin:0}
+.st{display:inline-block;border-radius:999px;padding:2px 10px;font-weight:600;font-size:12px}
+.ok{background:#E2F6EC;color:#0A8F5A}.bad{background:#FDE7E7;color:#D23B3B}.wait{background:#EEF2FB;color:#4F46E5}
+table{border-collapse:collapse;background:#fff;border:1px solid #E4E8F2;font-size:12px}
+td{padding:4px 10px;border-bottom:1px solid #EEF1F7}td:first-child{color:#6A7390;white-space:nowrap}
+</style></head><body><div class="wrap">
+<h1><span id="lbl">Split-data test</span> <span id="st" class="st wait">Waiting</span></h1>
+<table id="t"></table>
+</div>
+<script>
+(function(){
+  var T0=performance.now();
+  function set(c,x){var s=document.getElementById('st');s.className='st '+c;s.textContent=x;}
+  function row(k,v){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.textContent=k;b.textContent=v;tr.appendChild(a);tr.appendChild(b);document.getElementById('t').appendChild(tr);return b;}
+  function b(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var x=atob(s),u=new Uint8Array(x.length);for(var i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u;}
+  var z=new URLSearchParams(location.search).get('z');
+  if(!z){set('bad','No data in URL');return;}
+  new Response(new Blob([b(z)]).stream().pipeThrough(new DecompressionStream('gzip'))).text().then(function(s){
+    var d=JSON.parse(s),key=d.key,part=+d.part,parts=+d.parts,mine={part:part,len:(d.pad||'').length,expect:d.padLen,pad:d.pad};
+    document.getElementById('lbl').textContent='Split test · '+(part===1?'MAIN panel':'helper panel '+part)+' of '+parts+' · URL '+location.href.length+' chars';
+    row('Own data received',mine.len+' / '+mine.expect+(mine.len===mine.expect?' ✓':' ✗'));
+    var bc=null;try{bc=new BroadcastChannel('osw-'+key);}catch(e){row('BroadcastChannel','not available: '+e.message);}
+    try{localStorage.setItem('osw:'+key+':'+part,JSON.stringify({len:mine.len,expect:mine.expect,pad:mine.pad}));row('localStorage write','OK');}catch(e){row('localStorage write','blocked: '+e.message);}
+    window.__osw={key:key,part:part,len:mine.len,pad:mine.pad};
+    if(part!==1){
+      // helper: announce its data now and whenever the main panel asks
+      var send=function(){if(bc)bc.postMessage({t:'part',part:part,len:mine.len,expect:mine.expect,pad:mine.pad});};
+      if(bc)bc.onmessage=function(ev){if(ev.data&&ev.data.t==='need')send();};
+      send();var n=0,iv=setInterval(function(){send();if(++n>20)clearInterval(iv);},500);
+      set('ok','Helper ready');return;
+    }
+    // main: collect parts 2..parts by three routes and report which worked
+    var got={},via={bc:[],ls:[],frames:[]},cells={};
+    for(var p=2;p<=parts;p++)cells[p]=row('Part '+p,'waiting…');
+    var rBC=row('Route: BroadcastChannel','–'),rLS=row('Route: localStorage','–'),rFR=row('Route: sibling frame','–');
+    function take(p,len,expect,pad,route){
+      if(!(p in cells))return;
+      if(via[route].indexOf(p)<0)via[route].push(p);
+      if(!got[p]){got[p]={len:len,ok:len===expect&&pad&&pad.length===len,ms:Math.round(performance.now()-T0),route:route};
+        cells[p].textContent=(got[p].ok?'✓ ':'✗ ')+len+' / '+expect+' chars via '+route+' after '+got[p].ms+' ms';}
+      rBC.textContent=via.bc.length?'works (parts '+via.bc.join(', ')+')':'nothing yet';
+      rLS.textContent=via.ls.length?'works (parts '+via.ls.join(', ')+')':'nothing yet';
+      rFR.textContent=via.frames.length?'works (parts '+via.frames.join(', ')+')':'nothing yet';
+      var all=true;for(var q=2;q<=parts;q++)if(!got[q]||!got[q].ok)all=false;
+      if(all){var tot=mine.len;for(var q2=2;q2<=parts;q2++)tot+=got[q2].len;set('ok','Assembled '+parts+' parts · '+tot+' chars of data');}
+    }
+    if(bc){bc.onmessage=function(ev){var m=ev.data;if(m&&m.t==='part')take(m.part,m.len,m.expect,m.pad,'bc');};bc.postMessage({t:'need'});}
+    addEventListener('storage',function(ev){var m=/^osw:(.+):(\d+)$/.exec(ev.key||'');if(m&&m[1]===key&&ev.newValue){var o=JSON.parse(ev.newValue);take(+m[2],o.len,o.expect,o.pad,'ls');}});
+    var tries=0,poll=setInterval(function(){
+      for(var p=2;p<=parts;p++){
+        try{var v=localStorage.getItem('osw:'+key+':'+p);if(v){var o=JSON.parse(v);take(p,o.len,o.expect,o.pad,'ls');}}catch(e){}
+      }
+      try{var fr=window.parent.frames;for(var i=0;i<fr.length;i++){try{var w=fr[i].__osw;if(w&&w.key===key&&w.part!==1)take(w.part,w.len,mine.expect,w.pad,'frames');}catch(e){}}}catch(e){}
+      if(bc&&tries%4===0)bc.postMessage({t:'need'});
+      if(++tries>40){clearInterval(poll);for(var q=2;q<=parts;q++)if(!got[q])cells[q].textContent='✗ not received in 20 s';
+        var all=true;for(var q3=2;q3<=parts;q3++)if(!got[q3])all=false;if(!all)set('bad','Some parts missing');}
+    },500);
+  }).catch(function(e){set('bad','Decode failed');row('Error',String(e&&e.message||e));});
+})();
+</script></body></html>
