@@ -1,0 +1,1013 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Income Statement Variance Waterfall – Actual vs Budget</title>
+<style>
+  html,body{margin:0;height:100%;background:#eef1f7;font-family:"Segoe UI",Roboto,Arial,sans-serif}
+  body.light{background:#eef1f7}
+  .page{margin:0 auto;padding:0}
+</style>
+</head>
+<body>
+<div class="page">
+  <os-variance-waterfall
+      endpoint=""
+      dashboard-id="is-variance-waterfall"
+      entity="GSE"
+      actual-scenario="Actual"
+      budget-scenario="BudgetFinal"
+      time="2026M6"
+      view="YTD"
+      consolidation="Local"
+      units="M"
+      refresh-ms="0"
+      timeout-ms="30000">
+  </os-variance-waterfall>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- no demo snapshot in the hosted copy ---------- */
+const DEMO_PAYLOAD = null;   // hosted copy: no sample data
+
+/* ---------- helpers ---------- */
+const isNum = v => typeof v === 'number' && Number.isFinite(v);
+const UNITS = { '': 1, K: 1e3, M: 1e6, B: 1e9 };
+const SVGNS = 'http://www.w3.org/2000/svg';
+const svgEl = (tag, attrs = {}) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+const htmlEl = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = String(text); return e; };
+
+const STYLE = `
+:host{display:block;--ink:#16203a;--muted:#6b7591;--line:#e6e9f1;--panel:#ffffff;--bg:#eef1f7;
+  --fav:#16b07e;--fav2:#0c8a61;--unf:#ef4467;--unf2:#c42a4c;--tot:#4f6bff;--tot2:#8b55ff;--warn:#f0a020;
+  --heroA:#0b1736;--heroB:#16285a;--heroC:#24387a;
+  font-family:"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink)}
+*{box-sizing:border-box}
+.app{background:var(--bg);min-height:100%}
+/* ---- hero ---- */
+.hero{position:relative;color:#fff;padding:22px 26px 46px;overflow:hidden;
+  background:radial-gradient(900px 380px at 85% -10%,rgba(139,85,255,.35),transparent 60%),
+             radial-gradient(700px 300px at 10% 120%,rgba(79,107,255,.35),transparent 60%),
+             linear-gradient(135deg,var(--heroA),var(--heroB) 55%,var(--heroC))}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;
+  background:repeating-linear-gradient(115deg,rgba(255,255,255,.6) 0 1px,transparent 1px 22px)}
+.heroTop{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+h1{margin:0;font-size:30px;font-weight:700;letter-spacing:-.3px}
+.sub{margin-top:6px;font-size:13px;color:#b9c4e6;letter-spacing:.2px}
+.sub b{color:#fff;font-weight:600}
+.rbox{display:flex;align-items:center;gap:10px}
+.stampBox{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(6px)}
+.stampBox svg{width:20px;height:20px;stroke:#cfd8f5}
+.stampBox .k{font-size:11px;color:#aeb9dc}.stampBox .t{font-size:13px;font-weight:600;color:#fff}
+.iconbtn{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);display:grid;place-items:center;cursor:pointer;color:#fff}
+.iconbtn:hover{background:rgba(255,255,255,.16)}
+.iconbtn svg{width:18px;height:18px;stroke:#fff}
+.badge{font-size:10.5px;padding:3px 8px;border-radius:999px;background:rgba(240,160,32,.18);color:#ffd28a;border:1px solid rgba(240,160,32,.45)}
+.ctrls{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:14px;margin-top:20px}
+.ctrls label{display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:#c3cdea}
+select{font:inherit;font-size:13px;color:#fff;background:rgba(255,255,255,.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
+  border:1px solid rgba(255,255,255,.28);border-radius:9px;padding:8px 32px 8px 12px;min-width:130px;max-width:300px;appearance:none;-webkit-appearance:none;cursor:pointer;outline:none}
+select:hover,select:focus{border-color:#8fa5ff;background-color:rgba(255,255,255,.12)}
+option{color:#16203a;background:#fff}
+/* ---- body ---- */
+.body{position:relative;margin-top:-26px;padding:0 18px 14px;z-index:2}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.kpi{position:relative;background:var(--panel);border-radius:16px;padding:16px 16px 14px;box-shadow:0 8px 24px rgba(22,32,58,.07);border:1px solid var(--line);display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;overflow:hidden}
+.kpi .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#f1f4fb}
+.kpi .ic svg{width:22px;height:22px}
+.kpi.k1 .ic{background:#f1f3f8}.kpi.k1 .ic svg{stroke:#59627d}
+.kpi.k2 .ic{background:#edf0ff}.kpi.k2 .ic svg{stroke:var(--tot)}
+.kpi.fav .ic{background:#e7f8f1}.kpi.fav .ic svg{stroke:var(--fav)}
+.kpi.unf .ic{background:#fdecef}.kpi.unf .ic svg{stroke:var(--unf)}
+.kpi .l{font-size:13px;color:#3b4560;font-weight:600}
+.kpi.k2 .l{color:var(--tot)}
+.kpi .v{font-size:30px;font-weight:750;margin-top:4px;letter-spacing:-.6px;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi .v.fav{color:var(--fav)} .kpi .v.unf{color:var(--unf)}
+.kpi .d{margin-top:6px;font-size:12.5px;color:var(--muted)}
+.kpi .d .basis{font-size:11px;color:var(--muted);margin-top:2px}
+.kpi .d .fav{color:var(--fav);font-weight:600}.kpi .d .unf{color:var(--unf);font-weight:600}
+.kpi .spark{display:none!important;position:absolute;right:14px;top:16px;width:110px;height:42px}
+.kpi > div:nth-child(2){padding-right:118px}
+@media (max-width:1280px){.kpi .spark{position:static;grid-column:1 / -1;width:100%;height:34px;margin-top:2px}.kpi > div:nth-child(2){padding-right:0}}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;margin-top:14px}
+@media (max-width:1100px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.panel{background:var(--panel);border-radius:16px;border:1px solid var(--line);box-shadow:0 8px 24px rgba(22,32,58,.06);padding:16px 18px}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.pt{display:flex;gap:10px;align-items:flex-start}
+.pt svg{width:22px;height:22px;stroke:var(--tot);flex:none;margin-top:2px}
+.pt h3{margin:0;font-size:16px;font-weight:700}
+.pt .ps{font-size:12.5px;color:var(--muted);margin-top:3px}
+.seg{display:flex;background:#f1f3f8;border-radius:999px;padding:3px;border:1px solid var(--line)}
+.seg button{border:0;background:transparent;font:inherit;font-size:12px;padding:6px 14px;border-radius:999px;color:#47506b;cursor:pointer}
+.seg button.on{background:var(--tot);color:#fff;box-shadow:0 3px 10px rgba(79,107,255,.35)}
+.crumb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--muted);margin:8px 0 0;min-height:18px}
+.crumb a{color:var(--tot);cursor:pointer;text-decoration:none;border-bottom:1px dashed var(--tot)}
+.chart{position:relative;width:100%;height:420px;margin-top:2px}
+.chart svg{width:100%;height:100%;display:block;overflow:visible}
+.axis text{font-size:10.5px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.grid line{stroke:var(--line)}
+.zero{stroke:#cfd5e3}
+.conn{stroke:#9aa3b9;stroke-opacity:.6;stroke-dasharray:3,4}
+.xl{font-size:11px;fill:#3b4560}
+.vl{font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;animation:fadeup .6s ease both}
+.grp{font-size:9.5px;fill:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.brk{stroke:#d6dbe6}
+.bar{transition:filter .2s,opacity .2s}
+.bar:hover{filter:brightness(1.12) drop-shadow(0 0 8px currentColor)}
+.bar.drill{cursor:pointer}
+.bar.fav{color:var(--fav)} .bar.unf{color:var(--unf)} .bar.total{color:var(--tot)}
+@keyframes fadeup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tip{position:absolute;pointer-events:none;background:rgba(16,24,48,.95);color:#eef1fb;font-size:12px;border-radius:10px;padding:9px 11px;border:1px solid rgba(79,107,255,.4);box-shadow:0 10px 30px rgba(0,0,0,.25);white-space:nowrap;transform:translate(-50%,-115%);opacity:0;transition:opacity .12s;z-index:2}
+.tip b{display:block;margin-bottom:4px}.tip div{color:#b9c2de}
+.legend{display:flex;gap:18px;font-size:12px;color:#47506b;margin-top:4px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:-1px}
+/* side panels */
+.side{display:flex;flex-direction:column;gap:14px}
+.insight{background:linear-gradient(160deg,#f0fbf6,#ffffff 70%)}
+.insight .pt svg{stroke:var(--fav)}
+.insight .lead{font-size:13px;color:#3b4560;margin-top:10px}
+.insight .big{font-size:22px;font-weight:750;margin:2px 0 10px}
+.insight .big.fav{color:var(--fav)}.insight .big.unf{color:var(--unf)}
+.insight .h{font-size:12.5px;color:var(--muted);margin:8px 0 4px}
+.insight ul{margin:0;padding:0;list-style:none}
+.insight li{display:flex;align-items:center;gap:8px;font-size:13px;padding:3px 0}
+.insight li i{width:8px;height:8px;border-radius:50%;flex:none}
+.insight li .fav{color:var(--fav);font-weight:600}.insight li .unf{color:var(--unf);font-weight:600}
+.insight hr{border:0;border-top:1px solid var(--line);margin:10px 0}
+.tabs{display:flex;background:#f1f3f8;border-radius:10px;padding:3px;margin-top:12px}
+.tabs button{flex:1;border:0;background:transparent;font:inherit;font-size:12px;padding:7px 8px;border-radius:8px;color:#5b6480;cursor:pointer}
+.tabs button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 2px 6px rgba(22,32,58,.08)}
+.tabs button.on.f{color:var(--fav);border-bottom:2px solid var(--fav)}.tabs button.on.u{color:var(--unf);border-bottom:2px solid var(--unf)}
+.drv{margin-top:8px}
+.drow{display:grid;grid-template-columns:16px minmax(0,1.9fr) 58px minmax(36px,1fr);gap:8px;align-items:center;padding:8px 2px;border-bottom:1px solid var(--line);font-size:12.5px}
+.drow.click{cursor:pointer}.drow.click:hover{background:#f6f8fd}
+.drow .n{color:var(--muted)}.drow .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drow .val{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.drow .val.fav{color:var(--fav)}.drow .val.unf{color:var(--unf)}
+.drow .track{height:9px;border-radius:5px;background:#f0f2f7;overflow:hidden}
+.drow .fill{height:100%;border-radius:5px;transition:width .6s ease}
+.drow .fill.fav{background:linear-gradient(90deg,var(--fav2),var(--fav))}.drow .fill.unf{background:linear-gradient(90deg,var(--unf2),var(--unf))}
+.muted{color:var(--muted);font-size:12px}
+.empty{padding:10px 0;color:var(--muted);font-size:12.5px}
+/* table */
+.tblp{margin-top:14px}
+details summary{cursor:pointer;font-size:12.5px;color:#3b4560;font-weight:600;list-style:none}
+details summary::before{content:"\\25B8  ";color:var(--muted)} details[open] summary::before{content:"\\25BE  "}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;margin-top:10px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+th{color:var(--muted);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;background:#f7f8fc}
+tbody tr:hover td{background:#f6f8fd}
+tr.tot td{font-weight:700;background:#f7f8fc}
+td.fav{color:var(--fav);font-weight:600} td.unf{color:var(--unf);font-weight:600}
+tr.drill{cursor:pointer}
+.foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px;padding:8px 4px;font-size:12px;color:var(--muted)}
+.foot span+span::before{content:"|";margin-right:10px;color:#c8cede}
+.err{display:none;margin:12px 0 0;padding:10px 12px;border-radius:12px;background:#fdecef;color:#b3243f;border:1px solid #f6c3cd;font-size:12.5px}
+.err.show{display:block}
+.loading{opacity:.6;pointer-events:none}
+`;
+
+const ICONS = {
+  db:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
+  bars:'<path d="M5 20V12"/><path d="M12 20V5"/><path d="M19 20v-9"/>',
+  target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12l7-7"/><path d="M16 5h3v3"/>',
+  pct:'<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+  refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/>',
+  chart:'<path d="M4 20h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-4"/>',
+  bulb:'<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>'
+};
+const svgIcon = (name, cls) => {
+  const s = document.createElementNS(SVGNS, 'svg');
+  s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('fill', 'none'); s.setAttribute('stroke-width', '2');
+  s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round');
+  if (cls) s.setAttribute('class', cls);
+  s.innerHTML = ICONS[name];      // static, trusted markup only
+  return s;
+};
+
+class OsVarianceWaterfall extends HTMLElement {
+  static get observedAttributes() { return ['endpoint','entity','actual-scenario','budget-scenario','time','view','consolidation','units','refresh-ms']; }
+
+  constructor() {
+    super();
+    this._root = this.attachShadow({ mode: 'open' });
+    this._payload = null;
+    this._inFlight = null;      // AbortController of the running request (no-overlap guard)
+    this._timer = null;
+    this._failures = 0;
+    this._lastOk = null;
+    this._buildShell();
+  }
+
+  /* ---------- public API ---------- */
+  set data(p) { this._setPayload(p, 'property'); }
+  get data()  { return this._payload; }
+  refresh()   { return this._load(true); }
+
+  connectedCallback() {
+    // white background by default; the toggle switches to the dark theme
+    if (!this.hasAttribute('theme')) this.setAttribute('theme', 'light');
+    document.body.classList.toggle('light', this.getAttribute('theme') === 'light');
+    this._ro = new ResizeObserver(() => this._renderChart());
+    this._ro.observe(this._chart);
+    this._load(false);
+    this._schedule();
+  }
+  disconnectedCallback() {
+    this._ro && this._ro.disconnect();
+    clearInterval(this._timer);
+    this._inFlight && this._inFlight.abort();
+  }
+  attributeChangedCallback(name, oldV, newV) {
+    if (!this.isConnected || oldV === newV) return;
+    if (name === 'units') { this._unitSel.value = newV || 'M'; this._render(); return; }
+    if (name === 'refresh-ms') { this._schedule(); return; }
+    this._load(true);
+  }
+
+  /* ---------- config ---------- */
+  get _cfg() {
+    return {
+      endpoint:      (this.getAttribute('endpoint') || '').trim(),
+      dashboardId:   this.getAttribute('dashboard-id') || 'is-variance-waterfall',
+      entity:        this.getAttribute('entity') || '',
+      actualScenario:this.getAttribute('actual-scenario') || 'Actual',
+      budgetScenario:this.getAttribute('budget-scenario') || 'BudgetFinal',
+      time:          this.getAttribute('time') || '',
+      view:          this.getAttribute('view') || 'YTD',
+      consolidation: this.getAttribute('consolidation') || 'Local',
+      refreshMs:     Math.max(0, parseInt(this.getAttribute('refresh-ms') || '0', 10) || 0),
+      timeoutMs:     Math.max(5000, parseInt(this.getAttribute('timeout-ms') || '30000', 10) || 30000)
+    };
+  }
+  get _unit() { const u = this._unitSel ? this._unitSel.value : (this.getAttribute('units') ?? 'M'); return Object.prototype.hasOwnProperty.call(UNITS, u) ? u : 'M'; }
+
+  _schedule() {
+    clearInterval(this._timer);
+    const ms = this._cfg.refreshMs;
+    if (ms >= 15000 && this._cfg.endpoint) this._timer = setInterval(() => {
+      if (document.visibilityState === 'hidden') return;
+      if (this._failures >= 3) return;          // pause auto-refresh after repeated failures; manual refresh still works
+      this._load(false);
+    }, ms);
+  }
+
+  /* ---------- shell ---------- */
+  _buildShell() {
+    const st = htmlEl('style'); st.textContent = STYLE;
+    const app = htmlEl('div', 'app');
+
+    // ----- hero header -----
+    const hero = htmlEl('div', 'hero');
+    const top = htmlEl('div', 'heroTop');
+    const titles = htmlEl('div');
+    this._title = htmlEl('h1', null, 'Income Statement Variance');
+    this._sub = htmlEl('div', 'sub');
+    titles.append(this._title, this._sub);
+    const rbox = htmlEl('div', 'rbox');
+    this._badge = htmlEl('span', 'badge', 'Demo data'); this._badge.hidden = true;
+    const stampBox = htmlEl('div', 'stampBox');
+    const stTxt = htmlEl('div'); stTxt.append(htmlEl('div', 'k', 'Last refresh'));
+    this._stamp = htmlEl('div', 't', ''); stTxt.append(this._stamp);
+    stampBox.append(svgIcon('cal'), stTxt);
+    this._btn = htmlEl('button', 'iconbtn'); this._btn.title = 'Refresh'; this._btn.append(svgIcon('refresh'));
+    this._btn.addEventListener('click', () => this.refresh());
+    rbox.append(this._badge, stampBox);      // refresh is driven by the OneStream dashboard button
+    top.append(titles, rbox);
+
+    this._ctrls = htmlEl('div', 'ctrls');
+    this._unitSel = htmlEl('select');
+    [['','Units'],['K','Thousands'],['M','Millions'],['B','Billions']].forEach(([v,t]) => { const o = htmlEl('option', null, t); o.value = v; this._unitSel.append(o); });
+    this._unitSel.value = this.getAttribute('units') ?? 'M';
+    this._unitSel.addEventListener('change', () => this._render());
+    this._unitWrap = htmlEl('label', null, 'Units'); this._unitWrap.append(this._unitSel);
+    this._ctrls.append(this._unitWrap);
+    this._sel = null;
+    hero.append(top, this._ctrls);
+
+    // ----- body -----
+    const body = htmlEl('div', 'body');
+    this._kpis = htmlEl('div', 'kpis');
+    const grid = htmlEl('div', 'grid');
+
+    const main = htmlEl('div', 'panel');
+    const ph = htmlEl('div', 'ph');
+    const pt = htmlEl('div', 'pt');
+    const ptx = htmlEl('div');
+    ptx.append(htmlEl('h3', null, 'Income Statement Variance Waterfall'));
+    this._chartSub = htmlEl('div', 'ps', 'Actual vs Budget');
+    ptx.append(this._chartSub);
+    pt.append(svgIcon('chart'), ptx);
+    this._mode = 'abs';
+    const seg = htmlEl('div', 'seg');
+    this._segBtns = [['abs','Absolute'],['pct','% of Budget']].map(([k, t]) => {
+      const b = htmlEl('button', k === this._mode ? 'on' : '', t);
+      b.addEventListener('click', () => { this._mode = k; this._segBtns.forEach(x => x.classList.toggle('on', x === b)); this._animate = true; this._renderChart(); this._updateChartSub(); });
+      seg.append(b); return b;
+    });
+    ph.append(pt, seg);
+    this._crumb = htmlEl('div', 'crumb');
+    this._drill = [];      // drill path of account names (v3)
+    this._chart = htmlEl('div', 'chart');
+    this._tip = htmlEl('div', 'tip');
+    this._chart.append(this._tip);
+    const legend = htmlEl('div', 'legend');
+    [['linear-gradient(180deg,var(--tot),var(--tot2))','Budget / Actual total'],['var(--fav)','Favourable'],['var(--unf)','Unfavourable']].forEach(([c,t]) => {
+      const sp = htmlEl('span'); const i = htmlEl('i'); i.style.background = c; sp.append(i, document.createTextNode(t)); legend.append(sp);
+    });
+    main.append(ph, this._crumb, this._chart, legend);
+
+    const side = htmlEl('div', 'side');
+    this._insight = htmlEl('div', 'panel insight');
+    this._drivers = htmlEl('div', 'panel');
+    this._drvTab = 'fav';
+    side.append(this._insight, this._drivers);
+    grid.append(main, side);
+
+    this._err = htmlEl('div', 'err');
+    const tblp = htmlEl('div', 'panel tblp');
+    const det = htmlEl('details');
+    det.append(htmlEl('summary', null, 'Variance detail'));
+    this._table = htmlEl('table'); det.append(this._table);
+    tblp.append(det);
+    this._foot = htmlEl('div', 'foot');
+
+    body.append(this._kpis, this._err, grid, tblp, this._foot);
+    app.append(hero, body);
+    this._card = app;
+    this._root.append(st, app);
+  }
+
+  /* ---------- data loading ---------- */
+  async _load(manual) {
+    // 1) property already set -> just re-render unless an endpoint exists
+    const cfg = this._cfg;
+    if (!cfg.endpoint) {
+      if (!this._payload) {
+        const inline = this.querySelector('script[type="application/json"]');
+        if (inline) { try { this._setPayload(JSON.parse(inline.textContent), 'inline'); return; } catch (e) { this._showError('Inline JSON payload is malformed.'); } }
+        if (window.__wfMsg) this._showError(window.__wfMsg);
+      } else this._render();
+      return;
+    }
+    // 2) endpoint fetch — no overlapping requests
+    if (this._inFlight) { if (!manual) return; this._inFlight.abort(); }
+    const ctrl = new AbortController(); this._inFlight = ctrl;
+    const to = setTimeout(() => ctrl.abort('timeout'), cfg.timeoutMs);
+    this._btn.disabled = true; this._card.classList.add('loading');
+    try {
+      const res = await fetch(cfg.endpoint, {
+        method: 'POST',
+        credentials: 'same-origin',                 // session/cookie handled by the gateway – never tokens in JS
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ dashboardId: cfg.dashboardId, parameters: {
+          entity: cfg.entity, actualScenario: cfg.actualScenario, budgetScenario: cfg.budgetScenario,
+          time: cfg.time, view: cfg.view, consolidation: cfg.consolidation } }),
+        signal: ctrl.signal
+      });
+      if (!res.ok) {
+        const msg = { 400:'Invalid or disallowed parameter.', 401:'Not signed in to OneStream.', 403:'You are not authorised for this data.',
+                      429:'Too many requests – try again shortly.', 503:'OneStream is temporarily unavailable.' }[res.status] || 'Data provider error.';
+        const cid = res.headers.get('x-correlation-id');
+        throw new Error(msg + ' (HTTP ' + res.status + (cid ? ', ref ' + cid : '') + ')');
+      }
+      let body = await res.json();
+      // Accept either the payload itself or a OneStream DataSet wrapper { Payload:[{Json:"..."}] }
+      if (body && Array.isArray(body.Payload) && body.Payload[0] && typeof body.Payload[0].Json === 'string') body = JSON.parse(body.Payload[0].Json);
+      this._setPayload(body, 'endpoint');
+      this._failures = 0;
+    } catch (e) {
+      if (ctrl.signal.aborted && ctrl.signal.reason !== 'timeout' && this._inFlight !== ctrl) return; // superseded
+      this._failures++;
+      this._showError(ctrl.signal.reason === 'timeout' ? 'Request timed out after ' + (cfg.timeoutMs/1000) + 's.' : (e && e.message) || 'Request failed.');
+    } finally {
+      clearTimeout(to);
+      if (this._inFlight === ctrl) {
+        this._inFlight = null;
+        this._btn.disabled = false; this._card.classList.remove('loading');
+      }
+    }
+  }
+
+  _setPayload(p, source) {
+    if (p && (p.version === 2 || p.version === 3)) {                 // multi-POV payload -> selectors in the page
+      const err = this._validateCube(p);
+      if (err) { this._showError('Payload rejected: ' + err); return; }
+      this._cube = p; this._buildCtrls();
+      p = this._derive();
+      if (!p) return;
+    }
+    const v = this._validate(p);
+    if (!v.ok) { this._showError('Payload rejected: ' + v.msg); return; }
+    this._payload = p; this._source = source; this._lastOk = new Date();
+    this._hideError(); this._render();
+    this.dispatchEvent(new CustomEvent('os-data-loaded', { detail: { source }, bubbles: true, composed: true }));
+  }
+
+  /* ---------- multi-POV (version 2) payload ---------- */
+  _validateCube(c) {
+    if (!c.data || typeof c.data !== 'object') return 'data missing';
+    if (!Array.isArray(c.lines) || !c.lines.length) return 'lines[] missing';
+    if (!Array.isArray(c.entities) || !c.entities.length) return 'entities[] missing';
+    if (!Array.isArray(c.budgets) || !c.budgets.length) return 'budgets[] missing';
+    if (!Array.isArray(c.years) || !c.years.length) return 'years[] missing';
+    return null;
+  }
+
+  _series(entity, scenario, year) {
+    const e = this._cube.data[entity] || {}, s = e[scenario] || {};
+    return s[year] || {};
+  }
+
+  _lastActualMonth(entity, year) {
+    const ni = this._series(entity, this._cube.actualScenario || 'Actual', year)[this._cube.niAccount || 'NI'] || [];
+    for (let i = 11; i >= 0; i--) if (isNum(ni[i]) && ni[i] !== 0) return i + 1;
+    return 12;
+  }
+
+  _buildCtrls() {
+    const c = this._cube;
+    const prev = this._sel || {};
+    const pick = (v, list, d) => list.map(String).includes(String(v)) ? String(v) : String(d);
+    const ents = c.entities.map(x => typeof x === 'string' ? { id:x, label:x } : x);
+    const sel = {
+      entity: pick(prev.entity, ents.map(e => e.id), c.defaultEntity || ents[0].id),
+      budget: pick(prev.budget, c.budgets, c.defaultBudget || c.budgets[0]),
+      year:   pick(prev.year, c.years, c.defaultYear || c.years[c.years.length - 1]),
+      view:   pick(prev.view, ['Periodic','QTD','HTD','YTD'], c.defaultView || 'YTD'),
+      month:  0
+    };
+    sel.month = prev.month || c.defaultMonth || this._lastActualMonth(sel.entity, sel.year);
+    this._sel = sel;
+
+    const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthLabels = Array.isArray(c.monthLabels) && c.monthLabels.length === 12 ? c.monthLabels : MN;
+    const mk = (label, key, options) => {
+      const l = htmlEl('label', null, label); const s = htmlEl('select');
+      options.forEach(([v, t]) => { const o = htmlEl('option', null, t); o.value = String(v); s.append(o); });
+      s.value = String(sel[key]);
+      s.addEventListener('change', () => { this._sel[key] = key === 'month' ? parseInt(s.value, 10) : s.value; if (key === 'entity' || key === 'year') this._refreshMonthHints(); this._recalc(); });
+      l.append(s); return [l, s];
+    };
+    const indent = d => '\u00A0\u00A0\u00A0'.repeat(Math.max(0, Math.min(10, d | 0)));
+    const [lE] = mk('Entity', 'entity', ents.map(e => [e.id, indent(e.depth) + (e.label && e.label !== e.id ? e.id + ' – ' + e.label : e.id)]));
+    const [lB] = mk('Budget Version', 'budget', c.budgets.map(b => [b, b]));
+    const [lY] = mk('Year', 'year', c.years.map(y => [y, y]));
+    const [lM, sM] = mk('Period', 'month', monthLabels.map((t, i) => [i + 1, 'M' + (i + 1) + ' – ' + t]));
+    const [lV] = mk('View', 'view', [['Periodic','Periodic (month)'],['QTD','Quarter to date'],['HTD','Half to date'],['YTD','Year to date']]);
+    this._monthSel = sM; this._monthLabels = monthLabels;
+    this._ctrls.replaceChildren(this._unitWrap);   // web: selectors are OneStream combo boxes
+    this._refreshMonthHints();
+  }
+
+  _refreshMonthHints() {
+    if (!this._monthSel) return;
+    const last = this._lastActualMonth(this._sel.entity, this._sel.year);
+    [...this._monthSel.options].forEach((o, i) => { o.textContent = 'M' + (i + 1) + ' – ' + this._monthLabels[i] + (i + 1 > last ? '  (no actuals)' : ''); });
+  }
+
+  _derive() {
+    const c = this._cube, s = this._sel;
+    const A = this._series(s.entity, c.actualScenario || 'Actual', s.year);
+    const B = this._series(s.entity, s.budget, s.year);
+    const m = Math.min(12, Math.max(1, s.month | 0));
+    const from = s.view === 'Periodic' ? m : s.view === 'QTD' ? Math.floor((m - 1) / 3) * 3 + 1 : s.view === 'HTD' ? (m <= 6 ? 1 : 7) : 1;
+    const sum = arr => { if (!Array.isArray(arr)) return 0; let t = 0; for (let i = from - 1; i < m; i++) t += isNum(arr[i]) ? arr[i] : 0; return t; };
+    const ctx = c.context || {};
+    const ctxOut = { cube:ctx.cube, entity:s.entity, actualScenario:c.actualScenario || 'Actual', budgetScenario:s.budget,
+                     time: s.year + 'M' + m, view:s.view, consolidation:ctx.consolidation, currency:ctx.currency };
+    const T = c.tree || {};
+    const nz = a => !!(sum(B[a]) || sum(A[a]));
+    // monthly trend for KPI sparklines: cumulative from the window start up to each month of the window
+    // monthly (periodic) values for the whole year; sparklines highlight the selected window
+    const lastAct = this._lastActualMonth(s.entity, s.year);
+    const trendOf = acct => {
+      const g = (arr, i) => Array.isArray(arr) && isNum(arr[i]) ? arr[i] : 0;
+      const budget = [], actual = [];
+      for (let i = 0; i < 12; i++) { budget.push(g(B[acct], i)); actual.push(g(A[acct], i)); }
+      return { budget, actual, lastActual: lastAct, from, to: m };
+    };
+    const months = { from, to:m };
+    const canDrill = acct => !!(T[acct] && (T[acct].children || []).some(nz));
+    const path = this._drill || [];
+    if (path.length) {
+      // Drill view: Budget <account> -> child variances (raw, coloured by favourability) -> Actual <account>
+      const acct = path[path.length - 1], node = T[acct] || { label:acct, children:[] };
+      const kids = (node.children || []).map(k => {
+        const n = T[k] || { label:k, expense:node.expense, children:[] };
+        const b = sum(B[k]), a = sum(A[k]);
+        if (!b && !a) return null;
+        return { id:k, account:k, label:n.label, group:node.label, budget:b, actual:a, variance:a - b,
+                 delta:a - b, impact: n.expense ? b - a : a - b, drillable: canDrill(k) };
+      }).filter(Boolean);
+      return { title:c.title, asOf:c.asOf, context:ctxOut, drill:node.label, drillPath:path.slice(), expense:!!node.expense, trend:trendOf(acct), months,
+        start:{ id:'BUD_'+acct, account:acct, label:'Budget ' + node.label, value:sum(B[acct]) },
+        end:  { id:'ACT_'+acct, account:acct, label:'Actual ' + node.label, value:sum(A[acct]) },
+        steps:kids };
+    }
+    const steps = c.lines.map(l => {
+      const b = sum(B[l.account]), a = sum(A[l.account]);
+      if (!b && !a) return null;
+      return { id:l.account, account:l.account, label:l.label, group:l.group, budget:b, actual:a, variance:a - b,
+               impact: l.expense ? b - a : a - b, drillable: canDrill(l.account) };
+    }).filter(Boolean);
+    const niKey = c.niAccount || 'NI';
+    return {
+      title: c.title, asOf: c.asOf, trend:trendOf(niKey), months,
+      context: ctxOut,
+      start: { id:'BUD_NI', account:niKey, label:'Budget ' + (c.niLabel || 'Net Income'), value:sum(B[niKey]) },
+      end:   { id:'ACT_NI', account:niKey, label:'Actual ' + (c.niLabel || 'Net Income'), value:sum(A[niKey]) },
+      steps
+    };
+  }
+
+  _drillTo(acct) {
+    if (!this._cube) return;
+    if (!acct) this._drill = [];
+    else this._drill = (this._drill || []).concat([acct]);
+    this._recalc();
+  }
+
+  _drillToLevel(n) {               // n = number of path entries to keep (0 = bridge)
+    this._drill = (this._drill || []).slice(0, n);
+    this._recalc();
+  }
+
+  _renderCrumb() {
+    const p = this._payload;
+    this._crumb.replaceChildren();
+    if (!this._cube) return;
+    if (p && p.drillPath && p.drillPath.length) {
+      const T = this._cube.tree || {};
+      const home = htmlEl('a', null, 'Net income bridge');
+      home.addEventListener('click', () => this._drillToLevel(0));
+      this._crumb.append(home);
+      p.drillPath.forEach((acct, i) => {
+        const lbl = (T[acct] && T[acct].label) || acct;
+        this._crumb.append(document.createTextNode(' \u203A '));
+        if (i < p.drillPath.length - 1) {
+          const a = htmlEl('a', null, lbl); a.addEventListener('click', () => this._drillToLevel(i + 1)); this._crumb.append(a);
+        } else this._crumb.append(htmlEl('b', null, lbl));
+      });
+      if (p.steps.some(s => s.drillable)) this._crumb.append(document.createTextNode('   \u00B7 click a bar to drill further'));
+    } else if (p && p.steps.some(s => s.drillable)) {
+      this._crumb.append(document.createTextNode('Click a bar or table row to drill into its accounts.'));
+    }
+  }
+
+  _recalc() {
+    const d = this._derive(); if (!d) return;
+    const v = this._validate(d); if (!v.ok) { this._showError('Selection could not be calculated: ' + v.msg); return; }
+    this._payload = d; this._hideError(); this._render();
+  }
+
+  _validate(p) {
+    if (!p || typeof p !== 'object') return { ok:false, msg:'not an object' };
+    if (!p.start || !isNum(p.start.value)) return { ok:false, msg:'start.value missing' };
+    if (!p.end || !isNum(p.end.value))     return { ok:false, msg:'end.value missing' };
+    if (!Array.isArray(p.steps))           return { ok:false, msg:'steps[] missing' };
+    for (const s of p.steps) if (!s || !isNum(s.impact)) return { ok:false, msg:'step without numeric impact' };
+    return { ok:true };
+  }
+
+  _showError(m) { this._err.textContent = m + (this._lastOk ? '  Showing last successful data from ' + this._lastOk.toLocaleTimeString() + '.' : ''); this._err.classList.add('show'); }
+  _hideError()  { this._err.classList.remove('show'); this._err.textContent = ''; }
+
+  /* ---------- formatting ---------- */
+  _fmt(v, signed) {
+    if (!isNum(v)) return '–';
+    const u = this._unit, d = UNITS[u];
+    const n = v / d;
+    const dec = (u === 'M' || u === 'B') ? 1 : 0;   // min and max must match (min > max throws RangeError)
+    const s = Math.abs(n).toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    const sign = n < 0 ? '−' : (signed && n > 0 ? '+' : '');
+    return sign + s + (u ? u : '');
+  }
+
+  /* ---------- rendering ---------- */
+  _entityLabel(id) {
+    const ents = (this._cube && this._cube.entities) || [];
+    const e = ents.find(x => (x.id || x) === id);
+    return e && e.label && e.label !== id ? id + ' – ' + e.label : (id || '');
+  }
+
+  _periodText(p) {
+    const c = p.context || {}, mm = p.months;
+    const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const y = (c.time || '').slice(0, 4);
+    if (!mm) return c.time || '';
+    const v = { Periodic:'', QTD:' QTD', HTD:' HTD', YTD:' YTD' }[c.view] ?? '';
+    return 'FY' + y + v + ' · ' + (mm.from === mm.to ? 'M' + mm.to + ' ' + MN[mm.to - 1] : 'M' + mm.from + '–M' + mm.to + ' (' + MN[mm.from - 1] + '–' + MN[mm.to - 1] + ')');
+  }
+
+  _unitName() { return { '':'Units', K:'Thousands', M:'Millions', B:'Billions' }[this._unit]; }
+
+  _updateChartSub() {
+    const p = this._payload; if (!p) return;
+    const c = p.context || {};
+    const what = p.drill ? p.drill + ' – ' : '';
+    this._chartSub.textContent = what + (c.actualScenario || 'Actual') + ' vs ' + (c.budgetScenario || 'Budget') + ' (' + (this._mode === 'pct' ? '% of Budget' : this._unitName()) + ')';
+  }
+
+  _render() {
+    const p = this._payload; if (!p) return;
+    const c = p.context || {};
+    this._title.textContent = 'Income Statement Variance';
+    this._sub.replaceChildren(htmlEl('b', null, (c.actualScenario || 'Actual') + ' vs ' + (c.budgetScenario || 'Budget')),
+      document.createTextNode('   |   ' + this._periodText(p) + (p.drill ? '   |   ' + p.drill : '')));
+    this._badge.hidden = !p.demo;
+    const when = p.asOf ? new Date(p.asOf) : (this._lastOk || new Date());
+    this._stamp.textContent = when.toLocaleDateString(undefined, { day:'2-digit', month:'short', year:'numeric' }) + '  ' + when.toLocaleTimeString();
+    this._renderKpis(p);
+    this._renderCrumb();
+    this._updateChartSub();
+    this._animate = true;
+    this._renderChart();
+    this._renderInsight(p);
+    this._renderDrivers(p);
+    this._renderTable();
+    this._foot.replaceChildren(...[ this._entityLabel(c.entity), c.budgetScenario, this._periodText(p), c.view && ({Periodic:'Periodic',QTD:'Quarter to date',HTD:'Half to date',YTD:'Year to date'}[c.view] || c.view), c.consolidation && ('Cons: ' + c.consolidation), this._unitName() ]
+      .filter(Boolean).map(t => htmlEl('span', null, t)));
+  }
+
+  // Monthly sparkline: one or two series over the year, selected window shaded, last point marked.
+  _sparkLines(series, tr) {
+    const W = 110, H = 42, n = 12;
+    const svg = svgEl('svg', { class:'spark', viewBox:`0 0 ${W} ${H}`, preserveAspectRatio:'none' });
+    const all = series.flatMap(s => s.values.slice(0, s.len));
+    if (all.length < 2) return svg;
+    let lo = Math.min(...all), hi = Math.max(...all); if (hi === lo) { hi += 1; lo -= 1; }
+    const X = i => 2 + i / (n - 1) * (W - 4), Y = v => H - 4 - (v - lo) / (hi - lo) * (H - 10);
+    svg.append(svgEl('rect', { x:X(tr.from - 1) - 3, y:0, width:Math.max(6, X(tr.to - 1) - X(tr.from - 1) + 6), height:H, rx:3, fill:'#4f6bff', opacity:'0.08' }));
+    series.forEach(s => {
+      const pts = s.values.slice(0, s.len).map((v, i) => [X(i), Y(v)]);
+      if (pts.length < 2) return;
+      svg.append(svgEl('path', { d: pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' '),
+        fill:'none', stroke:s.color, 'stroke-width':s.dash ? '1.5' : '2', 'stroke-dasharray':s.dash ? '3,3' : '', 'stroke-linejoin':'round', 'stroke-linecap':'round' }));
+      const k = Math.min(tr.to, s.len) - 1;
+      if (k >= 0 && !s.dash) svg.append(svgEl('circle', { cx:X(k), cy:Y(s.values[k]), r:2.6, fill:s.color }));
+    });
+    return svg;
+  }
+
+  // Monthly variance bars (green/red), months with actuals only; selected window at full opacity.
+  _sparkBars(values, len, tr) {
+    const W = 110, H = 42, n = 12;
+    const svg = svgEl('svg', { class:'spark', viewBox:`0 0 ${W} ${H}`, preserveAspectRatio:'none' });
+    const v = values.slice(0, len); if (!v.length) return svg;
+    const mx = Math.max(1e-9, ...v.map(Math.abs)), mid = H / 2, bw = (W - 4) / n * 0.62;
+    svg.append(svgEl('line', { x1:0, x2:W, y1:mid, y2:mid, stroke:'#d6dbe6', 'stroke-width':'1' }));
+    v.forEach((x, i) => {
+      const h = Math.max(1, Math.abs(x) / mx * (mid - 3)), cx = 2 + (i + 0.5) * (W - 4) / n;
+      const inWin = i + 1 >= tr.from && i + 1 <= tr.to;
+      svg.append(svgEl('rect', { x:cx - bw / 2, y:x >= 0 ? mid - h : mid, width:bw, height:h, rx:1.5,
+        fill: x >= 0 ? '#16b07e' : '#ef4467', opacity: inWin ? '1' : '0.35' }));
+    });
+    return svg;
+  }
+
+  _renderKpis(p) {
+    const varAmt = p.end.value - p.start.value;
+    const favAmt = p.expense ? -varAmt : varAmt;          // expense accounts: an increase is unfavourable
+    const varPct = p.start.value ? varAmt / Math.abs(p.start.value) : null;
+    const fc = favAmt >= 0 ? 'fav' : 'unf';
+    const arrow = favAmt >= 0 ? '▲ ' : '▼ ';
+    const tr = p.trend || null;
+    const card = (cls, icon, label, valText, num, fmt, sub, spark) => {
+      const k = htmlEl('div', 'kpi ' + cls);
+      const ic = htmlEl('div', 'ic'); ic.append(svgIcon(icon));
+      const tx = htmlEl('div');
+      const val = htmlEl('div', 'v ' + (cls === 'fav' || cls === 'unf' ? cls : ''), valText);
+      tx.append(htmlEl('div', 'l', label), val);
+      if (sub) tx.append(sub);
+      k.append(ic, tx);
+      if (spark) k.append(spark);
+      if (isNum(num) && fmt) this._countUp(val, num, fmt);
+      return k;
+    };
+    const sub = (parts) => { const d = htmlEl('div', 'd'); parts.forEach(([t, c]) => d.append(c ? htmlEl('span', c, t) : document.createTextNode(t))); return d; };
+    const pctTxt = varPct == null ? '–' : (varPct >= 0 ? '+' : '−') + Math.abs(varPct * 100).toFixed(1) + '%';
+    // monthly favourable-signed variance (expense accounts: lower actual = favourable)
+    const sgn = p.expense ? -1 : 1;
+    const monthVar = tr ? tr.actual.map((a, i) => sgn * (a - tr.budget[i])) : null;
+    const actLen = tr ? tr.lastActual : 0;
+    const monthPct = tr ? tr.actual.map((x, i) => tr.budget[i] ? sgn * (x - tr.budget[i]) / Math.abs(tr.budget[i]) * 100 : 0) : null;
+    // Full-year outlook: actual for closed months + budget for the remaining months, vs full-year budget
+    let fy = null;
+    if (tr) {
+      const L = Math.max(0, Math.min(12, tr.lastActual || 0));
+      const fyBud = tr.budget.reduce((t, v) => t + v, 0);
+      const landing = tr.actual.slice(0, L).reduce((t, v) => t + v, 0) + tr.budget.slice(L).reduce((t, v) => t + v, 0);
+      const cumB = [], cumO = []; let cb = 0, co = 0;
+      for (let i = 0; i < 12; i++) { cb += tr.budget[i]; co += i < L ? tr.actual[i] : tr.budget[i]; cumB.push(cb); cumO.push(co); }
+      const gap = landing - fyBud, gapFav = p.expense ? -gap : gap;
+      fy = { L, fyBud, landing, gap, gapFav, cumB, cumO };
+    }
+    const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const fyCard = () => {
+      if (!fy) return card('k2', 'target', 'Full-Year Outlook', '–', null, null, sub([['Not available for this view', null]]), null);
+      const gc = fy.gapFav >= 0 ? 'fav' : 'unf', ga = fy.gapFav >= 0 ? '▲ ' : '▼ ';
+      const basis = fy.L >= 12 ? 'Actual Jan–Dec' : fy.L === 0 ? 'Budget Jan–Dec' : 'Actual Jan–' + MN[fy.L - 1] + ' + Budget ' + MN[fy.L] + '–Dec';
+      const sp = this._sparkLines([{ values:fy.cumB, len:12, color:'#b8bfd1', dash:true }, { values:fy.cumO, len:12, color:'#4f6bff' }], { from:1, to:Math.max(1, fy.L) });
+      const c = card('k2', 'target', 'Full-Year Outlook', this._fmt(fy.landing), fy.landing, n => this._fmt(n),
+        sub([[ga + this._fmt(fy.gap, true), gc], [' vs FY Budget ' + this._fmt(fy.fyBud), null]]), sp);
+      c.title = basis;
+      c.querySelector('.d').append(htmlEl('div', 'basis', basis));
+      return c;
+    };
+    this._kpis.replaceChildren(
+      card('k1', 'db', p.start.label || 'Budget', this._fmt(p.start.value), p.start.value, n => this._fmt(n),
+           sub([[this._periodText(p).split(' · ')[1] || '', null]]), tr && this._sparkLines([{ values:tr.budget, len:12, color:'#9aa3b9' }], tr)),
+      card('k2', 'bars', p.end.label || 'Actual', this._fmt(p.end.value), p.end.value, n => this._fmt(n),
+           sub([[arrow + this._fmt(varAmt, true), fc], [' vs Budget', null]]), tr && this._sparkLines([{ values:tr.budget, len:12, color:'#b8bfd1', dash:true }, { values:tr.actual, len:actLen, color:'#4f6bff' }], tr)),
+      card(fc, 'target', p.drill ? 'Variance (Actual − Budget)' : 'Variance (Fav / Unfav)', this._fmt(varAmt, true), varAmt, n => this._fmt(n, true),
+           sub([[arrow + (favAmt >= 0 ? 'Favourable' : 'Unfavourable'), fc]]), monthVar && this._sparkBars(monthVar, actLen, tr)),
+      card(fc, 'pct', 'Variance %', pctTxt, null, null, sub([['vs Budget', null]]), monthPct && this._sparkBars(monthPct, actLen, tr))
+    );
+  }
+
+  _renderInsight(p) {
+    const box = this._insight; box.replaceChildren();
+    const ph = htmlEl('div', 'pt'); const tx = htmlEl('div'); tx.append(htmlEl('h3', null, 'Key Insight'));
+    ph.append(svgIcon('bulb'), tx); box.append(ph);
+    const varAmt = p.end.value - p.start.value;
+    const favAmt = p.expense ? -varAmt : varAmt;
+    const pct = p.start.value ? varAmt / Math.abs(p.start.value) * 100 : null;
+    const subject = p.drill ? 'Actual ' + p.drill : 'Actual ' + ((this._cube && this._cube.niLabel) || 'Net Income');
+    const verb = p.drill ? (varAmt >= 0 ? 'came in above' : 'came in below') : (favAmt >= 0 ? 'outperformed' : 'underperformed');
+    box.append(htmlEl('div', 'lead', subject + ' ' + verb + ' Budget by'));
+    box.append(htmlEl('div', 'big ' + (favAmt >= 0 ? 'fav' : 'unf'), this._fmt(Math.abs(varAmt)) + (pct == null ? '' : ' (' + (pct >= 0 ? '+' : '−') + Math.abs(pct).toFixed(1) + '%)')));
+    const steps = (p.steps || []).filter(s => isNum(s.impact) && Math.abs(s.impact) > 0.5);
+    const favs = steps.filter(s => s.impact > 0).sort((a, b) => b.impact - a.impact).slice(0, 2);
+    const unfs = steps.filter(s => s.impact < 0).sort((a, b) => a.impact - b.impact).slice(0, 2);
+    const list = (title, items, cls) => {
+      if (!items.length) return;
+      box.append(htmlEl('div', 'h', title));
+      const ul = htmlEl('ul');
+      items.forEach(s => {
+        const li = htmlEl('li'); const i = htmlEl('i'); i.style.background = cls === 'fav' ? 'var(--fav)' : 'var(--unf)';
+        const dv = isNum(s.delta) ? s.delta : s.impact;
+        li.append(i, document.createTextNode(s.label + ' '), htmlEl('span', cls, '(' + this._fmt(dv, true) + ')'));
+        ul.append(li);
+      });
+      box.append(ul);
+    };
+    const primaryFav = favAmt >= 0;
+    list(primaryFav ? 'Primary contributors were:' : 'Main drivers were:', primaryFav ? favs : unfs, primaryFav ? 'fav' : 'unf');
+    if ((primaryFav ? unfs : favs).length) box.append(htmlEl('hr'));
+    list('Offset by:', primaryFav ? unfs : favs, primaryFav ? 'unf' : 'fav');
+    if (!steps.length) box.append(htmlEl('div', 'empty', 'No variances for this selection.'));
+  }
+
+  _renderDrivers(p) {
+    const box = this._drivers; box.replaceChildren();
+    const ph = htmlEl('div', 'ph'); const pt = htmlEl('div', 'pt'); const tx = htmlEl('div');
+    tx.append(htmlEl('h3', null, p.drill ? 'Top Drivers – ' + p.drill : 'Top Variance Drivers'));
+    pt.append(svgIcon('chart'), tx); ph.append(pt, htmlEl('span', 'muted', this._unitName())); box.append(ph);
+    const tabs = htmlEl('div', 'tabs');
+    [['fav','Top Favourable'],['unf','Top Unfavourable']].forEach(([k, t]) => {
+      const b = htmlEl('button', (this._drvTab === k ? 'on ' : '') + (k === 'fav' ? 'f' : 'u'), t);
+      b.addEventListener('click', () => { this._drvTab = k; this._renderDrivers(this._payload); });
+      tabs.append(b);
+    });
+    box.append(tabs);
+    const steps = (p.steps || []).filter(s => isNum(s.impact) && (this._drvTab === 'fav' ? s.impact > 0.5 : s.impact < -0.5))
+      .sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact)).slice(0, 5);
+    const wrap = htmlEl('div', 'drv');
+    if (!steps.length) wrap.append(htmlEl('div', 'empty', this._drvTab === 'fav' ? 'No favourable variances.' : 'No unfavourable variances.'));
+    const max = Math.max(1, ...steps.map(s => Math.abs(s.impact)));
+    steps.forEach((s, i) => {
+      const r = htmlEl('div', 'drow' + (s.drillable ? ' click' : ''));
+      const cls = s.impact >= 0 ? 'fav' : 'unf';
+      const dv = isNum(s.delta) ? s.delta : s.impact;
+      const track = htmlEl('div', 'track'); const fill = htmlEl('div', 'fill ' + cls); fill.style.width = '0%'; track.append(fill);
+      r.append(htmlEl('span', 'n', String(i + 1)), htmlEl('span', 'lbl', s.label + (s.drillable ? '  ›' : '')), htmlEl('span', 'val ' + cls, this._fmt(dv, true)), track);
+      if (s.drillable) { r.title = 'Drill into ' + s.label; r.addEventListener('click', () => this._drillTo(s.id)); }
+      wrap.append(r);
+      const w = (Math.abs(s.impact) / max * 100).toFixed(1) + '%';
+      setTimeout(() => { fill.style.width = w; }, 30);
+    });
+    box.append(wrap);
+  }
+
+  _countUp(el, target, fmt) {
+    const t0 = performance.now(), dur = 650;
+    const step = now => {
+      const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = fmt(target * e);
+      if (k < 1) requestAnimationFrame(step); else el.textContent = fmt(target);
+    };
+    requestAnimationFrame(step);
+  }
+
+  _bars() {
+    const p = this._payload; const bars = [];
+    bars.push({ type:'total', label:p.start.label || 'Budget', from:0, to:p.start.value, value:p.start.value });
+    let cum = p.start.value;
+    for (const s of p.steps) {
+      if (s.type === 'subtotal') { bars.push({ type:'subtotal', label:s.label, from:0, to:cum, value:cum, group:s.group }); continue; }
+      const d = isNum(s.delta) ? s.delta : s.impact;      // drill view moves by raw variance, NI view by impact
+      bars.push({ type: s.impact >= 0 ? 'fav' : 'unf', label:s.label, from:cum, to:cum + d, value:d, step:s, group:s.group });
+      cum += d;
+    }
+    const gap = p.end.value - cum;
+    if (Math.abs(gap) > Math.max(1 + p.steps.length, Math.abs(p.end.value) * 1e-6)) { bars.push({ type: gap >= 0 ? 'fav' : 'unf', label:'Unreconciled', from:cum, to:p.end.value, value:gap, group:'' }); }
+    bars.push({ type:'total', label:p.end.label || 'Actual', from:0, to:p.end.value, value:p.end.value });
+    return bars;
+  }
+
+  _renderChart() {
+    const p = this._payload; if (!p) return;
+    const box = this._chart.getBoundingClientRect();
+    const W = Math.max(320, box.width), H = Math.max(260, box.height);
+    let bars = this._bars();
+    const pctMode = this._mode === 'pct' && p.start && p.start.value;
+    if (pctMode) {
+      const k = 100 / Math.abs(p.start.value);
+      bars = bars.map(x => Object.assign({}, x, { from:x.from * k, to:x.to * k, value:x.value * k }));
+    }
+    const fmtC = (v, signed) => pctMode
+      ? ((v < 0 ? '\u2212' : (signed && v > 0 ? '+' : '')) + Math.abs(v).toFixed(Math.abs(v) >= 10 ? 0 : 1) + '%')
+      : this._fmt(v, signed);
+    const rotate = (W - 70) / Math.max(1, bars.length) < 84;   // angle labels when bars are narrow
+    const m = { t: 26, r: 12, b: rotate ? 104 : 74, l: rotate ? 92 : 58 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+
+    let lo = 0, hi = 0;
+    bars.forEach(b => { lo = Math.min(lo, b.from, b.to); hi = Math.max(hi, b.from, b.to); });
+    const pad = (hi - lo) * 0.08 || 1; hi += pad; if (lo < 0) lo -= pad;
+    // nice ticks
+    const span = hi - lo, raw = span / 5, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1,2,2.5,5,10].map(x => x*mag).find(x => span / x <= 6) || mag*10;
+    lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+    const y = v => m.t + ih - (v - lo) / (hi - lo) * ih;
+    const band = iw / bars.length, bw = Math.min(64, band * 0.62);
+    const x = i => m.l + band * i + (band - bw) / 2;
+
+    const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, role:'img', 'aria-label':'Net income bridge from budget to actual' });
+    const defs = svgEl('defs');
+    [['gTot','--tot','--tot2'],['gFav','--fav','--fav2'],['gUnf','--unf','--unf2']].forEach(([id, c1, c2]) => {
+      const lg = svgEl('linearGradient', { id, x1:'0', y1:'0', x2:'0', y2:'1' });
+      const s1 = svgEl('stop', { offset:'0%' }); s1.setAttribute('style', 'stop-color:var(' + c1 + ')');
+      const s2 = svgEl('stop', { offset:'100%' }); s2.setAttribute('style', 'stop-color:var(' + c2 + ');stop-opacity:.85');
+      lg.append(s1, s2); defs.append(lg);
+    });
+    const glow = svgEl('filter', { id:'glow', x:'-30%', y:'-30%', width:'160%', height:'160%' });
+    glow.append(svgEl('feGaussianBlur', { in:'SourceGraphic', stdDeviation:'6', result:'b' }));
+    const fm = svgEl('feMerge'); fm.append(svgEl('feMergeNode', { in:'b' }), svgEl('feMergeNode', { in:'SourceGraphic' })); glow.append(fm);
+    defs.append(glow); svg.append(defs);
+    const anim = [];
+    const g = svgEl('g', { class:'grid' }), ax = svgEl('g', { class:'axis' });
+    for (let v = lo; v <= hi + step/2; v += step) {
+      g.append(svgEl('line', { x1:m.l, x2:W-m.r, y1:y(v), y2:y(v), 'stroke-dasharray': Math.abs(v) < step/1e6 ? '' : '2,3' }));
+      const t = svgEl('text', { x:m.l-8, y:y(v)+4, 'text-anchor':'end' }); t.textContent = fmtC(v); ax.append(t);
+    }
+    svg.append(g, ax);
+    svg.append(svgEl('line', { class:'zero', x1:m.l, x2:W-m.r, y1:y(0), y2:y(0) }));
+
+    const color = { total:'var(--tot)', subtotal:'var(--tot2)', fav:'var(--fav)', unf:'var(--unf)' };
+    const fill = { total:'url(#gTot)', subtotal:'url(#gTot)', fav:'url(#gFav)', unf:'url(#gUnf)' };
+    bars.forEach((b, i) => {
+      const top = y(Math.max(b.from, b.to)), bot = y(Math.min(b.from, b.to));
+      const canDrill = !!(b.step && b.step.drillable);
+      const hgt = Math.max(1.5, bot - top);
+      const r = svgEl('rect', { class:'bar ' + b.type + (canDrill ? ' drill' : ''), x:x(i), y:top, width:bw, height:hgt, rx:Math.min(7, bw/5), fill:fill[b.type] });
+      // soft glow halo under each bar
+      const halo = svgEl('rect', { x:x(i), y:top, width:bw, height:hgt, rx:Math.min(7, bw/5), fill:color[b.type], opacity:'0.18', filter:'url(#glow)' });
+      svg.append(halo);
+      anim.push({ r, halo, top, hgt, base: b.type === 'total' || b.type === 'subtotal' ? y(0) : y(b.from), i });
+      if (canDrill) r.addEventListener('click', () => this._drillTo(b.step.id));
+      r.addEventListener('mousemove', ev => this._showTip(ev, b));
+      r.addEventListener('mouseleave', () => this._tip.style.opacity = 0);
+      svg.append(r);
+      // connector
+      if (i < bars.length - 1) {
+        svg.append(svgEl('line', { class:'conn', x1:x(i)+bw, x2:x(i+1), y1:y(b.to), y2:y(b.to) }));
+      }
+      // value label
+      const pos = b.type === 'total' || b.type === 'subtotal' ? b.to >= 0 : b.value >= 0;
+      const vl = svgEl('text', { class:'vl', x:x(i)+bw/2, y: pos ? top - 7 : bot + 15, 'text-anchor':'middle', fill:color[b.type] });
+      vl.style.animationDelay = (this._animate ? 250 + i * 45 : 0) + 'ms';
+      vl.textContent = fmtC(b.value, b.type === 'fav' || b.type === 'unf'); svg.append(vl);
+      // x label (wrap to max 2 lines)
+      const words = String(b.label).split(/\s+/); const lines = ['']; const maxCh = Math.max(6, Math.floor(band / 6.2));
+      words.forEach(w => { const L = lines[lines.length-1]; if ((L + ' ' + w).trim().length > maxCh && L) lines.push(w); else lines[lines.length-1] = (L + ' ' + w).trim(); });
+      if (rotate) {
+        const lx = x(i) + bw/2 + 4, ly = H - m.b + 14;
+        const full = String(b.label), txt = full.length > 24 ? full.slice(0, 23) + '\u2026' : full;
+        const xl = svgEl('text', { class:'xl', x:lx, y:ly, 'text-anchor':'end', transform:`rotate(-35 ${lx} ${ly})` });
+        xl.textContent = txt; svg.append(xl);
+      } else {
+        const xl = svgEl('text', { class:'xl', x:x(i)+bw/2, y:H - m.b + 16, 'text-anchor':'middle' });
+        lines.slice(0, 3).forEach((ln, k) => { const ts = svgEl('tspan', { x:x(i)+bw/2, dy: k ? 13 : 0 }); ts.textContent = ln; xl.append(ts); });
+        svg.append(xl);
+      }
+    });
+
+    // group brackets
+    let gi = 0;
+    while (gi < bars.length) {
+      const grp = bars[gi].group; let gj = gi;
+      while (gj + 1 < bars.length && bars[gj+1].group === grp) gj++;
+      if (grp) {
+        const x1 = m.l + band*gi + 4, x2 = m.l + band*(gj+1) - 4, yy = H - 14;
+        svg.append(svgEl('line', { class:'brk', x1, x2, y1:yy-10, y2:yy-10 }));
+        const t = svgEl('text', { class:'grp', x:(x1+x2)/2, y:yy+2, 'text-anchor':'middle' }); t.textContent = grp; svg.append(t);
+      }
+      gi = gj + 1;
+    }
+
+    const old = this._chart.querySelector('svg'); old ? old.replaceWith(svg) : this._chart.prepend(svg);
+
+    // grow bars from their base on data changes (not on resize)
+    if (this._animate) {
+      this._animate = false;
+      const t0 = performance.now(), dur = 700;
+      anim.forEach(a => { a.r.setAttribute('y', a.base); a.r.setAttribute('height', 0); a.halo.setAttribute('y', a.base); a.halo.setAttribute('height', 0); });
+      const tick = now => {
+        let busy = false;
+        anim.forEach(a => {
+          const k = Math.max(0, Math.min(1, (now - t0 - a.i * 45) / dur)); if (k < 1) busy = true;
+          const e = 1 - Math.pow(1 - k, 3);
+          const growDown = a.top >= a.base - 0.5;               // bar extends below its base
+          const h = a.hgt * e, yy = growDown ? a.base : a.base - h;
+          a.r.setAttribute('y', yy); a.r.setAttribute('height', h);
+          a.halo.setAttribute('y', yy); a.halo.setAttribute('height', h);
+        });
+        if (busy) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+  }
+
+  _showTip(ev, b) {
+    const t = this._tip; t.replaceChildren();
+    t.append(htmlEl('b', null, b.label));
+    if (b.step) {
+      const s = b.step;
+      if (s.account) t.append(htmlEl('div', null, 'Account ' + s.account));
+      if (isNum(s.budget)) t.append(htmlEl('div', null, 'Budget: ' + this._fmt(s.budget)));
+      if (isNum(s.actual)) t.append(htmlEl('div', null, 'Actual: ' + this._fmt(s.actual)));
+      t.append(htmlEl('div', null, (isNum(s.delta) ? 'Variance: ' + this._fmt(s.delta, true) : 'NI impact: ' + this._fmt(s.impact, true)) + (s.impact >= 0 ? ' (fav)' : ' (unfav)')));
+      if (s.drillable) t.append(htmlEl('div', null, 'Click to drill down'));
+    } else t.append(htmlEl('div', null, this._fmt(b.value, b.type === 'fav' || b.type === 'unf')));
+    const r = this._chart.getBoundingClientRect();
+    t.style.left = (ev.clientX - r.left) + 'px'; t.style.top = (ev.clientY - r.top) + 'px'; t.style.opacity = 1;
+  }
+
+  _renderTable() {
+    const p = this._payload;
+    const head = htmlEl('tr');
+    ['Line','Account','Budget','Actual','Actual − Budget', p.drill ? 'Fav / (unfav)' : 'NI impact','% of budget'].forEach(h => head.append(htmlEl('th', null, h)));
+    const thead = htmlEl('thead'); thead.append(head);
+    const tb = htmlEl('tbody');
+    const row = (cells, cls, onClick) => { const tr = htmlEl('tr', cls); cells.forEach(([v, c]) => tr.append(htmlEl('td', c || '', v))); if (onClick) tr.addEventListener('click', onClick); tb.append(tr); };
+    row([[p.start.label || 'Budget'], [p.start.account || ''], [''], [''], [''], [this._fmt(p.start.value)], ['']], 'tot');
+    p.steps.filter(s => s.type !== 'subtotal').forEach(s => {
+      const pct = isNum(s.budget) && s.budget ? (s.actual - s.budget) / Math.abs(s.budget) : null;
+      const fc = s.impact >= 0 ? 'fav' : 'unf';
+      row([[s.label + (s.drillable ? '  \u203A' : '')], [s.account || ''], [this._fmt(s.budget)], [this._fmt(s.actual)], [this._fmt(s.variance, true)],
+           [this._fmt(s.impact, true), fc], [pct == null ? '–' : (pct*100).toFixed(1) + '%']], s.drillable ? 'drill' : '', s.drillable ? () => this._drillTo(s.id) : null);
+    });
+    row([[p.end.label || 'Actual'], [p.end.account || ''], [''], [''], [''], [this._fmt(p.end.value)], ['']], 'tot');
+    this._table.replaceChildren(thead, tb);
+  }
+}
+
+if (!customElements.get('os-variance-waterfall')) customElements.define('os-variance-waterfall', OsVarianceWaterfall);
+})();
+</script>
+<script>
+(function(){
+  // Data arrives from OneStream in ?z= (gzip + base64url JSON, one slice); errors in ?e=.
+  var q = new URLSearchParams(location.search), z = q.get('z'), e = q.get('e');
+  var el = document.querySelector('os-variance-waterfall');
+  function b(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var x=atob(s),u=new Uint8Array(x.length);for(var i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u;}
+  function msg(m){window.__wfMsg=m;customElements.whenDefined('os-variance-waterfall').then(function(){if(el._showError)el._showError(m);});}
+  function expand(c){
+    var u=c.u||1,m=c.m,arr=function(v){var a=[0,0,0,0,0,0,0,0,0,0,0,0];a[m-1]=(+v||0)*u;return a;};
+    var tree={},dA={},dB={};dA[c.ni]=arr(c.niv[0]);dB[c.ni]=arr(c.niv[1]);
+    c.N.forEach(function(n){tree[n[0]]={label:n[1]||n[0],expense:!!n[3],children:[]};dA[n[0]]=arr(n[4]);dB[n[0]]=arr(n[5]);});
+    c.N.forEach(function(n){if(n[2]>=0&&c.N[n[2]])tree[c.N[n[2]][0]].children.push(n[0]);});
+    var lines=c.L.map(function(l){var n=tree[l[0]]||{label:l[0],expense:false};return {id:l[0],account:l[0],label:n.label,group:l[1],expense:n.expense};});
+    var data={};data[c.e]={};data[c.e][c.s]={};data[c.e][c.s][c.y]=dA;data[c.e][c.b]={};data[c.e][c.b][c.y]=dB;
+    return {version:3,title:'Income Statement Variance - Actual vs Budget'+(c.cut?' (drill-down limited to top levels)':''),asOf:c.asOf,
+      context:{cube:c.cube,consolidation:c.cons},actualScenario:c.s,niLabel:c.nil,niAccount:c.ni,
+      entities:[{id:c.e,label:c.el||c.e,depth:0}],budgets:[c.b],years:[c.y],defaultEntity:c.e,defaultBudget:c.b,defaultYear:c.y,
+      defaultView:c.vw,defaultMonth:m,lines:lines,tree:tree,data:data};
+  }
+  if(e){try{msg(new TextDecoder().decode(b(e)));}catch(x){msg('Error');}return;}
+  if(!z){msg('No data. Open this page from the OneStream dashboard.');return;}
+  new Response(new Blob([b(z)]).stream().pipeThrough(new DecompressionStream('gzip'))).text()
+    .then(function(s){var p=expand(JSON.parse(s));return customElements.whenDefined('os-variance-waterfall').then(function(){el.data=p;});})
+    .catch(function(x){msg('Could not read the data: '+(x&&x.message||x));});
+})();
+</script>
+</body>
+</html>
