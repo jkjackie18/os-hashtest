@@ -951,7 +951,6 @@ class OsVarianceWaterfall extends HTMLElement {
     t.append(htmlEl('b', null, b.label));
     if (b.step) {
       const s = b.step;
-      if (s.account) t.append(htmlEl('div', null, 'Account ' + s.account));
       if (isNum(s.budget)) t.append(htmlEl('div', null, 'Budget: ' + this._fmt(s.budget)));
       if (isNum(s.actual)) t.append(htmlEl('div', null, 'Actual: ' + this._fmt(s.actual)));
       t.append(htmlEl('div', null, (isNum(s.delta) ? 'Variance: ' + this._fmt(s.delta, true) : 'NI impact: ' + this._fmt(s.impact, true)) + (s.impact >= 0 ? ' (fav)' : ' (unfav)')));
@@ -964,18 +963,18 @@ class OsVarianceWaterfall extends HTMLElement {
   _renderTable() {
     const p = this._payload;
     const head = htmlEl('tr');
-    ['Line','Account','Budget','Actual','Actual − Budget', p.drill ? 'Fav / (unfav)' : 'NI impact','% of budget'].forEach(h => head.append(htmlEl('th', null, h)));
+    ['Line','Budget','Actual','Actual − Budget', p.drill ? 'Fav / (unfav)' : 'NI impact','% of budget'].forEach(h => head.append(htmlEl('th', null, h)));
     const thead = htmlEl('thead'); thead.append(head);
     const tb = htmlEl('tbody');
     const row = (cells, cls, onClick) => { const tr = htmlEl('tr', cls); cells.forEach(([v, c]) => tr.append(htmlEl('td', c || '', v))); if (onClick) tr.addEventListener('click', onClick); tb.append(tr); };
-    row([[p.start.label || 'Budget'], [p.start.account || ''], [''], [''], [''], [this._fmt(p.start.value)], ['']], 'tot');
+    row([[p.start.label || 'Budget'], [''], [''], [''], [this._fmt(p.start.value)], ['']], 'tot');
     p.steps.filter(s => s.type !== 'subtotal').forEach(s => {
       const pct = isNum(s.budget) && s.budget ? (s.actual - s.budget) / Math.abs(s.budget) : null;
       const fc = s.impact >= 0 ? 'fav' : 'unf';
-      row([[s.label + (s.drillable ? '  \u203A' : '')], [s.account || ''], [this._fmt(s.budget)], [this._fmt(s.actual)], [this._fmt(s.variance, true)],
+      row([[s.label + (s.drillable ? '  \u203A' : '')], [this._fmt(s.budget)], [this._fmt(s.actual)], [this._fmt(s.variance, true)],
            [this._fmt(s.impact, true), fc], [pct == null ? '–' : (pct*100).toFixed(1) + '%']], s.drillable ? 'drill' : '', s.drillable ? () => this._drillTo(s.id) : null);
     });
-    row([[p.end.label || 'Actual'], [p.end.account || ''], [''], [''], [''], [this._fmt(p.end.value)], ['']], 'tot');
+    row([[p.end.label || 'Actual'], [''], [''], [''], [this._fmt(p.end.value)], ['']], 'tot');
     this._table.replaceChildren(thead, tb);
   }
 }
@@ -985,28 +984,60 @@ if (!customElements.get('os-variance-waterfall')) customElements.define('os-vari
 </script>
 <script>
 (function(){
-  // Data arrives from OneStream in ?z= (gzip + base64url JSON, one slice); errors in ?e=.
-  var q = new URLSearchParams(location.search), z = q.get('z'), e = q.get('e');
+  // Data arrives from OneStream in ?z= (gzip + base64url JSON). It is split across n Web Content components:
+  // p=1 is this visible panel, p=2..n are thin helper strips that postMessage their piece here (key k = hash of the payload).
+  var q = new URLSearchParams(location.search), z = q.get('z') || '', e = q.get('e'), k = q.get('k') || '', p = +(q.get('p') || 1), n = +(q.get('n') || 1);
   var el = document.querySelector('os-variance-waterfall');
   function b(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var x=atob(s),u=new Uint8Array(x.length);for(var i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u;}
   function msg(m){window.__wfMsg=m;customElements.whenDefined('os-variance-waterfall').then(function(){if(el._showError)el._showError(m);});}
+  // send to every frame on the OneStream page (web client frames are sandboxed: postMessage is the route that works there)
+  function postAll(m){function walk(w,d){var f;try{f=w.frames;}catch(x){return;}for(var i=0;i<f.length;i++){try{if(f[i]!==window)f[i].postMessage(m,'*');}catch(x){}if(d<3)walk(f[i],d+1);}}try{walk(window.top,0);}catch(x){}}
+  var bc=null;try{if(k)bc=new BroadcastChannel('osw-'+k);}catch(x){}
+  if(p>1){
+    // helper strip: show nothing, hand the piece to the main panel (now and whenever it asks)
+    document.documentElement.style.background='transparent';document.body.style.background='transparent';if(el)el.style.display='none';
+    if(e)return;
+    var m1={osw:1,t:'part',key:k,part:p,z:z},send=function(){postAll(m1);if(bc)try{bc.postMessage(m1);}catch(x){}};
+    try{localStorage.setItem('osw:'+k+':'+p,z);}catch(x){}
+    addEventListener('message',function(ev){var d=ev.data;if(d&&d.osw&&d.t==='need'&&d.key===k)send();});
+    if(bc)bc.onmessage=function(ev){if(ev.data&&ev.data.t==='need')send();};
+    send();var c=0,iv=setInterval(function(){send();if(++c>30)clearInterval(iv);},400);
+    return;
+  }
   function expand(c){
     var u=c.u||1,m=c.m,arr=function(v){var a=[0,0,0,0,0,0,0,0,0,0,0,0];a[m-1]=(+v||0)*u;return a;};
     var tree={},dA={},dB={};dA[c.ni]=arr(c.niv[0]);dB[c.ni]=arr(c.niv[1]);
-    c.N.forEach(function(n){tree[n[0]]={label:n[1]||n[0],expense:!!n[3],children:[]};dA[n[0]]=arr(n[4]);dB[n[0]]=arr(n[5]);});
-    c.N.forEach(function(n){if(n[2]>=0&&c.N[n[2]])tree[c.N[n[2]][0]].children.push(n[0]);});
-    var lines=c.L.map(function(l){var n=tree[l[0]]||{label:l[0],expense:false};return {id:l[0],account:l[0],label:n.label,group:l[1],expense:n.expense};});
+    var id=function(i){return 'n'+i;};   // no account numbers are sent: accounts are keyed by position
+    c.N.forEach(function(n,i){tree[id(i)]={label:n[0]||'',expense:!!n[2],children:[]};dA[id(i)]=arr(n[3]);dB[id(i)]=arr(n[4]);});
+    c.N.forEach(function(n,i){if(n[1]>=0&&c.N[n[1]])tree[id(n[1])].children.push(id(i));});
+    var lines=c.G.map(function(g,i){var n=tree[id(i)]||{label:'',expense:false};return {id:id(i),account:id(i),label:n.label,group:g,expense:n.expense};});
     var data={};data[c.e]={};data[c.e][c.s]={};data[c.e][c.s][c.y]=dA;data[c.e][c.b]={};data[c.e][c.b][c.y]=dB;
-    return {version:3,title:'Income Statement Variance - Actual vs Budget'+(c.cut?' (drill-down limited to top levels)':''),asOf:c.asOf,
+    return {version:3,title:'Income Statement Variance - Actual vs Budget'+(c.cut?' (drill-down limited to top levels)':''),asOf:c.asOf||new Date().toISOString(),
       context:{cube:c.cube,consolidation:c.cons},actualScenario:c.s,niLabel:c.nil,niAccount:c.ni,
       entities:[{id:c.e,label:c.el||c.e,depth:0}],budgets:[c.b],years:[c.y],defaultEntity:c.e,defaultBudget:c.b,defaultYear:c.y,
       defaultView:c.vw,defaultMonth:m,lines:lines,tree:tree,data:data};
   }
   if(e){try{msg(new TextDecoder().decode(b(e)));}catch(x){msg('Error');}return;}
-  if(!z){msg('No data. Open this page from the OneStream dashboard.');return;}
-  new Response(new Blob([b(z)]).stream().pipeThrough(new DecompressionStream('gzip'))).text()
-    .then(function(s){var p=expand(JSON.parse(s));return customElements.whenDefined('os-variance-waterfall').then(function(){el.data=p;});})
-    .catch(function(x){msg('Could not read the data: '+(x&&x.message||x));});
+  if(!k&&!z){msg('No data. Open this page from the OneStream dashboard.');return;}
+  var pieces={1:z},done=false;
+  function draw(){
+    if(done)return;for(var i=1;i<=n;i++)if(pieces[i]==null)return;done=true;
+    var all='';for(var j=1;j<=n;j++)all+=pieces[j];
+    new Response(new Blob([b(all)]).stream().pipeThrough(new DecompressionStream('gzip'))).text()
+      .then(function(s){var pl=expand(JSON.parse(s));return customElements.whenDefined('os-variance-waterfall').then(function(){el.data=pl;});})
+      .catch(function(x){msg('Could not read the data: '+(x&&x.message||x));});
+  }
+  function take(part,piece){if(part>1&&part<=n&&pieces[part]==null){pieces[part]=piece||'';draw();}}
+  addEventListener('message',function(ev){var d=ev.data;if(d&&d.osw&&d.t==='part'&&d.key===k)take(+d.part,d.z);});
+  if(bc)bc.onmessage=function(ev){var d=ev.data;if(d&&d.t==='part')take(+d.part,d.z);};
+  if(n>1)msg('Loading…');
+  draw();
+  var tries=0,iv2=setInterval(function(){
+    if(done){clearInterval(iv2);return;}
+    for(var i=2;i<=n;i++){try{var v=localStorage.getItem('osw:'+k+':'+i);if(v!=null)take(i,v);}catch(x){}}
+    if(tries%3===0){var need={osw:1,t:'need',key:k};postAll(need);if(bc)try{bc.postMessage(need);}catch(x){}}
+    if(++tries>40){clearInterval(iv2);if(!done){var miss=[];for(var j=2;j<=n;j++)if(pieces[j]==null)miss.push(j);msg('Waiting for helper panel(s) '+miss.join(', ')+' timed out. Refresh the dashboard; if it repeats, check the helper Web Content components are on the dashboard.');}}
+  },250);
 })();
 </script>
 </body>
