@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OneStream hash-data test</title>
+<style>
+body{margin:0;font:14px/1.45 "Segoe UI",system-ui,sans-serif;background:#F4F6FB;color:#121A33}
+.wrap{padding:14px 18px;display:grid;gap:12px}
+h1{font-size:16px;margin:0}
+.status{display:inline-block;border-radius:999px;padding:3px 12px;font-weight:600}
+.ok{background:#E2F6EC;color:#0A8F5A}.bad{background:#FDE7E7;color:#D23B3B}.wait{background:#EEF2FB;color:#4F46E5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.k{background:#fff;border:1px solid #E4E8F2;border-radius:12px;padding:10px 12px}
+.k .l{font-size:11px;color:#6A7390;font-weight:600}.k .v{font-size:20px;font-weight:650;color:#4F46E5;word-break:break-all}
+table{border-collapse:collapse;background:#fff;border:1px solid #E4E8F2;border-radius:10px;font-size:12px}
+td{padding:5px 10px;border-bottom:1px solid #EEF1F7;vertical-align:top}td:first-child{color:#6A7390;white-space:nowrap}
+</style></head><body><div class="wrap">
+<h1>OneStream → hosted page test <span id="st" class="status wait">Waiting</span></h1>
+<div class="grid" id="vals"></div>
+<table id="diag"></table>
+<div style="font-size:12px;color:#6A7390">This page contains no data. Everything shown above arrived in the part of the URL after “#”, which browsers never send to the web server.</div>
+</div>
+<script>
+(function(){
+  function set(cls,txt){var s=document.getElementById('st');s.className='status '+cls;s.textContent=txt;}
+  function row(k,v){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.textContent=k;b.textContent=v;tr.appendChild(a);tr.appendChild(b);document.getElementById('diag').appendChild(tr);}
+  function tile(l,v){var d=document.createElement('div');d.className='k';var a=document.createElement('div');a.className='l';a.textContent=l;var b=document.createElement('div');b.className='v';b.textContent=v;d.appendChild(a);d.appendChild(b);document.getElementById('vals').appendChild(d);}
+  var framed;try{framed=window.top!==window;}catch(e){framed='yes (cross-origin)';}
+  var h=location.hash.slice(1);
+  row('Hash length (characters)',h.length.toLocaleString());
+  row('Shown inside a frame',String(framed));
+  row('Referrer',document.referrer||'(none)');
+  row('Page origin',location.origin);
+  row('Browser',navigator.userAgent);
+  if(!h){set('bad','No data in URL');return;}
+  if(h.indexOf('z=')!==0){set('bad','Unexpected format');return;}
+  var t0=performance.now();
+  try{
+    var b64=h.slice(2).replace(/-/g,'+').replace(/_/g,'/');while(b64.length%4)b64+='=';
+    var bin=atob(b64),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+    new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text().then(function(txt){
+      var d=JSON.parse(txt),ms=(performance.now()-t0).toFixed(0);
+      tile('Value A',Number(d.a).toLocaleString());tile('Value B',Number(d.b).toLocaleString());tile('Value C',Number(d.c).toLocaleString());
+      row('Test',d.test);row('Sent by (OneStream user)',d.user);row('Sent at',d.time);
+      row('Padding received / expected',(d.pad||'').length.toLocaleString()+' / '+Number(d.padLen).toLocaleString());
+      row('Decode time (ms)',ms);
+      var full=(d.pad||'').length===d.padLen;
+      set(full?'ok':'bad',full?'Received OK':'Truncated');
+    }).catch(function(e){set('bad','Decode failed');row('Error',String(e&&e.message||e));});
+  }catch(e){set('bad','Decode failed');row('Error',String(e&&e.message||e));}
+})();
+</script></body></html>
