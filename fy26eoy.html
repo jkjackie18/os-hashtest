@@ -1,0 +1,2532 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Fy26 Eoy Scenarios</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style id="appcss">
+/* Layout: white masthead over a navy tab bar with a light-blue scenario sub-bar (working file, distinct from the black CFO report) with a computed one-line thesis + sticky scenario tabs; a bordered KPI strip; assumptions rail beside the P&L; storyboard/charts below. Mono for every number and label, sans for prose. */
+:root{
+  --bg:#FFFFFF; --fg:#000000; --mut:#5E5E5E; --line:#D4D4D4; --grid:#E8E8E8; --axis:#BDBDBD;
+  --soft:#F6F6F6; --hover:#F0F0F0; --panel:#FFFFFF;
+  --band:#1B2057; --band-fg:#FFFFFF; --band-mut:#B6BDFF; --band-line:#2E3577; --band-hover:#262C6E;
+  --acc:#5564FF; --acc-t:#EEF0FF; --acc-tx:#2F3CCB;
+  --pos:#007A49; --neg:#C62828; --pos-soft:#ABFBC6; --neg-soft:#FFD6D6; --pill-fg:#000000;
+  --warn:#F67D02; --warn-t:#FFF1E3; --warn-tx:#8F4700;
+  --d-vol:#5564FF; --d-mat:#F67D02; --d-crude:#6E26C1; --d-infl:#D9467A; --d-fx:#0E9CB0; --d-rate:#8A8A8A;
+  --bar-base:#9E9E9E; --bar-end:#000000; --bar-good:#00985B; --ni-bar:#5564FF; --rev-line:#F67D02; --dot-fill:#FFFFFF;
+  --scrim:rgba(0,0,0,.55); --shadow:0 18px 50px rgba(0,0,0,.18);
+  --sub-bg:#E9ECFF; --sub-fg:#1B2057; --sub-mut:#5A63A8; --sub-acc:#5564FF; --sub-line:#C9CFFF;
+  --ctl:var(--acc); --org-t:var(--warn-t); --org-x:var(--warn-tx);
+  --sans:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* one face throughout; figures stay aligned through tabular-nums */
+  --mono:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#000000; --fg:#FFFFFF; --mut:#A3A3A3; --line:#373737; --grid:#1F1F1F; --axis:#4A4A4A;
+  --soft:#0D0D0D; --hover:#161616; --panel:#0A0A0A;
+  --band:#151946; --band-mut:#B6BDFF; --band-line:#2A3170; --band-hover:#21285F;
+  --sub-bg:#1B2057; --sub-fg:#E9ECFF; --sub-mut:#9AA3E6; --sub-acc:#B6BDFF; --sub-line:#2E3577;
+  --acc:#B6BDFF; --acc-t:#151A3D; --acc-tx:#C9CEFF;
+  --pos:#4ADE80; --neg:#FF7A7A; --pos-soft:#0F3D25; --neg-soft:#4A1616; --pill-fg:#FFFFFF;
+  --warn:#FF9B3D; --warn-t:#2A1806; --warn-tx:#FFB46B;
+  --d-vol:#8C96FF; --d-mat:#FF9B3D; --d-crude:#B98BFF; --d-infl:#FF7AA8; --d-fx:#3FD0E3; --d-rate:#9E9E9E;
+  --bar-base:#6B6B6B; --bar-end:#FFFFFF; --bar-good:#34C77B; --ni-bar:#B6BDFF; --rev-line:#FF9B3D; --dot-fill:#000000;
+  --scrim:rgba(0,0,0,.7); --shadow:0 18px 50px rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --fg:#FFFFFF; --mut:#A3A3A3; --line:#373737; --grid:#1F1F1F; --axis:#4A4A4A;
+  --soft:#0D0D0D; --hover:#161616; --panel:#0A0A0A;
+  --band:#151946; --band-mut:#B6BDFF; --band-line:#2A3170; --band-hover:#21285F;
+  --sub-bg:#1B2057; --sub-fg:#E9ECFF; --sub-mut:#9AA3E6; --sub-acc:#B6BDFF; --sub-line:#2E3577;
+  --acc:#B6BDFF; --acc-t:#151A3D; --acc-tx:#C9CEFF;
+  --pos:#4ADE80; --neg:#FF7A7A; --pos-soft:#0F3D25; --neg-soft:#4A1616; --pill-fg:#FFFFFF;
+  --warn:#FF9B3D; --warn-t:#2A1806; --warn-tx:#FFB46B;
+  --d-vol:#8C96FF; --d-mat:#FF9B3D; --d-crude:#B98BFF; --d-infl:#FF7AA8; --d-fx:#3FD0E3; --d-rate:#9E9E9E;
+  --bar-base:#6B6B6B; --bar-end:#FFFFFF; --bar-good:#34C77B; --ni-bar:#B6BDFF; --rev-line:#FF9B3D; --dot-fill:#000000;
+  --scrim:rgba(0,0,0,.7); --shadow:0 18px 50px rgba(0,0,0,.6); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 var(--sans);font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.wrap{max-width:none;margin:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.neg{color:var(--neg)} .pos{color:var(--pos)} .z{color:var(--mut);opacity:.6}
+.mono{font-family:var(--mono)}
+
+/* ---------- masthead ---------- */
+/* navy masthead, separated from the navy tab bar by a strip of page background */
+.mast{--band-mut:#FFFFFF;background:var(--band);color:var(--band-fg);margin-bottom:3px}
+.mast .mp.ed{color:#FFFFFF}.mast .mp.ed i{background:#FFFFFF}
+.mast .illus{color:#FFB46B;border-color:#FFB46B}
+.mast .ib.rfok{border-color:#2F8F5B;color:#7CF0AE}
+.mast .ib.rferr{border-color:var(--warn);color:#FFB46B}
+.mast .wrap{padding-block:36px 26px;display:grid;gap:14px}
+.mtop{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--band-mut)}
+.illus{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--warn);color:var(--warn);border-radius:3px;white-space:nowrap}
+h1{font-weight:500;font-size:clamp(28px,4.4vw,44px);line-height:1.1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.thesis{margin:0;max-width:86ch;font-size:17px;line-height:1.5;color:var(--band-fg)}
+.thesis b{font-family:var(--mono);font-weight:500}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--band-mut)}
+.mp{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.mp i{width:6px;height:6px;border-radius:50%;background:var(--band-mut)}
+.mp.snap.live{color:#7CF0AE}.mp.snap.live i{background:#7CF0AE}
+.mp.ed{color:#B6BDFF}.mp.ed i{background:#B6BDFF}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.gb{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:8px 13px;border:1px solid var(--band-line);background:transparent;color:var(--band-fg);cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
+.gb:hover{background:var(--band-hover);border-color:var(--band-fg)}
+.gb.primary{background:var(--band-fg);color:var(--band);border-color:var(--band-fg)}
+.gb.primary:hover{opacity:.88}
+.gb.rfok{border-color:#2F8F5B;color:#7CF0AE}
+.gb.rferr{border-color:var(--warn);color:#FFB46B}
+.gb:disabled{opacity:.4;cursor:default}
+.icons{margin-left:auto;display:flex;gap:6px;align-items:center}
+.ib.rfok{border-color:#2F8F5B;color:#7CF0AE}
+.ib.rferr{border-color:var(--warn);color:#FFB46B}
+.ib{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;min-width:34px;padding:0 8px;border:1px solid var(--band-line);background:transparent;color:var(--band-fg);cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:background .15s,border-color .15s}
+.ib:hover{background:var(--band-hover);border-color:var(--band-fg)}
+.ib svg{width:17px;height:17px;flex:none}
+.ibl:empty{display:none}
+/* gb inside light surfaces (modals, version tree) */
+.mdl .gb,.vtdet .gb{border-color:var(--line);color:var(--fg)}
+.mdl .gb:hover,.vtdet .gb:hover{background:var(--hover);border-color:var(--fg)}
+
+/* ---------- sticky scenario tabs ---------- */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--band);color:var(--band-fg);border-top:1px solid var(--band-line)}
+.tabrow{display:flex;align-items:stretch;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tab{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:none;border:0;border-bottom:3px solid transparent;padding:14px 15px 11px;color:var(--band-fg);opacity:.78;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;transition:opacity .15s,background .15s}
+.tab:hover,.tab[aria-expanded="true"]{opacity:1;background:var(--band-hover)}
+#scenTab{opacity:1;border-bottom-color:var(--band-fg);font-weight:500}
+#scenTab .cur{padding:1px 8px;border:1px solid var(--band-line);border-radius:3px;letter-spacing:.04em}
+#scenTab .car{font-size:10px;transition:transform .2s}
+#scenTab[aria-expanded="true"] .car{transform:rotate(180deg)}
+.subbar{position:absolute;left:0;right:0;top:100%;background:var(--sub-bg);border-top:1px solid var(--sub-line);border-bottom:1px solid var(--sub-line);box-shadow:0 10px 24px rgba(0,0,0,.14)}
+.subbar .wrap{display:flex;align-items:center;gap:6px;overflow-x:auto;padding-block:8px}
+.sublab{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sub-mut);padding-right:12px;margin-right:4px;border-right:1px solid var(--sub-line);white-space:nowrap}
+.pills{display:flex;gap:4px}
+.pill{font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;background:transparent;border:0;padding:6px 14px;color:var(--sub-fg);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;transition:color .2s,transform .25s cubic-bezier(.34,1.56,.64,1)}
+.pill:hover{transform:translateY(-2px) scale(1.04);color:var(--sub-acc)}
+.pill.on{color:var(--sub-acc);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+.pill.custom.on{color:var(--warn-tx)}
+.pill .ed{width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block}
+.subbar.anim .pill{animation:chipIn .55s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--i,0) * 60ms)}
+@keyframes chipIn{0%{transform:translateY(-10px) scale(.85)}60%{transform:translateY(3px) scale(1.04)}100%{transform:none}}
+.ib.save{position:relative;padding:0 12px 0 10px}
+.ib.save .lbl{font-weight:500}
+.ib.save .dirty{display:none;position:absolute;top:-4px;right:-4px;width:9px;height:9px;border-radius:50%;background:var(--warn);border:2px solid var(--band)}
+.ib.save.is-dirty .dirty{display:block}
+.mdl.sm{max-width:560px}
+.mdh .vst{margin-left:6px;border-color:var(--band-line);color:var(--band-mut);background:transparent}
+.mdh .vst.ed{border-color:var(--warn);color:#FFB46B;background:transparent}
+.cpgrid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 12px;align-items:center;margin-bottom:14px}
+.cpgrid label{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.cpgrid select,.cpgrid input{font:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--line);background:var(--bg);color:var(--fg);min-width:0}
+.cpact button.go{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+#cpmsg{color:var(--neg);margin-top:8px}
+.mnote{margin:0 0 14px;font-size:13.5px;color:var(--mut);line-height:1.55}
+.mnote b{color:var(--fg)}
+
+/* ---------- main ---------- */
+main .wrap{padding-block:32px 24px;display:grid;gap:40px}
+.rfmsg{font-size:13.5px;line-height:1.5;color:var(--warn-tx);background:var(--warn-t);border:1px solid var(--warn);padding:11px 14px}
+.rfmsg.ok{color:var(--pos);background:var(--soft);border-color:var(--pos)}
+.rfmsg details>summary{cursor:pointer;font-weight:600;list-style:none;display:flex;gap:8px;align-items:baseline}
+.rfmsg details>summary::-webkit-details-marker{display:none}
+.rfmsg details>summary::before{content:"\25B8";font-size:10px;transition:transform .12s}
+.rfmsg details[open]>summary::before{transform:rotate(90deg)}
+.rfmsg details>summary .tg{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:400;opacity:.8}
+.rfmsg .rfbody{margin-top:8px}
+.rfmsg .rfx{float:right;border:0;background:none;cursor:pointer;color:inherit;font-size:16px;line-height:1;padding:0 0 0 10px}
+
+section{display:grid;gap:16px;min-width:0}
+h2{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:0;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+h2 .n{font-family:var(--mono);font-weight:500}
+h2 .tag{margin-left:auto}
+.tag{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}
+
+/* KPI strip */
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--fg)}
+.kpi{padding:18px 20px;display:grid;gap:6px;border-right:1px solid var(--line);min-width:0}
+.kpi:last-child{border-right:0;background:var(--soft)}
+.kpi .l{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.kpi .v{font-family:var(--mono);font-size:30px;font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi .d{font-size:12.5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.kpi .d .neg,.kpi .d .pos{font-family:var(--mono);color:var(--pill-fg);padding:1px 7px;border-radius:3px}
+.kpi .d .neg{background:var(--neg-soft)} .kpi .d .neg::before{content:"\25BC ";font-size:9px}
+.kpi .d .pos{background:var(--pos-soft)} .kpi .d .pos::before{content:"\25B2 ";font-size:9px}
+.kpi .d .z{font-family:var(--mono);opacity:1;padding:1px 7px;border:1px solid var(--line);border-radius:3px}
+@media (max-width:980px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi{border-bottom:1px solid var(--line)}.kpi:nth-child(2n){border-right:0}.kpi:last-child{grid-column:1/-1;border-bottom:0}}
+
+.cols{display:grid;grid-template-columns:330px minmax(0,1fr);gap:32px;align-items:start}
+.cols>div{min-width:0;display:grid;gap:32px}
+@media (max-width:960px){.cols{grid-template-columns:minmax(0,1fr)}}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 64px)}
+@media (max-width:960px){.rail{position:static}}
+
+.card{border:1px solid var(--line);background:var(--panel);padding:20px;display:grid;gap:14px;min-width:0}
+.card>h3{margin:0;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--fg);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.note{font-size:13px;color:var(--mut);line-height:1.55}
+.scennote{margin:0;padding:12px 14px;border-left:3px solid var(--fg);background:var(--soft);color:var(--fg);font-size:13.5px}
+.scennote b{font-weight:700}
+
+/* assumptions rail */
+.drv{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:10px;padding:12px 0;border-top:1px solid var(--line);position:relative}
+.drv:first-child{border-top:0;padding-top:4px}
+.drv .dot{position:absolute;left:0;top:18px;width:4px;height:calc(100% - 30px);border-radius:2px}
+.drv:first-child .dot{top:10px}
+.sw{grid-row:1;grid-column:1;justify-self:end;margin-top:3px;width:22px;height:13px;border-radius:7px;background:var(--fg);cursor:pointer;position:relative;transition:background .15s}
+.sw::after{content:"";position:absolute;top:2px;left:11px;width:9px;height:9px;border-radius:50%;background:var(--bg);transition:left .15s}
+.drv .top,.drv input,.drv .hint{grid-column:2}
+.drv .top{grid-row:1;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.drv .nm{font-size:14px;font-weight:600}
+.drv .val{font-family:var(--mono);font-size:14px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--acc-tx)}
+.drv .hint{font-size:12px;color:var(--mut);line-height:1.4}
+.drv.off .sw{background:var(--line)} .drv.off .sw::after{left:2px}
+.drv.off .nm,.drv.off .hint{color:var(--mut);opacity:.6}
+.drv.off .val{color:var(--mut);text-decoration:line-through}
+.drv.off .dot{opacity:.2}
+.drv.off input[type=range]{opacity:.3;pointer-events:none}
+input[type=range]{width:100%;margin:6px 0 2px;accent-color:var(--fg);height:18px}
+.mixbar{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);padding-bottom:10px;border-bottom:1px solid var(--fg)}
+.mixbar b{color:var(--acc-tx)!important}
+.mixbar button,.cxbar button{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:6px 9px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;white-space:nowrap}
+.mixbar button:hover,.cxbar button:hover:not(:disabled){border-color:var(--fg);background:var(--hover)}
+.cxbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cxbar label{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.cxbar input,.cxbar select{flex:1;min-width:70px;font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.cxbar button:disabled{opacity:.35;cursor:default}
+.cxbar button.arm{background:var(--warn-t);border-color:var(--warn);color:var(--warn-tx)}
+details.tools{border-top:1px solid var(--line);padding-top:12px}
+details.tools>summary{cursor:pointer;list-style:none;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:8px;align-items:center}
+details.tools>summary::-webkit-details-marker{display:none}
+details.tools>summary::before{content:"+";width:14px;text-align:center}
+details.tools[open]>summary::before{content:"\2212"}
+details.tools>summary .vst{margin-left:auto}
+.toolsbody{display:grid;gap:10px;margin-top:12px}
+.tlab{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-top:4px}
+.vbox{display:grid;gap:8px}
+.vhd{display:none}
+#svov .vbox{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center}
+#svov .vbox>.cxbar{display:contents}
+#svov .vbox>:not(.cxbar){grid-column:1/-1}
+#svov .vbox>.cxbar input,#svov .vbox>.cxbar select{width:100%;min-width:0;height:34px;box-sizing:border-box}
+#svov .vbox>.cxbar button{height:34px}
+#versave{grid-column:2/4}
+.vst{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:none;padding:2px 7px;border:1px solid var(--line);color:var(--mut);border-radius:3px;white-space:nowrap}
+.vst.ed{border-color:var(--warn);color:var(--warn-tx);background:var(--warn-t)}
+.vnote{font-size:12px;color:var(--mut);line-height:1.4}
+.vcode{border-top:1px dashed var(--line);padding-top:8px;display:grid;gap:6px}
+.vct{font-size:12.5px}
+.vcode textarea{width:100%;font:11px var(--mono);border:1px solid var(--warn);padding:6px;background:var(--warn-t);color:var(--fg);resize:vertical;word-break:break-all}
+.vhist{font-size:12px}
+
+/* P&L */
+.tog{display:flex;gap:0;align-items:center;flex-wrap:wrap;row-gap:10px}
+.tog button{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:7px 13px;border:1px solid var(--fg);background:var(--bg);color:var(--fg);cursor:pointer}
+.tog button+button{border-left:0}
+.tog button.on{background:var(--fg);color:var(--bg)}
+.rst{font-family:var(--mono);font-size:11.5px;color:var(--mut);display:flex;align-items:center;gap:7px;letter-spacing:.03em}
+.rst input{width:82px;font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.legend{display:flex;gap:6px 16px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--mut)}
+.legend .li{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.legend .li.off{opacity:.35;text-decoration:line-through}
+.legend .sq{width:10px;height:10px;flex:none}
+.legend .cap{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
+.tbl{overflow-x:auto;margin-inline:-4px;padding-inline:4px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+#pnl{min-width:640px}
+th{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--fg);text-align:right;padding:9px 10px;border-bottom:1.5px solid var(--fg);white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:13.5px;white-space:nowrap}
+td:first-child{text-align:left;font-family:var(--sans);font-size:14px;white-space:normal}
+tr.hd td{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);padding-top:20px;border-bottom:1px solid var(--line);background:none}
+tr.tot td{font-weight:600;border-top:1px solid var(--fg)}
+#pnl tr[data-k="99999"] td{border-top:1.5px solid var(--fg);border-bottom:1.5px solid var(--fg);background:var(--soft);font-size:15px}
+.ind{padding-left:26px!important}
+tr.clk{cursor:pointer}
+tr.clk:hover td{background:var(--hover)}
+tr.open td{background:var(--acc-t)}
+tr.open td:first-child{box-shadow:inset 3px 0 0 var(--acc)}
+.attr>td{background:var(--soft)!important;padding:12px 14px 14px 26px!important}
+.attr table td{border:0;font-size:13px}
+.bar{display:inline-block;height:10px;vertical-align:middle}
+.tcap{font-size:12.5px;color:var(--warn-tx);background:var(--warn-t);border-left:3px solid var(--warn);padding:7px 10px;line-height:1.45}
+
+/* storyboard */
+.modebar{display:flex;gap:0;align-items:center;flex-wrap:wrap;row-gap:8px}
+.modebar button{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--fg);background:var(--bg);color:var(--fg);cursor:pointer}
+.modebar button+button{border-left:0}
+.modebar button.on{background:var(--fg);color:var(--bg)}
+.modebar .note{margin-left:14px!important}
+#story{display:grid;gap:16px}
+#story>.card{border:0;padding:0;background:none}
+.sb{border:1px solid var(--line);border-top:3px solid var(--line);padding:18px 20px;background:var(--panel);display:grid;gap:10px;min-width:0;overflow-x:auto}
+.sb.mute{background:var(--soft)}
+.sb .sh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sb .st{font-size:19px;font-weight:600;letter-spacing:-.01em}
+.sb .sv{font-family:var(--mono);font-size:12.5px;padding:2px 8px;border:1px solid var(--line);border-radius:3px}
+.sb .si{margin-left:auto;font-family:var(--mono);font-size:15px;font-weight:500}
+.sb .si span[style]{font-family:var(--sans);font-size:12.5px}
+.sb p{margin:0;font-size:14.5px;line-height:1.6;max-width:78ch}
+.sb p b{font-weight:700}
+.sb details>summary{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid var(--fg);user-select:none}
+.sb details>summary:hover{background:var(--hover)}
+.sb details>summary::-webkit-details-marker{display:none}
+.sb details>summary::before{content:"+"}
+.sb details[open]>summary::before{content:"\2212"}
+.sb details[open]>summary{margin-bottom:12px}
+.sb table{min-width:520px}
+.sb td{font-size:12.5px;padding:5px 8px}
+.sb td:first-child{font-size:13px}
+.sb th{font-size:10.5px;padding:6px 8px}
+.sb .grp{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding-top:12px}
+.sb .none{font-size:12.5px;color:var(--mut)}
+.sbar{display:inline-block;height:8px;vertical-align:middle}
+.sb code{font:12px var(--mono);background:var(--soft);padding:1px 5px}
+.meth{border-left:3px solid var(--fg);padding:4px 0 4px 18px;margin:0 0 12px}
+.meth p{margin:0}
+ol.stp{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:14px}
+ol.stp li{counter-increment:s;position:relative;display:block;padding-left:34px;font-size:13.5px;line-height:1.6;max-width:84ch}
+ol.stp li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;font-family:var(--mono);font-size:12px;font-weight:500}
+ol.stp li:last-child::before{color:var(--acc-tx)}
+ol.stp .sq{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
+.sb .fin{margin:14px 0 0;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}
+
+/* charts */
+#charts{display:grid;gap:20px}
+.cv{width:100%;height:auto;display:block;overflow:visible}
+.cv text{font-family:var(--mono)}
+.cv .ax{font-size:10px;fill:var(--mut);font-variant-numeric:tabular-nums}
+.cv .ax.r{fill:var(--rev-line)}
+.cv .xl{font-size:10px;fill:var(--mut)}
+.cv .xl.on{fill:var(--fg);font-weight:600}
+.cv .vl{font-size:10px;fill:var(--mut);paint-order:stroke;stroke:var(--panel);stroke-width:3px;stroke-linejoin:round}
+.cv .vl.b{font-size:11px;fill:var(--fg);font-weight:600}
+.cv .ct{font-size:11.5px;fill:var(--fg);font-weight:500;letter-spacing:.04em}
+.cv .lg{font-size:10.5px;fill:var(--mut)}
+.cv rect{transition:opacity .12s}.cv rect:hover{opacity:.75}
+
+/* method + footer */
+.mc{padding:0;border:0;border-top:1px solid var(--fg);background:none}
+.mc summary{list-style:none;cursor:pointer;padding:16px 0;display:flex;gap:10px;align-items:baseline;font-size:14px;color:var(--mut)}
+.mc summary::-webkit-details-marker{display:none}
+.mc summary::before{content:"+";font-family:var(--mono);color:var(--fg);width:14px}
+.mc details[open] summary::before{content:"\2212"}
+.mc summary b{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
+.mc .note{font-size:13.5px;color:var(--fg);max-width:96ch;padding-bottom:12px}
+.basis{display:flex;flex-wrap:wrap;gap:6px 18px;padding:12px 14px;margin-bottom:14px;background:var(--soft);font-family:var(--mono);font-size:11.5px}
+.basis>b{width:100%;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+.basis span{display:inline-flex;align-items:center;gap:6px;color:var(--mut)}
+.basis i{width:4px;height:4px;background:var(--fg);flex:none}
+.basis span.w{color:var(--warn-tx)}.basis span.w i{background:var(--warn)}
+.ftr{font-family:var(--mono);font-size:11.5px;line-height:1.6;color:var(--mut);padding-block:20px 48px;border-top:1px solid var(--line)}
+.ftr b{color:var(--fg);font-weight:500}
+
+/* ---------- modals ---------- */
+.ov{position:fixed;inset:0;background:var(--scrim);z-index:60;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.ov.clear{background:transparent}
+.mdl{background:var(--panel);color:var(--fg);border:1px solid var(--fg);max-width:1100px;width:100%;max-height:100%;overflow:auto;box-shadow:var(--shadow)}
+.mdh{display:flex;align-items:center;gap:12px;padding:16px 22px;background:var(--band);color:var(--band-fg);position:sticky;top:0;z-index:2}
+.mdh h2{font-size:12.5px;font-weight:500;font-family:var(--mono);letter-spacing:.08em}
+.mdh .x{margin-left:auto;border:1px solid var(--band-line);background:none;width:30px;height:30px;cursor:pointer;font-size:17px;line-height:1;color:var(--band-fg)}
+.mdh .x:hover{border-color:var(--band-fg)}
+.mdb{padding:20px 22px 24px;overflow-x:auto}
+.mx{width:100%;min-width:760px;border-collapse:collapse}
+.mx th,.mx td{padding:8px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid var(--line)}
+.mx th:first-child,.mx td:first-child{text-align:left}
+.mx thead th{font-size:10.5px;background:var(--panel);border-bottom:1.5px solid var(--fg);vertical-align:bottom}
+.mx td{vertical-align:middle}
+.mx td.pv{vertical-align:top;padding-block:10px}
+.mx thead th.on{box-shadow:inset 0 -3px 0 var(--acc)}
+.mx thead th.cu{color:var(--warn-tx)}
+.mx td.on{background:var(--acc-t)}
+.mx tbody tr:hover td{background:var(--hover)}
+.mx tr.sec td{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);padding-top:16px;background:none!important}
+.mx tr.res td{font-weight:600}
+.mx tr.res:first-of-type td{border-top:1.5px solid var(--fg)}
+.mx .dn{width:4px;height:14px;display:inline-block;margin-right:9px;vertical-align:middle}
+.mx .src{display:block;font-size:11px;color:var(--mut);font-family:var(--sans);margin-top:3px;line-height:1.3;white-space:normal}
+.mx td.pv,.mx th.pv{text-align:left;white-space:normal;min-width:150px}
+.ch{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:3px;white-space:nowrap;color:var(--pill-fg)}
+.ch.br{background:var(--acc-t);color:var(--acc-tx)}
+.ch.mi{background:var(--warn-t);color:var(--warn-tx)}
+.ch.cu{background:var(--pos-soft)}
+.ch.ac,.ch.na{border:1px solid var(--line);color:var(--mut)}
+.mx.fx{min-width:640px}
+.mx.fx td{padding:5px 10px}
+.mx.fx input.fi{width:76px;padding:5px 7px;font:12.5px var(--mono);text-align:right;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.mx.fx input.fi.ed{border-color:var(--warn);background:var(--warn-t);font-weight:600}
+.mxn{font-size:13px;line-height:1.6;border-left:3px solid var(--fg);padding:4px 0 4px 16px;margin-top:16px;max-width:100ch}
+.mxk{display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--mut);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.mxk span{display:inline-flex;align-items:center;gap:6px}
+
+/* version tree */
+.vtwrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+@media(max-width:900px){.vtwrap{grid-template-columns:minmax(0,1fr)}}
+.vtree{overflow:auto;border:1px solid var(--line);background:var(--soft);padding:12px;min-height:120px}
+.vtsvg{display:block;max-width:none}
+.vte{fill:none;stroke:var(--axis);stroke-width:1.5}
+.vte.dash{stroke-dasharray:4 3}
+.vtn{cursor:pointer}
+.vtn rect{fill:var(--panel);stroke:var(--line);stroke-width:1}
+.vtn:hover rect,.vtn:focus rect{stroke:var(--fg);outline:none}
+.vtn.orig rect{fill:var(--soft);stroke:var(--fg)}
+.vtn.cur rect{fill:var(--warn-t);stroke:var(--warn);stroke-dasharray:4 3}
+.vtn.base rect{stroke:var(--fg);stroke-width:2}
+.vtn.sel rect{fill:var(--acc-t);stroke:var(--acc);stroke-width:2}
+.vtn .t1{font:600 11.5px var(--sans);fill:var(--fg)}
+.vtn .t2{font:10px var(--mono);fill:var(--mut)}
+.vtn .dot{fill:var(--acc)}
+.vtdet{border:1px solid var(--line);border-top:3px solid var(--fg);padding:14px 16px;font-size:13px;line-height:1.5}
+.vtdet h4{margin:0 0 4px;font-size:16px}
+.vtdet ul{margin:2px 0 8px;padding-left:18px}
+.vtm{font-family:var(--mono);font-size:11px;color:var(--mut)}
+.vht{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:10px 0 3px}
+.vhc{font-weight:600}
+.vhe{color:var(--mut);font-style:italic}
+.vhist ul{margin:0;padding-left:16px}
+.vtact{display:flex;flex-direction:column;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.vtact .gb{align-self:flex-start}
+
+/* guided tour */
+.spot{position:fixed;border:2px solid var(--acc);z-index:80;pointer-events:none;box-shadow:0 0 0 9999px var(--scrim);transition:all .22s cubic-bezier(.4,0,.2,1)}
+.tip{position:fixed;z-index:81;background:var(--panel);color:var(--fg);width:340px;padding:16px 18px;border:1px solid var(--fg);border-top:3px solid var(--acc);box-shadow:var(--shadow)}
+.tip h4{margin:0 0 6px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+.tip p{margin:0 0 14px;font-size:13.5px;line-height:1.55}
+.tip .nav{display:flex;align-items:center;gap:8px}
+.tip .stepn{font-family:var(--mono);font-size:11px;color:var(--mut)}
+.tip button{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.tip button.go{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.tip .skip{margin-left:auto;border:0;background:none;color:var(--mut);text-decoration:underline}
+
+/* motion */
+@keyframes secIn{from{transform:translateY(14px)}to{transform:none}}
+main section{animation:secIn .5s cubic-bezier(.2,.7,.2,1) both}
+main section:nth-of-type(2){animation-delay:.05s}main section:nth-of-type(3){animation-delay:.1s}
+@keyframes flash{from{background:var(--acc-t)}to{background:transparent}}
+.kpi .v.bump{animation:flash .6s ease-out}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+@media (max-width:600px){
+  .mast .wrap{padding-block:26px 20px}
+  .thesis{font-size:15.5px}
+  .kpi{padding:14px}
+  .kpi .v{font-size:24px}
+  .card{padding:16px}
+  .tip{width:calc(100vw - 24px)}
+  .modebar .note{margin-left:0!important;width:100%}
+}
+.mast .mp.demo{color:#FFB46B}.mast .mp.demo i{background:#FFB46B}
+/* header, tab bar and section headings in the body face */
+.eyebrow,.meta,.mp,.illus,.ib,.tab,.pill,.sublab,h2,h2 .n,h2 .tag{font-family:var(--sans)}
+.eyebrow{font-size:13px;letter-spacing:.08em;font-weight:500}
+.meta{font-size:13px;letter-spacing:.01em}
+.tab,.pill{font-size:13px;letter-spacing:.04em;font-weight:500}
+h2{font-size:14px;letter-spacing:.08em}
+h2 .n{font-weight:700}
+@media print{.tabs,.actions,.mixbar,input[type=range],.sw{display:none!important}}
+</style>
+
+<div id="app">
+<header class="mast">
+  <div class="wrap">
+    <div class="mtop">
+      <span class="eyebrow" id="eyebrow">GSE</span>
+      <span class="illus">Illustrative only</span>
+      <div class="icons">
+        <button class="ib save" id="svbtn" aria-label="Save" title="Save a version, roll back, import or export versions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M7 3v5h8V3"/><path d="M7 21v-7h10v7"/></svg><span class="lbl">Save</span><i class="dirty" aria-hidden="true"></i></button>
+        <button class="ib" id="rfbtn" hidden aria-label="Refresh" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg><span class="ibl"></span></button>
+        <button class="ib" id="vtreebtn" aria-label="Version history" title="Version history: how your versions grew out of each other, and what each one changed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/><path d="M12 7v5l3 2"/></svg><span class="ibl"></span></button>
+        <button class="ib" id="expbtn" hidden aria-label="Export to share" title="Export to share: save a standalone HTML copy that needs no OneStream access"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="ibl"></span></button>
+      </div>
+    </div>
+    <h1>FY2026 Q4 What-If Simulations</h1>
+    <div class="meta">
+      <span class="mp demo" id="demoflag" hidden><i></i>No data</span>
+      <span class="mp snap" id="asat"><i></i>Base data 1 Oct 2026</span>
+      <span class="mp">Forecast6p6 · FY2026 · EUR m</span>
+      <span class="mp ed" id="fxflag" hidden><i></i>Factors edited</span>
+    </div>
+  </div>
+</header>
+<nav class="tabs" id="tabs" aria-label="Simulation">
+  <div class="wrap tabrow">
+    <button class="tab" id="scenTab" aria-expanded="false" aria-controls="subbar" title="Hover to choose a scenario">Scenario <span class="cur" id="scenCur">Base</span><span class="car" aria-hidden="true">&#9662;</span></button>
+    <button class="tab" id="cpbtn">Copy scenario</button>
+    <button class="tab" id="mxbtn">Assumption matrix</button>
+    <button class="tab" id="fxbtn">Model factors</button>
+    <button class="tab" id="tourbtn">Guide</button>
+  </div>
+  <div class="subbar" id="subbar" hidden>
+    <div class="wrap"><span class="sublab">Scenarios</span><div class="pills" id="pills"></div></div>
+  </div>
+</nav>
+
+<main>
+<div class="wrap">
+  <div class="rfmsg" id="rfmsg" hidden></div>
+
+  <section aria-labelledby="s1">
+    <h2 id="s1"><span class="n">01</span>Outcome <span class="tag" id="kpitag"></span></h2>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <div class="cols">
+    <div>
+      <div class="card" id="drvcard">
+        <h3>Assumptions</h3>
+        <div class="scennote" id="scennote"></div>
+        <div class="mixbar">
+          <span id="mixcount"></span>
+          <span style="flex:1"></span>
+          <button id="allon">All on</button><button id="alloff">All off</button>
+        </div>
+        <div id="drivers"></div>
+      </div>
+    </div>
+
+    <div>
+      <section id="pnlcard" aria-labelledby="pnlttl">
+        <h2><span class="n">02</span><span id="pnlttl"></span></h2>
+        <div class="tog" id="viewtog">
+          <button data-v="fy" class="on">Full year</button>
+          <button data-v="q4">Q4 only</button>
+          <span style="flex:1;min-width:12px"></span>
+          <label class="rst">Restated at EUR/USD <input id="rst" type="number" step="0.001" min="0.6" max="2" value="1.1379"></label>
+        </div>
+        <div class="legend" id="legend"></div>
+        <div class="tbl"><table id="pnl"></table></div>
+        <div class="note">Select any line to break its movement down by assumption. Unfavourable amounts are in brackets.</div>
+      </section>
+
+      <section aria-labelledby="s3">
+        <h2 id="s3"><span class="n">03</span>How each assumption lands</h2>
+        <div class="modebar" id="modebar">
+          <button data-m="story" class="on">Storyboard</button>
+          <button data-m="charts">Charts</button>
+          <span class="note" id="modehint"></span>
+        </div>
+        <div id="story"></div>
+        <div id="charts" style="display:none">
+          <div class="card">
+            <h3>Bridge · 6p6 base to scenario</h3>
+            <div id="wf"></div>
+          </div>
+          <div class="card">
+            <h3>Scenario comparison</h3>
+            <div id="cmp"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="card mc" id="mcard">
+        <details><summary><b>Method &amp; caveats</b> elasticities, FX treatment, tax and what this model leaves out</summary>
+        <div class="note">
+      <div class="basis">
+        <b>Report basis</b>
+        <span><i></i>Cube: <span id="bcube">Equipment Division</span></span>
+        <span><i></i>Scenario: <span id="bscen">Forecast6p6</span></span>
+        <span><i></i>Entity: <span id="bent">GSE (OFI Global)</span></span>
+        <span><i></i>FY2026, last closed month 2026M6</span>
+        <span><i></i>Reported in EUR, restated at EUR/USD 1.1379</span>
+        <span class="w"><i></i>Macro shocks applied to Oct–Dec 2026 only; Jan–Sep held at the 6p6</span>
+        <span class="w"><i></i><span id="basisasat">Base figures pulled 1 October 2026</span></span>
+      </div>
+      <b>Base ties to the cube.</b> The page derives every subtotal from the posting lines and checks net income against cube account 99999 each time it opens (see Report basis).<br><br>
+      <b>Volume elasticities</b> (share of a line that flexes with volume): revenue and material COGS 100%; freight 100%; labour COGS 70%; utilities 60%; warehouse 50%; overhead COGS 40%; R&amp;M credit 30%; supplemental 20%; compensation 10% (overtime and commission only); professional services, HR, facility, telecom, D&amp;A fixed.<br><br>
+      <b>Crude pass-through:</b> freight 0.60, utilities 0.50, warehouse 0.10, overhead COGS 0.15 of the crude move.<br><br>
+      <b>FX — one driver, not two.</b> The cube reports USD, but USD is only the reporting currency: the four operating entities are functionally EUR (NL13 Netherlands, ES10 Spain), IDR (ID10) and MYR (MY10). Restating the book into EUR at a plan rate is arithmetic that scales every line and every scenario identically — it moves no conclusion, so it sits in the box above the table rather than in the assumptions. The only genuine FX <i>risk</i> is the non-EUR functional currencies moving against EUR, which is the single <b>FX vs EUR</b> slider. It applies to the non-EUR share of each block — revenue 29.9%, COGS 17.7%, opex 39.0%, from the FY26 entity split.<br><br>
+      Because Malaysia carries the manufacturing cost base while revenue books in the Dutch and Spanish entities, a weaker IDR and MYR is a small <i>net benefit</i>: it cuts more cost than revenue. That asymmetry, 39% of cost against 30% of revenue, is a structural hedge already on the books.<br><br>
+      <b>Interest rate.</b> Account 85999 has appeared and been cleared more than once in this cube. Where it carries a balance, the rate driver scales it by the repricing share of borrowings (60% by default) times the rate change relative to the current average rate (5.0% by default) — both estimates, not cube data, since the planning scenarios hold no debt schedule. Where the account is empty, as at the current refresh, the driver has nothing to scale and reports zero. Incremental working capital from higher material prices is excluded throughout, as sizing it needs a balance sheet this forecast does not contain.<br><br>
+      <b>Tax.</b> Incremental profit taxed at the FY26 effective rate on profit before tax of 36.9%. The Q4 booked rate in the 6p6 is 49.7% and is phasing-distorted, so it is not used as the marginal rate.<br><br>
+      <b>Switching assumptions off.</b> A driver that is switched off is held at its 6p6 value, so its contribution becomes exactly zero and the remaining drivers are re-decomposed against the same base. The scenario comparison chart applies the same on/off mask to all five scenarios, so it stays like-for-like.<br><br>
+      <b>Spot reference:</b> EUR/USD 1.1379 at 24 Sep 2026. Brent Q4-26 sell-side range 70–80.
+        </div>
+        </details>
+      </div>
+
+      <div class="ftr" id="ftr"><b>Illustrative scenarios for discussion, not a submitted forecast.</b> The Base column is the 6+6 as submitted; every other column is a modelled overlay that exists only on this page. <b>This page holds a fixed snapshot, not a live feed.</b>
+      Base figures were pulled from the OneStream Equipment Division cube on <b>1 October 2026</b> — scenario Forecast6p6,
+      entity GSE, FY2026, last closed month 2026M6, restated at EUR/USD 1.1379. They do not refresh on their own.
+      Forecast6p6 is a submitted forecast, so it should not move; if it is restated, or you want a later forecast such as 9+3,
+      the snapshot has to be re-pulled. Base ties to the cube exactly; every scenario overlay is modelled here and is not stored in OneStream.</div>
+    </div>
+  </div>
+</div>
+</main>
+</div>
+
+<div class="ov" id="mxov" hidden>
+  <div class="mdl" role="dialog" aria-label="Assumption matrix">
+    <div class="mdh"><h2>Assumption matrix by scenario</h2>
+      <button class="x" id="mxx" aria-label="Close">&times;</button></div>
+    <div class="mdb" id="mxbody"></div>
+  </div>
+</div>
+
+<div class="ov" id="fxov" hidden>
+  <div class="mdl" role="dialog" aria-label="Model factors">
+    <div class="mdh"><h2>Model factors · how much of each line each driver reaches</h2>
+      <button class="x" id="fxx" aria-label="Close">&times;</button></div>
+    <div class="mdb" id="fxbody"></div>
+  </div>
+</div>
+
+<div class="ov" id="svov" hidden>
+  <div class="mdl sm" role="dialog" aria-label="Save">
+    <div class="mdh"><h2>Save · versions of every scenario</h2><span class="vst" id="vstate"></span>
+      <button class="x" id="svx" aria-label="Close">&times;</button></div>
+    <div class="mdb">
+      <p class="mnote">A version holds every scenario, the model factors and the assumption switches. Roll back restores all of it.</p>
+      <div class="vbox" id="vbox">
+              <div class="vhd"><span>Versions · <b id="vscen">all scenarios</b></span></div>
+                            <div class="cxbar">
+                <input id="vername" placeholder="Version name (optional)" maxlength="40">
+                <button id="versave" title="Save every scenario, the model factors and the switches as a version you can roll back to">Save version</button>
+              </div>
+              <div class="cxbar" id="verrow2">
+                <select id="versel" aria-label="Saved versions"></select>
+                <button id="verload" title="Restore the selected version">Roll back</button>
+                <button id="verdel" title="Delete the selected version">Delete</button>
+              </div>
+              <div class="vhist" id="vhist" hidden></div>
+              <div class="vnote" id="vnote"></div>
+              <div class="vcode" id="vcode" hidden>
+                <div class="vct" id="vcodettl"></div>
+                <textarea id="vcodetxt" readonly rows="3" spellcheck="false" hidden></textarea>
+                <div class="cxbar"><button id="vcopy">Copy again</button><span class="vnote" id="vcopied"></span>
+                  <span style="flex:1"></span><button id="vcodex">Close</button></div>
+              </div>
+            </div>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="cpov" hidden>
+  <div class="mdl sm" role="dialog" aria-label="Copy scenario">
+    <div class="mdh"><h2>Copy scenario</h2>
+      <button class="x" id="cpx" aria-label="Close">&times;</button></div>
+    <div class="mdb">
+      <p class="mnote">Copy one scenario's assumptions into another, or into a <b>new scenario</b> of your own. New scenarios appear under Scenario, in the matrix and in the comparison chart, and are kept in your versions.</p>
+      <div class="cpgrid">
+        <label for="forksrc">From</label><select id="forksrc"></select>
+        <label for="cpto">To</label><select id="cpto"></select>
+        <label for="cpname" id="cpnamelab">Name</label><input id="cpname" maxlength="24" placeholder="Custom 1">
+      </div>
+      <div class="cxbar cpact">
+        <button id="fork">Copy</button>
+        <span style="flex:1"></span>
+        <button id="usdel" hidden>Delete scenario</button>
+        <button id="rstc">Reset Custom</button>
+      </div>
+      <p class="vnote" id="cpmsg"></p>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="vtov" hidden>
+  <div class="mdl" role="dialog" aria-label="Version history">
+    <div class="mdh"><h2>Version history · select a version to see what it changed</h2>
+      <button class="x" id="vtx" aria-label="Close">&times;</button></div>
+    <div class="mdb vtwrap">
+      <div class="vtree" id="vtree"></div>
+      <div class="vtdet" id="vtdet" hidden></div>
+    </div>
+  </div>
+</div>
+
+<div class="ov clear" id="tov" hidden></div>
+<div class="spot" id="spot" hidden></div>
+<div class="tip" id="tip" hidden></div>
+
+<!-- Filled by the XFBR rule with live cube data. Left as the placeholder, the page runs on its built-in snapshot. -->
+<script type="application/json" id="ospayload"></script>
+<script type="text/plain" id="appjs">
+// ---- runtime capabilities (claude.ai Artifacts). Absent in a standalone export: everything below degrades.
+const CUBE_SERVER="DEMO - OneStream Cube Data -APAC01", CUBE_TOOL_NAME="execute_cube_data_query_mcp";
+let MCP=null, DL=null;
+const HAS_CLAUDE=!!(window.claude&&typeof window.claude.use==="function");
+if(HAS_CLAUDE){
+  window.claude.use("mcp").then(m=>{ MCP=m; const b=document.getElementById("rfbtn"); if(b) b.hidden=!m; }).catch(()=>{});
+  window.claude.use("downloads").then(d=>{ DL=d; const b=document.getElementById("expbtn"); if(b) b.hidden=!d;
+    if(typeof render==="function") try{ render(); }catch(e){} }).catch(()=>{});
+}
+// hand a generated file to the viewer; resolves true when saved, false when declined
+async function saveFile(filename,data){
+  if(!DL) throw Object.assign(new Error("Saving files is not available in this view"),{code:"unavailable"});
+  try{ await DL.save({filename,data}); return true; }
+  catch(e){ const c=String(e&&e.code||"");
+    if(/cancel|declin|denied|abort/i.test(c)) return false;
+    throw e; }
+}
+let BASE_ASAT="1 Oct 2026";
+let RESTATE=1.1379;                    // USD per EUR used to restate the cube's USD book into EUR
+let ETR=0.343631;                      // FY26 effective tax rate on PBT (editable)
+const NE={rev:0.299,cogs:0.177,opex:0.390,fin:0.390};  // non-EUR functional share of each block
+const RATE={flt:0.60,base:0.050};            // share of borrowings that reprice, and the current average rate
+const NE0={...NE}, RATE0={...RATE}, ETR0=ETR;  // shipped defaults, for Reset
+
+// Oct-Dec 2026 and Jan-Sep 2026, Forecast6p6, GSE, USD, Periodic
+const Q4={"41000":0,"49000":0,"40000":0,"51010":0,"52010":0,"53010":0,"59010":0,"50000":0,"59999":0,"61000":0,"62000":0,"63000":0,"64000":0,"65000":0,"66000":0,"66500":0,"67000":0,"67500":0,"69000":0,"69999":0,"79999":0,"85999":0,"96999":0,"87999":0};   // hosted copy: no data, filled from OneStream
+const M9={"41000":0,"49000":0,"40000":0,"51010":0,"52010":0,"53010":0,"59010":0,"50000":0,"59999":0,"61000":0,"62000":0,"63000":0,"64000":0,"65000":0,"66000":0,"66500":0,"67000":0,"67500":0,"69000":0,"69999":0,"79999":0,"85999":0,"96999":0,"87999":0};   // hosted copy: no data, filled from OneStream
+
+// line: [volume elasticity, material flag, crude elasticity, inflation flag, block, label, indent]
+const L={
+ "41000":[1.00,0,0.00,0,"rev","Revenue from sale of goods",1],
+ "49000":[1.00,0,0.00,0,"rev","Adjustments to revenue (discounts, returns)",1],
+ "51010":[0.70,0,0.00,1,"cogs","Labour COGS",1],
+ "52010":[1.00,1,0.00,0,"cogs","Material COGS",1],
+ "53010":[0.40,0,0.15,1,"cogs","Overhead COGS",1],
+ "59010":[0.30,0,0.00,0,"cogs","COGS — repair &amp; maintenance",1],
+ "61000":[0.10,0,0.00,1,"opex","Compensation",1],
+ "62000":[1.00,1,0.00,0,"opex","Other material cost",1],
+ "63000":[0.50,0,0.10,1,"opex","Warehouse expenses",1],
+ "64000":[0.00,0,0.00,1,"opex","Professional services",1],
+ "65000":[0.60,0,0.50,1,"opex","Utilities cost",1],
+ "66000":[1.00,0,0.60,1,"opex","Freight cost",1],
+ "66500":[0.00,0,0.00,1,"opex","HR expenses",1],
+ "67000":[0.00,0,0.00,1,"opex","Facility expense",1],
+ "67500":[0.00,0,0.00,1,"opex","Telecom",1],
+ "69000":[0.20,0,0.00,1,"opex","Supplemental expenses",1],
+ "79999":[0.00,0,0.00,0,"opex","Depreciation &amp; amortisation",0],
+ "85999":[0.00,0,0.00,0,"fin","Finance costs",0]};
+const L0=JSON.parse(JSON.stringify(L));   // shipped factor defaults
+const COGS=["51010","52010","53010","59010"];
+const OPEX=["61000","62000","63000","64000","65000","66000","66500","67000","67500","69000"];
+// expense lines: an increase is unfavourable
+const EXP=new Set(["50000","69999","79999","85999","87999",...COGS,...OPEX,"49000"]);
+
+function calc(d){
+  const q={};
+  for(const k in L){const[ev,fm,ec,fi,blk]=L[k];let x=Q4[k];
+    x*=(1+ev*d.vol); x*=(1+fm*d.mat); x*=(1+ec*d.crude); x*=(1+fi*d.infl); x*=(1+NE[blk]*d.fx); q[k]=x;}
+  q["40000"]=q["41000"]+q["49000"];
+  q["50000"]=COGS.reduce((s,k)=>s+q[k],0);
+  q["59999"]=q["40000"]-q["50000"];
+  q["69999"]=OPEX.reduce((s,k)=>s+q[k],0);
+  q["96999"]=q["59999"]-q["69999"]-q["79999"];
+  // finance costs are a real line in the 6p6 (all of it falls in Q4), so the rate
+  // driver scales it: only the repricing share moves, in proportion to the rate change
+  q["85999"]*= (1 + RATE.flt*(d.rate/RATE.base));
+  q["98999"]=q["96999"]-q["85999"];
+  q["87999"]=Q4["87999"]+(q["98999"]-(Q4["96999"]-Q4["85999"]))*ETR;   // marginal tax on the change in PBT
+  q["99999"]=q["98999"]-q["87999"];
+  const fy={}; for(const k in q) fy[k]=(M9[k]||0)+q[k];
+  fy["98999"]=fy["96999"]-fy["85999"]; fy["99999"]=fy["98999"]-fy["87999"];
+  // the cube reports USD; restating to EUR at the plan rate is arithmetic, not risk
+  const e={},eq={};
+  for(const k in fy) e[k]=fy[k]/RESTATE;
+  for(const k in q)  eq[k]=q[k]/RESTATE;
+  return {q4:eq,fy:e};   // keys match the view toggle values
+}
+const DRV=[
+ {k:"vol",  n:"Volume",          min:-20, max:5,  step:.5, sc:100,  hint:"Lack of rain. Flexes revenue and the variable share of every cost line."},
+ {k:"mat",  n:"Material price",  min:0,   max:30, step:.5, sc:100,  hint:"Scarcity premium on material COGS (52010) and material cost (62000)."},
+ {k:"crude",n:"Crude price",     min:-10, max:30, step:.5, sc:100,  hint:"Feeds freight, utilities, warehouse and overhead COGS via pass-through factors."},
+ {k:"infl", n:"Cost inflation",  min:0,   max:8,  step:.1, sc:100,  hint:"Incremental Q4 inflation above plan on compensation and fixed opex."},
+ {k:"fx",   n:"FX vs EUR",       min:-20, max:10, step:.5, sc:100,  hint:"Move in the non-EUR functional currencies (IDR, MYR) against EUR. Negative = they weaken. Net favourable, because more cost than revenue sits outside the euro."},
+ {k:"rate", n:"Interest rate",   min:-100,max:400,step:25, sc:10000,hint:"Scales the 6p6 finance-cost line, where one exists. Only the repricing share moves \u2014 set that in Model factors."}];
+
+const SC={
+ "Base":        {vol:0,    mat:0,    crude:0,    infl:0,    fx:0,    rate:0,
+   note:"The 6+6 as submitted. No macro overlay. Everything else is measured against this."},
+ "Mild":        {vol:-.03, mat:.10,  crude:.05,  infl:.005, fx:-.02, rate:.0025,
+   note:"Rain arrives late but arrives. Volume slips 3%, material carries the bottom of the stated premium, crude at the low end of the range."},
+ "Central":     {vol:-.06, mat:.125, crude:.075, infl:.01,  fx:-.04, rate:.005,
+   note:"Mid-point of every stated range. The most likely landing zone, and the one to size the Q4 cost actions against."},
+ "Severe":      {vol:-.10, mat:.15,  crude:.10,  infl:.015, fx:-.06, rate:.0075,
+   note:"Top of every stated range at once. Drought runs through Q4, Gulf disruption holds crude high, and IDR and MYR sell off with the risk-off move."},
+ "Stagflation": {vol:-.10, mat:.15,  crude:.10,  infl:.03,  fx:-.10, rate:.015,
+   note:"Severe volumes and input costs, but wage and fixed-cost inflation doubles to 3% and rates go 150bp. The tail case: the damage is in the cost base, not the top line."}};
+
+// shipped driver settings per scenario: "Original settings" restores these, and the
+// "adjusted" markers compare against them. Base is the 6p6 itself and stays locked.
+const DKEYS=["vol","mat","crude","infl","fx","rate"];
+const pickD=o=>Object.fromEntries(DKEYS.map(k=>[k,+o[k]||0]));
+const SC0=Object.fromEntries(Object.keys(SC).map(n=>[n,pickD(SC[n])]));
+const isEdited=n=>n!=="Base" && n!=="Custom" && SC[n] && SC0[n] && DKEYS.some(k=>Math.abs(SC[n][k]-SC0[n][k])>1e-12);
+// scenarios the viewer adds with Copy scenario (Custom 1, 2, ...); they live in SC beside the presets
+const USER=new Set();
+const RESERVED=new Set(["Base","Mild","Central","Severe","Stagflation","Custom"]);
+const cleanName=x=>String(x||"").replace(/[^A-Za-z0-9 _\-+.()]/g,"").replace(/\s+/g," ").trim().slice(0,24);
+function addUser(n,d,from,orig){
+  SC[n]={...pickD(d), note:"Your scenario"+(from?", copied from "+from:"")+".", from:from||""};
+  SC0[n]=pickD(orig||d); USER.add(n);
+}
+function dropUser(n){
+  delete SC[n]; delete SC0[n]; USER.delete(n);
+  if(cur===n) cur="Base"; if(forkSrc===n) forkSrc="Base";
+}
+let cpTo="Custom";
+
+let cur="Base", custom={...SC.Base}, view="fy", openLine=null, bridgeKey="99999", mode="story";
+// once the user has moved a slider their Custom case persists as a comparison column,
+// even while they click through the pre-built scenarios
+let customTouched=false, customFrom='the 6p6', forkArmed=false, forkSrc='Base';
+const scenNames=()=>[...Object.keys(SC),...(customTouched||cur==="Custom"?["Custom"]:[])];
+// which assumptions are switched on — lets you isolate any mix of drivers
+let EN={vol:1,mat:1,crude:1,infl:1,fx:1,rate:1};
+const D=()=>cur==="Custom"?custom:SC[cur];
+// effective driver set: a switched-off assumption reverts to its 6p6 base value
+const eff=d=>Object.fromEntries(DRV.map(x=>[x.k, EN[x.k]?d[x.k]:SC.Base[x.k]]));
+const E=()=>eff(D());
+const nOn=()=>DRV.filter(x=>EN[x.k]).length;
+const f1=v=>v.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+function money(v,expense){ // v in EUR m
+  const unfav = expense ? v>0 : v<0;
+  const s=f1(Math.abs(v));
+  if(Math.abs(v)<0.05) return '<span class="z">—</span>';
+  return unfav?`<span class="neg">(${s})</span>`:`<span>${s}</span>`;
+}
+function delta(v,expense){
+  if(Math.abs(v)<0.05) return '<span class="z">—</span>';
+  const unfav = expense ? v>0 : v<0;
+  const s=f1(Math.abs(v));
+  return `<span class="${unfav?'neg':'pos'}">${unfav?'('+s+')':'+'+s}</span>`;
+}
+
+function pills(){
+  document.getElementById("pills").innerHTML=
+    [...Object.keys(SC),"Custom"].map((s,i)=>`<button class="pill ${s===cur?'on':''} ${s==='Custom'?'custom':''}" style="--i:${i}" data-s="${s}" aria-pressed="${s===cur}"${isEdited(s)?' title="Adjusted from its original settings"':''}>${s}${isEdited(s)?'<span class="ed"></span>':''}</button>`).join("");
+  { const sc=document.getElementById("scenCur"); if(sc) sc.textContent=cur+(isEdited(cur)?" \u2022":""); }
+  document.querySelectorAll("#pills .pill").forEach(p=>p.onclick=()=>{
+    forkArmed=false;                       // selecting a scenario cancels a pending overwrite
+    cur=p.dataset.s; openLine=null;
+    if(cur!=="Custom") forkSrc=cur;        // and becomes the default copy source
+    render();});
+}
+// while a slider is dragged, the drivers panel must not be rebuilt: replacing the element under the
+// pointer makes the browser drop the drag after the first step (click worked, dragging did not)
+let SLIDING=null;
+const drvDisp=(k,v)=>k==="rate"?(v>0?"+":"")+(v*10000).toFixed(0)+" bp":(v>0?"+":"")+(v*100).toFixed(1)+"%";
+addEventListener("pointerup",()=>{ if(SLIDING){ SLIDING=null; render(); } });
+function drivers(){
+  const host=document.getElementById("drivers");
+  if(SLIDING && host.querySelector && host.querySelector('input[data-k="'+SLIDING+'"]')){
+    for(const d of DRV){
+      const el=host.querySelector('.val[data-v="'+d.k+'"]'); if(!el) continue;
+      el.textContent=drvDisp(d.k,D()[d.k]);
+      const row=el.closest?el.closest(".drv"):null; if(row) row.classList.toggle("off",!EN[d.k]);
+    }
+  } else {
+    document.getElementById("drivers").innerHTML=DRV.map(d=>{
+      const v=D()[d.k], on=EN[d.k];
+      const disp=d.k==="rate"?(v>0?"+":"")+(v*10000).toFixed(0)+" bp":(v>0?"+":"")+(v*100).toFixed(1)+"%";
+      return `<div class="drv ${on?'':'off'}"><span class="dot" style="background:${CLR[d.k]}"></span>
+        <span class="sw" data-t="${d.k}" role="switch" tabindex="0" aria-checked="${on?'true':'false'}" aria-label="${d.n}" title="${on?'Switch off':'Switch on'} ${d.n}"></span>
+        <div class="top"><span class="nm">${d.n}</span><span class="val" data-v="${d.k}">${disp}</span></div>
+        <input type="range" data-k="${d.k}" min="${d.min}" max="${d.max}" step="${d.step}" value="${v*d.sc}" style="accent-color:${CLR[d.k]}">
+        <div class="hint">${d.hint}</div></div>`;}).join("");
+    document.querySelectorAll("#drivers input").forEach(i=>i.oninput=()=>{
+      const k=i.dataset.k, val=parseFloat(i.value)/DRV.find(x=>x.k===k).sc;
+      forkArmed=false;
+      if(cur==="Base"){
+        // Base is the 6p6 as submitted and stays locked: moving a slider here starts a Custom case
+        cur="Custom"; custom={...SC.Base}; customFrom="the 6p6";
+        custom[k]=val; customTouched=true;
+      } else if(cur==="Custom"){
+        custom[k]=val; customTouched=true;
+      } else {
+        // every other scenario is edited in place; save a version first to be able to roll back
+        SC[cur][k]=val;
+      }
+      EN[k]=1;                       // moving a slider implies you want it counted
+      saveEdits();
+      SLIDING=k;                     // keep this slider element alive while it is being dragged
+      render();});
+    document.querySelectorAll("#drivers input").forEach(i=>{ i.onchange=()=>{ SLIDING=null; render(); }; });
+    document.querySelectorAll("#drivers .sw").forEach(s=>{s.onclick=()=>{EN[s.dataset.t]=EN[s.dataset.t]?0:1;render();}; s.onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();s.onclick();}};});
+  }
+  copyUI();
+
+  const off=DRV.filter(x=>!EN[x.k]);
+  document.getElementById("mixcount").innerHTML= off.length
+    ? `<b style="color:var(--ctl)">${nOn()} of ${DRV.length}</b> assumptions on · off: ${off.map(x=>x.n).join(", ")}`
+    : `All ${DRV.length} assumptions on`;
+
+
+  let note = cur==="Custom"
+    ? `<b>Custom.</b> Your own case, built from ${customFrom}. It sits alongside the five scenarios as an extra comparison column.`
+    : cur==="Base"
+      ? "<b>Base.</b> "+SC.Base.note+" <span style='color:var(--mut)'>Base is locked to the 6p6; moving a slider here starts a Custom case.</span>"
+      : "<b>"+cur+".</b> "+SC[cur].note;
+  if(isEdited(cur)){
+    const ch=DRV.filter(d=>Math.abs(SC[cur][d.k]-SC0[cur][d.k])>1e-12)
+      .map(d=>`${d.n} ${dval(d.k,SC0[cur][d.k])} → <b>${dval(d.k,SC[cur][d.k])}</b>`);
+    note+=` <span style="color:var(--org-x)"><b>Adjusted:</b> ${ch.join("; ")}.</span>`;
+  }
+  if(off.length===DRV.length) note+=" <span style='color:var(--mut)'>— every assumption is switched off, so this equals the 6p6.</span>";
+  else if(off.length) note+=` <span style='color:var(--mut)'>— showing the ${nOn()}-driver mix only; the rest are held at 6p6.</span>`;
+  document.getElementById("scennote").innerHTML=note;
+}
+
+const ROWS=[
+ ["hd","Revenue"],["41000"],["49000"],["40000","tot","Net revenue"],
+ ["hd","Cost of goods sold"],["51010"],["52010"],["53010"],["59010"],["50000","tot","Total COGS"],
+ ["59999","tot","Gross margin"],
+ ["hd","Operating expenses"],["61000"],["62000"],["63000"],["64000"],["65000"],["66000"],["66500"],["67000"],["67500"],["69000"],["69999","tot","Total operating expenses"],
+ ["79999","tot","Depreciation &amp; amortisation"],
+ ["96999","tot","Total operating income (EBIT)"],
+ ["85999","tot","Finance costs"],
+ ["98999","tot","Profit before tax"],
+ ["87999","tot","Income tax provision"],
+ ["99999","tot","Net income"]];
+const NAMES={"40000":"Net revenue","50000":"Total COGS","59999":"Gross margin","69999":"Total operating expenses","79999":"Depreciation &amp; amortisation","96999":"Total operating income (EBIT)","85999":"Finance costs","98999":"Profit before tax","87999":"Income tax provision","99999":"Net income"};
+
+const ORDER=["vol","mat","crude","infl","fx","rate"];
+const OLBL={vol:"Volume (rain)",mat:"Material price",crude:"Crude → freight &amp; energy",infl:"Cost inflation",fx:"FX vs EUR",rate:"Interest rate"};
+function attribute(key){
+  const tgt=E(), acc={...SC.Base}; let prev=calc(acc)[view][key]; const out={};
+  for(const k of ORDER){acc[k]=tgt[k];const n=calc(acc)[view][key];out[k]=(n-prev)/1e6;prev=n;}
+  return out;   // a switched-off driver equals base, so its contribution is exactly zero
+}
+function pnl(){
+  const b=calc(SC.Base)[view], s=calc(E())[view];
+  let h=`<tr><th>FY2026 line</th><th>6p6 base</th><th>${cur}</th><th>Δ</th><th>Δ%</th><th style="width:82px">Driver mix</th></tr>`;
+  for(const r of ROWS){
+    if(r[0]==="hd"){h+=`<tr class="hd"><td colspan="6">${r[1]}</td></tr>`;continue;}
+    const k=r[0], isTot=r[1]==="tot", nm=DESC[k]?esc(DESC[k]):(r[2]||L[k][5]), ind=!isTot&&L[k]&&L[k][6]?"ind":"";
+    const bv=(b[k]||0)/1e6, sv=(s[k]||0)/1e6, dv=sv-bv, exp=EXP.has(k);
+    const pct=Math.abs(bv)>0.05?(sv/bv-1)*100:0;
+    const a=attribute(k), tot=Object.values(a).reduce((x,y)=>x+Math.abs(y),0);
+    let mix="";
+    if(tot>0.02){for(const dk of ORDER){const w=Math.abs(a[dk])/tot*78;
+      if(w>0.6) mix+=`<span class="bar" style="width:${w}px;background:${CLR[dk]}" title="${OLBL[dk].replace(/&amp;/g,'&')}: ${a[dk]>0?'+':'−'}${Math.abs(a[dk]).toFixed(2)}m — ${(Math.abs(a[dk])/tot*100).toFixed(0)}% of the movement on this line"></span>`;}}
+    h+=`<tr class="${isTot?'tot':''} ${openLine===k?'open':''} clk" data-k="${k}">
+      <td class="${ind}">${nm}</td><td>${money(bv,exp)}</td><td>${money(sv,exp)}</td>
+      <td>${delta(dv,exp)}</td><td>${Math.abs(pct)<0.05?'<span class="z">—</span>':(pct>0?'+':'')+pct.toFixed(1)+'%'}</td><td>${mix}</td></tr>`;
+    if(openLine===k){
+      const ents=ORDER.map(dk=>[dk,a[dk]]).filter(x=>Math.abs(x[1])>0.005);
+      h+=`<tr class="attr"><td colspan="6" style="text-align:left;padding:8px 7px 10px 20px">`;
+      h+= ents.length? `<table style="width:100%;margin:0"><tr><th style="text-align:left">Driver</th><th>EUR m</th><th style="width:220px"></th></tr>`+
+        ents.map(([dk,v])=>{const mx=Math.max(...ents.map(e=>Math.abs(e[1])));
+          return `<tr><td style="border:none">${OLBL[dk]}</td><td style="border:none">${delta(v,exp)}</td>
+          <td style="border:none;text-align:left"><span class="bar" style="width:${Math.abs(v)/mx*200}px;background:${CLR[dk]}"></span></td></tr>`;}).join("")+
+        `<tr><td style="border:none;font-weight:650">Total movement</td><td style="border:none;font-weight:650">${delta(ents.reduce((x,y)=>x+y[1],0),exp)}</td><td style="border:none"></td></tr></table>`
+        : `<span style="color:var(--mut)">No driver touches this line in the current scenario.</span>`;
+      h+=`</td></tr>`;
+    }
+  }
+  const t=document.getElementById("pnl"); t.innerHTML=h;
+  t.querySelectorAll("tr.clk").forEach(tr=>tr.onclick=()=>{
+    const k=tr.dataset.k;
+    openLine=openLine===k?null:k;
+    bridgeKey=k;                 // clicking a line also retargets the bridge chart
+    render();});
+}
+const CLR={vol:"var(--d-vol)",mat:"var(--d-mat)",crude:"var(--d-crude)",infl:"var(--d-infl)",fx:"var(--d-fx)",rate:"var(--d-rate)"};
+
+// Build the data for both charts from current state.
+function chartData(){
+  const BK=bridgeKey, bn=lineName(BK), exp=EXP.has(BK);
+  const a=attribute(BK), b=calc(SC.Base)[view][BK]/1e6;
+  const keys=ORDER.filter(k=>Math.abs(a[k])>0.005);
+  const labels=["6p6 base",...keys.map(k=>OLBL[k].replace(/&amp;/g,"&")),cur==="Custom"?"Custom":cur];
+  const floats=[],bars=[],cols=[];
+  floats.push([0,b]);bars.push(b);cols.push("var(--bar-base)");
+  let run=b;
+  for(const k of keys){const unfav=exp?a[k]>0:a[k]<0;
+    floats.push([run,run+a[k]]);bars.push(a[k]);cols.push(unfav?CLR[k]:"var(--bar-good)");run+=a[k];}
+  // end bar is the exact scenario value, so the chart can never disagree with the table
+  const exact=calc(E())[view][BK]/1e6;
+  floats.push([0,exact]);bars.push(exact);cols.push("var(--bar-end)");
+  const names=scenNames();
+  const at=n=>calc(eff(n==="Custom"?custom:SC[n]))[view];
+  return {bn,labels,floats,bars,cols,names,
+    rev:names.map(n=>at(n)["40000"]/1e6),
+    ebit:names.map(n=>at(n)["96999"]/1e6),
+    ni:names.map(n=>at(n)["99999"]/1e6),
+    ttl:`${bn} — ${view==="fy"?"FY2026":"Q4 2026"}, EUR m${keys.length?"":"  ·  no driver moves this line"}`};
+}
+// ---------------------------------------------------------------
+// Charts are drawn as inline SVG. No CDN, no canvas, nothing to
+// measure — so they render identically behind a corporate proxy
+// and survive being built inside a hidden tab.
+// ---------------------------------------------------------------
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function ticks(lo,hi,n){                       // "nice" round axis steps
+  if(hi===lo){hi=lo+1;}
+  const raw=(hi-lo)/n, mag=Math.pow(10,Math.floor(Math.log10(raw))), norm=raw/mag;
+  const step=(norm<=1?1:norm<=2?2:norm<=2.5?2.5:norm<=5?5:10)*mag;
+  const out=[]; for(let t=Math.ceil(lo/step)*step;t<=hi+step*1e-9;t+=step) out.push(+t.toFixed(10));
+  return out;
+}
+const fmt=v=>(Math.abs(v)>=100?v.toFixed(0):v.toFixed(1));
+
+function svgBridge(d){
+  // T leaves a header band for the title; PAD keeps value labels off the top gridline
+  const W=760,H=336,L=58,R=14,T=42,B=78, iw=W-L-R, ih=H-T-B, PAD=15;
+  const vals=d.floats.flat().concat([0]);
+  const lo=Math.min(...vals), hi=Math.max(...vals);
+  const tk=ticks(lo,hi,5);
+  let y0=Math.min(lo,tk[0]), y1=Math.max(hi,tk[tk.length-1]);
+  y1+=(y1-y0)*PAD/ih;                     // headroom so the tallest label clears the band
+  if(lo<0) y0-=(y1-y0)*PAD/ih;            // and below, if anything goes negative
+  const Y=v=>T+ih-(v-y0)/(y1-y0)*ih;
+  const n=d.floats.length, slot=iw/n, bw=Math.min(slot*.62,62);
+  let g="";
+  for(const t of tk) g+=`<line x1="${L}" x2="${W-R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" style="stroke:var(--grid)"/>`
+    +`<text x="${L-8}" y="${(Y(t)+3.5).toFixed(1)}" text-anchor="end" class="ax">${fmt(t)}</text>`;
+  if(y0<0&&y1>0) g+=`<line x1="${L}" x2="${W-R}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}" style="stroke:var(--axis)"/>`;
+  let bars="",prevX=null,prevY=null;
+  d.floats.forEach((f,i)=>{
+    const cx=L+slot*(i+.5), x=cx-bw/2;
+    const yA=Y(f[0]), yB=Y(f[1]), top=Math.min(yA,yB), h=Math.max(Math.abs(yA-yB),1.5);
+    const isEnd=(i===0||i===n-1), v=d.bars[i];
+    if(prevX!==null) bars+=`<line x1="${prevX.toFixed(1)}" x2="${x.toFixed(1)}" y1="${prevY.toFixed(1)}" y2="${prevY.toFixed(1)}" style="stroke:var(--axis)" stroke-dasharray="2 2"/>`;
+    bars+=`<rect x="${x.toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" style="fill:${d.cols[i]}">`
+        + `<title>${esc(d.labels[i])}: ${isEnd?"":(v>0?"+":"−")}${Math.abs(v).toFixed(2)}m EUR</title></rect>`;
+    const lbl=(isEnd?"":(v>0?"+":"−"))+Math.abs(v).toFixed(isEnd?1:2);
+    // label below the bar for a fall, above for a rise — but flip it up rather than
+    // let it drop into the x-axis labels
+    let ly=(yB<=yA)?top-5:top+h+11;
+    if(ly>T+ih+2) ly=top-5;
+    bars+=`<text x="${cx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" class="vl${isEnd?" b":""}">${lbl}</text>`;
+    // wrap long driver labels onto two lines
+    const words=d.labels[i].split(" "); let l1=words[0],l2="";
+    for(let w=1;w<words.length;w++){ if((l1+" "+words[w]).length<=13&&!l2) l1+=" "+words[w]; else l2+=(l2?" ":"")+words[w]; }
+    bars+=`<text x="${cx.toFixed(1)}" y="${H-B+16}" text-anchor="middle" class="xl">${esc(l1)}`
+        + (l2?`<tspan x="${cx.toFixed(1)}" dy="11">${esc(l2)}</tspan>`:"")+`</text>`;
+    prevX=x+bw; prevY=Y(f[1]);
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" class="cv" role="img" aria-label="${esc(d.ttl)}">
+    <text x="0" y="14" class="ct">${esc(d.ttl)}</text>
+    <line x1="0" x2="${W}" y1="24" y2="24" style="stroke:var(--grid)"/>
+    ${g}${bars}</svg>`;
+}
+
+function svgCompare(d){
+  const W=760,H=336,L=54,R=56,T=42,B=62, iw=W-L-R, ih=H-T-B, PAD=15;
+  const n=d.names.length, slot=iw/n;
+  const bmax=Math.max(...d.ebit,...d.ni,0), bmin=Math.min(...d.ebit,...d.ni,0);
+  const tk=ticks(bmin,bmax,5);
+  let y0=Math.min(bmin,tk[0]), y1=Math.max(bmax,tk[tk.length-1]);
+  y1+=(y1-y0)*PAD/ih;                                    // headroom for the bar value labels
+  if(bmin<0) y0-=(y1-y0)*PAD/ih;
+  const Y=v=>T+ih-(v-y0)/(y1-y0)*ih;
+  // keep the revenue line clear of the tallest bar labels
+  const rlo=Math.min(...d.rev)*.92, rhi=Math.max(...d.rev)*1.04;
+  const rtk=ticks(rlo,rhi,4);
+  let r0=Math.min(rlo,rtk[0]), r1=Math.max(rhi,rtk[rtk.length-1]);
+  const RY=v=>T+ih-(v-r0)/(r1-r0)*ih;
+  let g="";
+  for(const t of tk) g+=`<line x1="${L}" x2="${W-R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" style="stroke:var(--grid)"/>`
+    +`<text x="${L-8}" y="${(Y(t)+3.5).toFixed(1)}" text-anchor="end" class="ax">${fmt(t)}</text>`;
+  for(const t of rtk) g+=`<text x="${W-R+8}" y="${(RY(t)+3.5).toFixed(1)}" text-anchor="start" class="ax r">${fmt(t)}</text>`;
+  const bw=Math.min(slot*.26,30);
+  let bars="",line="",dots="";
+  d.names.forEach((nm,i)=>{
+    const cx=L+slot*(i+.5);
+    [[d.ebit[i],"var(--bar-end)","EBIT",-1],[d.ni[i],"var(--ni-bar)","Net income",1]].forEach(([v,c,lab,side])=>{
+      const x=cx+side*2.5+(side<0?-bw:0), yv=Y(v), y0p=Y(0);
+      bars+=`<rect x="${x.toFixed(1)}" y="${Math.min(yv,y0p).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(Math.abs(yv-y0p),1.5).toFixed(1)}" style="fill:${c}">`
+          + `<title>${esc(nm)} — ${lab}: ${v.toFixed(1)}m EUR</title></rect>`;
+      bars+=`<text x="${(x+bw/2).toFixed(1)}" y="${(Math.min(yv,y0p)-4).toFixed(1)}" text-anchor="middle" class="vl">${v.toFixed(1)}</text>`;
+    });
+    const ry=RY(d.rev[i]);
+    line+=(i?" L":"M")+cx.toFixed(1)+" "+ry.toFixed(1);
+    dots+=`<circle cx="${cx.toFixed(1)}" cy="${ry.toFixed(1)}" r="3.5" style="fill:var(--dot-fill);stroke:var(--rev-line)" stroke-width="2">`
+       +`<title>${esc(nm)} — Net revenue: ${d.rev[i].toFixed(1)}m EUR</title></circle>`;
+    bars+=`<text x="${cx.toFixed(1)}" y="${H-B+17}" text-anchor="middle" class="xl ${nm===cur?"on":""}">${esc(nm)}</text>`;
+  });
+  const lg=[["var(--bar-end)","EBIT"],["var(--ni-bar)","Net income"]].map((s,i)=>
+    `<rect x="${L+i*96}" y="${H-19}" width="9" height="9" style="fill:${s[0]}"/>`+
+    `<text x="${L+i*96+14}" y="${H-11}" class="lg">${s[1]}</text>`).join("")
+    +`<line x1="${L+192}" x2="${L+205}" y1="${H-14.5}" y2="${H-14.5}" style="stroke:var(--rev-line)" stroke-width="2"/>`
+    +`<circle cx="${L+198.5}" cy="${H-14.5}" r="3.5" style="fill:var(--dot-fill);stroke:var(--rev-line)" stroke-width="2"/>`
+    +`<text x="${L+211}" y="${H-11}" class="lg">Net revenue (right axis)</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" class="cv" role="img" aria-label="Scenario comparison">
+    <text x="0" y="14" class="ct">Revenue, EBIT and net income by scenario — ${view==="fy"?"FY2026":"Q4 2026"}</text>
+    <line x1="0" x2="${W}" y1="24" y2="24" style="stroke:var(--grid)"/>
+    <text x="0" y="${T-9}" class="ax">EBIT / net income</text>
+    <text x="${W}" y="${T-9}" class="ax r" text-anchor="end">Net revenue</text>
+    ${g}<path d="${line}" fill="none" style="stroke:var(--rev-line)" stroke-width="2"/>${dots}${bars}${lg}</svg>`;
+}
+
+function charts(){
+  const d=chartData();
+  document.getElementById("wf").innerHTML=svgBridge(d);
+  document.getElementById("cmp").innerHTML=svgCompare(d);
+}
+function kpis(){
+  const b=calc(SC.Base)[view], s=calc(E())[view];
+  const rows=[["Net revenue",s["40000"]/1e6,(s["40000"]-b["40000"])/1e6,false],
+              ["Gross margin %",s["59999"]/s["40000"]*100,(s["59999"]/s["40000"]-b["59999"]/b["40000"])*100,false,"%"],
+              ["EBIT",s["96999"]/1e6,(s["96999"]-b["96999"])/1e6,false],
+              ["EBIT %",s["96999"]/s["40000"]*100,(s["96999"]/s["40000"]-b["96999"]/b["40000"])*100,false,"%"],
+              ["Net income",s["99999"]/1e6,(s["99999"]-b["99999"])/1e6,false]];
+  document.getElementById("kpis").innerHTML=rows.map(r=>{
+    const p=r[4]==="%", flat=Math.abs(r[2])<0.049;
+    return `<div class="kpi ${flat?"":(r[2]<0?"dn":"up")}"><div class="l">${r[0]}${p?"":" · EUR m"}</div>
+    <div class="v">${r[1].toFixed(1)}${p?"%":""}</div>
+    <div class="d">${flat?'<span class="z">at 6p6</span>':`<span class="${r[2]<0?'neg':'pos'}">${r[2]>0?'+':'−'}${Math.abs(r[2]).toFixed(1)}${p?' pt':' m'}</span> <span style="color:var(--mut)">vs 6p6</span>`}</div></div>`;}).join("");
+}
+const DESC={};                       // descriptions returned by the last refresh
+// compare labels on meaning, not spelling: en-GB/en-US variants, punctuation,
+// parenthetical suffixes and joining words are not re-labelling
+const VAR={labour:"labor",amortisation:"amortization",organisation:"organization",
+           utilisation:"utilization",centre:"center",realisation:"realization"};
+function normLbl(s){
+  let t=String(s).toLowerCase().replace(/&amp;/g,"&").replace(/\([^)]*\)/g," ");
+  for(const k in VAR) t=t.split(k).join(VAR[k]);
+  return t.replace(/\band\b/g," ").replace(/[^a-z0-9]/g,"");
+}
+const lineName=k=>(DESC[k]||NAMES[k]||(L[k]&&L[k][5])||k).replace(/&amp;/g,"&");
+
+// ---------------- storyboard ----------------
+const DETAIL=Object.keys(L);                         // the 17 posting lines
+const GRP={rev:["41000","49000"],cogs:COGS,opex:OPEX,da:["79999"],fin:["85999"]};
+const GRPN={rev:"Revenue",cogs:"Cost of goods sold",opex:"Operating expenses",da:"Depreciation",fin:"Finance costs"};
+const pc=v=>(v>0?"+":"−")+Math.abs(v*100).toFixed(1)+"%";
+
+// isolated effect of one driver on one line, everything else held at 6p6
+function solo(dk,key){
+  const t=E(), a={...SC.Base}; a[dk]=t[dk];
+  return (calc(a)[view][key]-calc(SC.Base)[view][key])/1e6;
+}
+// ---- one-line takeaway per driver (the headline; the four steps live in the expander) ----
+function narrative(dk){
+  const d=E(), v=d[dk];
+  const opexBase=OPEX.reduce((s,k)=>s+Q4[k],0);
+  const flexShare=OPEX.reduce((s,k)=>s+Q4[k]*L[k][0],0)/opexBase;
+  switch(dk){   // one plain-English takeaway; the four steps below carry the reasoning
+    case "vol":   return `Revenue falls with volume one-for-one, but only <b>${(flexShare*100).toFixed(0)}% of operating cost follows it down</b>. That mismatch is why volume dominates every other assumption here.`;
+    case "mat":   return `A narrow hit \u2014 material spend is <b>${(100*DETAIL.reduce((s,k)=>s+Q4[k]*L[k][1],0)/(COGS.reduce((s,k)=>s+Q4[k],0)+opexBase)).toFixed(0)}% of Q4 cost</b> once each line is weighted by its material share.`;
+    case "crude": return `We do not buy crude, only fuel and power whose prices follow it — so just the energy portion of freight, utilities, production overhead and warehousing moves. <b>Utilities carries most of it.</b>`;
+    case "infl":  return `Really a wage assumption wearing a macro label: compensation alone is <b>${(100*Q4["61000"]/opexBase).toFixed(0)}% of the operating expense base</b>.`;
+    case "fx":    return `More cost than revenue sits in Indonesia and Malaysia, so a weaker rupiah and ringgit are <b>mildly good</b> for this P&L. A thin hedge, and it reverses if they strengthen.`;
+    case "rate":  return (Q4["85999"]+M9["85999"])<1
+      ? `<b>No finance cost in the 6p6 at all</b> — account 85999 is empty for every month, so a rate move has nothing to scale here. The exposure is real but sits in cash flow.`
+      : `The 6p6 carries <b>real finance costs</b>, ${(Q4["85999"]/1e6/RESTATE).toFixed(1)}m of it in Q4 — so a rate move lands inside the window being shocked.`;
+  }
+}
+// the factor this driver applies to a given line, and where that factor comes from
+function factor(dk,k){
+  const[ev,fm,ec,fi,blk]=L[k];
+  if(dk==="vol")   return [ev,   (ev*100).toFixed(0)+"% variable"];
+  if(dk==="mat")   return [fm,   fm?(fm*100).toFixed(0)+"% material":"—"];
+  if(dk==="crude") return [ec,   ec.toFixed(2)+" pass-through"];
+  if(dk==="infl")  return [fi,   fi?(fi*100).toFixed(0)+"% exposed":"excluded"];
+  if(dk==="fx")    return [NE[blk],(NE[blk]*100).toFixed(1)+"% non-EUR"];
+  return [0,"—"];
+}
+// Every driver is explained with the same four questions, in the same order.
+function steps(dk){
+  const d=E(), v=d[dk], m=x=>(Q4[x]/1e6/RESTATE);
+  const opexBase=OPEX.reduce((s,k)=>s+Q4[k],0)/1e6/RESTATE;
+  const P=Math.abs(v*100).toFixed(1)+"%", up=v>0;
+  switch(dk){
+   case "vol": return [
+    `Oct–Dec volume comes in <b>${P} ${up?"above":"below"}</b> what the 6p6 assumed. Nothing else changes.`,
+    `<b>Revenue: all of it.</b> ${P} fewer units is ${P} less revenue. Discounts and returns move too, since they are worked out as a percentage of sales.`,
+    `<b>Costs: only partly, and this is the crux.</b> Some costs vanish when you sell less, others carry on regardless. So each cost line gets a percentage — <i>how much of this line disappears if we sell nothing extra</i> — and only that slice moves.
+     <br>Raw material and freight <b>100%</b>: no units, nothing to buy or ship. Labour in COGS <b>70%</b>: shifts can be cut, the core crew cannot. Utilities <b>60%</b>, warehouse <b>50%</b>, production overhead <b>40%</b>, supplemental <b>20%</b>.
+     Compensation only <b>10%</b> — overtime and commission flex, salaries do not. Professional services, HR, facility, telecom and depreciation <b>0%</b>: the rent, the contracts and the assets do not care how much you sold.
+     <br><span style="color:var(--neg)"><b>These percentages are my estimates, not cube data.</b></span> The 6p6 holds no fixed/variable split, so this is the assumption to challenge first.`,
+    `Take the line and multiply by its percentage, then by the volume move.
+     <br>Revenue: <b>${m("41000").toFixed(1)}</b> × 100% × ${P} = <b>${(m("41000")*Math.abs(v)).toFixed(1)}m</b> of revenue gone.
+     <br>Compensation: <b>${m("61000").toFixed(1)}</b> × 10% × ${P} = only <b>${(m("61000")*0.1*Math.abs(v)).toFixed(1)}m</b> of cost saved.
+     <br>Across the whole operating expense block just <b>${(OPEX.reduce((s,k)=>s+Q4[k]*L[k][0],0)/1e6/RESTATE*Math.abs(v)).toFixed(1)}m</b> of the ${opexBase.toFixed(0)}m base comes out. That mismatch is the entire story.`];
+   case "mat": return [
+    `The price paid for raw material is <b>${P} ${up?"higher":"lower"}</b> in Oct–Dec. Volumes are unchanged here — this is price only.`,
+    `<b>The lines that buy material.</b> By default Material COGS and Other material cost \u2014 the two places in this P&L where material is actually bought. Which accounts those are comes from the account structure, not from judgement.`,
+    `<b>The material share of each line.</b> Both are set to <b>1.0</b>, meaning the whole line is material spend, so a ${P} price rise lifts them ${P} in full. That is a simplification: if a line is only part material \u2014 production overhead with some consumables in it, say \u2014 set its share to 0.3 or 0.5 in Model factors and only that portion moves. Nothing is locked to all-or-nothing.`,
+    `Each line × its material share × ${P}. Weighted across the P&L that is <b>${(DETAIL.reduce((s,k)=>s+Q4[k]*L[k][1],0)/1e6/RESTATE).toFixed(1)}m</b> of Q4 material spend, so the move is <b>${(DETAIL.reduce((s,k)=>s+Q4[k]*L[k][1],0)/1e6/RESTATE*Math.abs(v)).toFixed(1)}m</b>.
+     <br>That base is only <b>${(100*DETAIL.reduce((s,k)=>s+Q4[k]*L[k][1],0)/(COGS.reduce((s,k)=>s+Q4[k],0)+OPEX.reduce((s,k)=>s+Q4[k],0))).toFixed(0)}% of total Q4 cost</b>, which is why a dramatic-sounding price move produces a modest profit effect.`];
+   case "crude": return [
+    `Crude is <b>${P} ${up?"higher":"lower"}</b> in Oct–Dec.`,
+    `<b>Nothing directly — we do not buy crude.</b> We buy things whose price follows it: diesel in the freight bill, electricity and gas in utilities, energy inside production overhead, and fuel and refrigeration in warehousing.`,
+    `<b>Only the fuel part of each bill.</b> If crude rises ${P}, a freight invoice does not rise ${P} — fuel is roughly 60% of it, the rest being driver wages, truck leases and the haulier's margin. So each line gets a number for <i>how much of this bill is really energy</i>: freight <b>0.60</b>, utilities <b>0.50</b>, production overhead <b>0.15</b>, warehouse <b>0.10</b>.
+     <br><span style="color:var(--neg)"><b>These four are my estimates, not cube data.</b></span>`,
+    `Utilities: <b>${m("65000").toFixed(1)}</b> × 0.50 × ${P} = <b>${(m("65000")*0.5*Math.abs(v)).toFixed(2)}m</b>.
+     <br>Freight: <b>${m("66000").toFixed(1)}</b> × 0.60 × ${P} = <b>${(m("66000")*0.6*Math.abs(v)).toFixed(2)}m</b>.
+     <br>Freight is the intuitive victim but utilities carries more, because its base is <b>${(Q4["65000"]/Q4["66000"]).toFixed(1)}× larger</b>. A big share of a small number loses to a smaller share of a big one.`];
+   case "infl": return [
+    `Wages and contract prices run <b>${P} above</b> what the 6p6 already built in for Oct–Dec. This is the extra on top, not the total inflation rate.`,
+    `<b>Everything paid to people or under contract:</b> compensation, labour and overhead in COGS, warehousing, professional services, utilities, freight, HR, facility, telecom and supplemental.`,
+    `<b>The inflation-exposed share of each line.</b> These are set to <b>1.0</b>, so the whole bill rises with the rate \u2014 reasonable for wages and index-linked contracts. Where a contract is part fixed-price, drop the share to 0.5 or 0.6 in Model factors and only that portion inflates.
+     <br>Material COGS and Other material cost sit at <b>0</b> \u2014 not because they do not inflate, but because the material price driver already moves them. Inflating them here as well would count the same thing twice.`,
+    `Compensation: <b>${m("61000").toFixed(1)}</b> × ${P} = <b>${(m("61000")*Math.abs(v)).toFixed(2)}m</b>, which is most of the total effect on its own.
+     <br>At <b>${(100*Q4["61000"]/OPEX.reduce((s,k)=>s+Q4[k],0)).toFixed(0)}% of the operating expense base</b>, compensation means this is really a wage assumption wearing a macro label. Test it as one.`];
+   case "fx": return [
+    `The Indonesian rupiah and Malaysian ringgit are <b>${P} ${up?"stronger":"weaker"}</b> against the euro in Oct–Dec. The euro entities are unaffected — they already report in euro.`,
+    `<b>Every line, but only the slice booked in those two currencies.</b> Of the group total, <b>29.9% of revenue</b>, <b>17.7% of COGS</b> and <b>39.0% of operating expenses</b> sit in Indonesia and Malaysia.
+     <br><span style="color:var(--pos)"><b>These three shares are calculated from the cube, not assumed</b></span> — FY26 revenue, COGS and opex for ID10 and MY10 over the GSE total.`,
+    `<b>Only the offshore slice moves, and only by the currency move.</b> A ${P} fall in those currencies does not cut revenue ${P}; it cuts the 29.9% that is denominated in them by ${P}, so about ${(29.9*Math.abs(v)).toFixed(1)}% of revenue overall.`,
+    `Revenue: <b>${m("41000").toFixed(1)}</b> × 29.9% × ${P} = <b>${(m("41000")*NE.rev*Math.abs(v)).toFixed(1)}m</b> ${up?"gained":"lost"}.
+     <br>Compensation: <b>${m("61000").toFixed(1)}</b> × 39.0% × ${P} = <b>${(m("61000")*NE.opex*Math.abs(v)).toFixed(1)}m</b> of cost ${up?"added":"saved"}.
+     <br>Because 39% of cost sits offshore against 29.9% of revenue — Malaysia manufactures, the euro entities sell — a weaker rupiah and ringgit are <b>mildly good</b> for this P&L. Thin, and it reverses if they strengthen.`];
+   case "rate": return (function(){
+    const fin=(Q4["85999"]+M9["85999"])/1e6/RESTATE;
+    if(fin<0.005) return [
+     `Borrowing costs move <b>${(v*10000).toFixed(0)}bp</b> in Oct\u2013Dec.`,
+     `<b>Nothing in this P&L.</b> The 6p6 currently carries <b>no finance cost at all</b> at this POV \u2014 account 85999 is empty for every month of FY2026 \u2014 so there is no balance for a rate move to scale.`,
+     `<b>Not applicable while the line is empty.</b> The mechanism is still wired: if finance costs are loaded, this driver lifts them by the repricing share (${(RATE.flt*100).toFixed(0)}%) times the rate move against the current average rate (${(RATE.base*100).toFixed(1)}%). Refresh the base data and it will start to bite.
+      <br>This account has been populated and then cleared in this cube before, so treat its absence as a point to confirm rather than a settled fact.`,
+     `Zero, by construction. Working-capital drawdown from higher material prices is <b>not</b> included either \u2014 that needs a balance sheet this forecast does not carry.
+      <br>The rate exposure is real; it simply lives in cash flow and covenant headroom rather than in this P&L.`];
+    return [
+     `Borrowing costs move <b>${(v*10000).toFixed(0)}bp</b> in Oct\u2013Dec.`,
+     `<b>One line: finance costs.</b> The 6p6 carries ${fin.toFixed(1)}m of them, of which ${(Q4["85999"]/1e6/RESTATE).toFixed(1)}m falls in Q4 \u2014 the window being shocked.`,
+     `<b>Only the part that reprices.</b> Fixed-rate borrowings carry on at their old coupon, so the line moves by the <b>repricing share</b> (${(RATE.flt*100).toFixed(0)}%) scaled against the <b>current average rate</b> (${(RATE.base*100).toFixed(1)}%): ${(v*10000).toFixed(0)}bp on ${(RATE.base*100).toFixed(1)}% is a ${(v/RATE.base*100).toFixed(0)}% relative move, of which ${(RATE.flt*100).toFixed(0)}% lands.
+      <br><span style="color:var(--neg)"><b>Both are my estimates, not cube data</b></span> \u2014 the 6p6 has no debt schedule behind it.`,
+     `<b>${(Q4["85999"]/1e6/RESTATE).toFixed(1)}</b> \u00d7 ${(RATE.flt*100).toFixed(0)}% \u00d7 ${(v/RATE.base*100).toFixed(0)}% = <b>${(Q4["85999"]/1e6/RESTATE*RATE.flt*(v/RATE.base)).toFixed(2)}m</b> of extra interest in the quarter.
+      <br>Working-capital drawdown from higher material prices is <b>not</b> included \u2014 that needs a balance sheet this forecast does not carry.`];
+   })();
+  }
+}
+const SQ=["What changes","What it does to revenue","How much of each cost line moves","The arithmetic — Q4 figures, EUR m"];
+const SQ2={ mat:["What changes","Which lines it touches","How much of each moves","The arithmetic — Q4 figures, EUR m"],
+            crude:["What changes","What it touches","How much of each bill moves","The arithmetic — Q4 figures, EUR m"],
+            infl:["What changes","Which lines it touches","How much of each moves","The arithmetic — Q4 figures, EUR m"],
+            fx:["What changes","Which lines it touches","How much of each moves","The arithmetic — Q4 figures, EUR m"],
+            rate:["What changes","Which line it touches","How much of it moves","The arithmetic — Q4 figures, EUR m"]};
+function method(dk){
+  const s=steps(dk), q=SQ2[dk]||SQ;
+  return `<div class="meth"><ol class="stp">`+
+    s.map((x,i)=>`<li><span class="sq">${q[i]}</span>${x}</li>`).join("")+
+    `</ol><p class="fin">Only Oct–Dec is recalculated; Jan–Sep stays at the 6p6. Tax is then applied to the change in profit before tax at the FY26 effective rate of 36.9%.</p></div>`;
+}
+function story(){
+  const d=E(), on=DRV.filter(x=>EN[x.k]), base=calc(SC.Base)[view], sc=calc(E())[view];
+  const dNI=(sc["99999"]-base["99999"])/1e6;
+  let h=`<div class="card"><h3>How each assumption reaches the P&amp;L <span class="tag">${cur} · ${view==="fy"?"FY2026":"Q4 2026"}</span></h3>
+    <div class="note" style="margin:0">Each card isolates one assumption: its effect is measured with every other driver held at the 6p6, so you can read the mechanism cleanly. Isolated effects will not add exactly to the ${Math.abs(dNI).toFixed(1)}m total movement — lower volume shrinks the base the cost shocks land on, and that interaction is real.</div></div>`;
+  if(!on.length) return document.getElementById("story").innerHTML=h+
+    `<div class="sb mute"><p class="none">Every assumption is switched off, so the scenario equals the 6p6. Switch one on to see how it travels through the P&amp;L.</p></div>`;
+  for(const drv of on){
+    const dk=drv.k, imp=DETAIL.map(k=>[k,solo(dk,k)]).filter(x=>Math.abs(x[1])>0.004);
+    const ni=solo(dk,"99999"), mx=Math.max(...imp.map(x=>Math.abs(x[1])),0.001);
+    h+=`<div class="sb" style="border-left-color:${CLR[dk]}">
+      <div class="sh"><span class="st">${drv.n}</span><span class="sv">${dk==="rate"?(d[dk]*10000).toFixed(0)+" bp":pc(d[dk])}</span>
+        <span class="si">${delta(ni,false)} <span style="font-weight:400;color:var(--mut)">on net income</span></span></div>
+      <p>${narrative(dk)}</p>`;
+    // show the reasoning even when nothing moves — that is when it matters most
+    h+=`<details><summary>${imp.length
+        ? `How this is calculated \u2014 ${imp.length} line${imp.length>1?"s":""} affected`
+        : "Why this moves nothing"}</summary>`
+      + method(dk);
+    if(!imp.length){ h+=`</details></div>`; continue; }
+    h+= `<div class="tcap">Line-by-line workings <b>— all figures below are Oct–Dec 2026 (Q4) only</b>, not full year. Only Q4 is shocked, so the impact is identical on the full-year P&amp;L.</div>`
+      + `<table><tr><th style="width:32%">P&amp;L line</th><th>Q4 6p6 base</th><th style="text-align:center">Share this driver reaches</th><th></th><th>Q4 impact</th></tr>`;
+    for(const g of ["rev","cogs","opex","da","fin"]){
+      const rows=imp.filter(x=>GRP[g].includes(x[0])).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));
+      if(!rows.length) continue;
+      const sub=rows.reduce((s,x)=>s+x[1],0);
+      h+=`<tr><td class="grp" colspan="4">${GRPN[g]}</td><td class="grp" style="text-align:right">${delta(sub,g!=="rev")}</td></tr>`;
+      for(const [k,vv] of rows) h+=`<tr><td style="width:32%">${lineName(k)}</td>
+        <td style="text-align:right;color:var(--mut)">${(Q4[k]/1e6/RESTATE).toFixed(1)}</td>
+        <td style="text-align:center;color:var(--mut);white-space:nowrap">${factor(dk,k)[1]}</td>
+        <td style="width:22%;text-align:left"><span class="sbar" style="width:${Math.abs(vv)/mx*90}px;background:${CLR[dk]};opacity:${Math.abs(vv)/mx*.75+.25}"></span></td>
+        <td style="text-align:right">${delta(vv,EXP.has(k))}</td></tr>`;
+    }
+    const untouched=DETAIL.filter(k=>!imp.find(x=>x[0]===k));
+    h+=`</table>`;
+    if(untouched.length) h+=`<p class="none" style="margin:8px 0 0">Leaves untouched: ${untouched.map(lineName).join(", ")}.</p>`;
+    h+=`</details></div>`;
+  }
+  document.getElementById("story").innerHTML=h;
+}
+function legend(){
+  document.getElementById("legend").innerHTML=
+    `<span class="cap">Driver mix</span>`+
+    ORDER.map(k=>`<span class="li ${EN[k]?'':'off'}"><span class="sq" style="background:${CLR[k]}"></span>${OLBL[k]}</span>`).join("");
+}
+// ================= assumption matrix =================
+// Two separate questions, previously conflated on one line:
+//   [0] where the percentage itself came from   [1] how that percentage reaches each P&L line
+const SRC={
+ vol  :[["brief","−10% sensitivity, your brief"],      ["est", "variable share of each line"]],
+ mat  :[["brief","+10–15% range, your brief"],         ["acct","the two material accounts, in full"]],
+ crude:[["brief","+5–10% range, your brief"],          ["est", "energy share of each bill"]],
+ infl :[["mine", "no range given — my assumption"],    ["acct","wage &amp; contract lines, in full"]],
+ fx   :[["mine", "no range given — my assumption"],    ["cube","non-EUR share, from the cube"]],
+ rate :[["mine", "no range given — my assumption"],    ["est", "repricing share of the finance-cost line"]]};
+const CHIP={brief:["br","Your brief"],mine:["mi","My assumption"],est:["mi","My estimate"],
+            acct:["ac","Chart of accounts"],cube:["cu","From the cube"],na:["na","n/a"]};
+const chip=c=>`<span class="ch ${CHIP[c[0]][0]}">${CHIP[c[0]][1]}</span><span class="src">${c[1]}</span>`;
+function dval(k,v){return k==="rate"?(v>0?"+":"")+(v*10000).toFixed(0)+" bp":(v>0?"+":"")+(v*100).toFixed(1)+"%";}
+function matrix(){
+  const names=scenNames();
+  const col=n=>n==="Custom"?custom:SC[n];
+  const res=n=>calc(eff(col(n)))[view];
+  const base=calc(SC.Base)[view];
+  const NC=names.length+3;
+  let t=`<table class="mx"><thead><tr><th>Assumption</th>`
+    + `<th class="pv">Where the % comes from</th><th class="pv">How it reaches the P&amp;L</th>`
+    + names.map(n=>`<th class="${n==="Custom"?"cu":""}${n===cur?" on":""}">${n}</th>`).join("")+`</tr></thead><tbody>`;
+  t+=`<tr class="sec"><td colspan="${NC}">Macro drivers — applied to Oct–Dec 2026 only</td></tr>`;
+  for(const d of DRV){
+    const s=SRC[d.k];
+    t+=`<tr><td><span class="dn" style="background:${CLR[d.k]}"></span>${d.n}${EN[d.k]?"":' <span style="color:var(--mut);font-size:10px">(off)</span>'}</td>`
+      +`<td class="pv">${chip(s[0])}</td><td class="pv">${chip(s[1])}</td>`
+      + names.map(n=>{const v=col(n)[d.k];
+          return `<td class="${n===cur?"on":""}" style="${v?"":"color:var(--mut)"}">${v?dval(d.k,v):"—"}</td>`;}).join("")+`</tr>`;
+  }
+  t+=`<tr class="sec"><td colspan="${NC}">Resulting ${view==="fy"?"FY2026":"Q4 2026"} outcome — EUR m</td></tr>`;
+  for(const [lbl,key,pct] of [["Net revenue","40000",0],["Gross margin","59999",0],["EBIT","96999",0],
+                              ["EBIT margin","96999",1],["Net income","99999",0]]){
+    t+=`<tr class="res"><td>${lbl}</td><td class="pv"></td><td class="pv"></td>`+names.map(n=>{const r=res(n);
+      const v=pct?r[key]/r["40000"]*100:r[key]/1e6;
+      return `<td class="${n===cur?"on":""}">${v.toFixed(1)}${pct?"%":""}</td>`;}).join("")+`</tr>`;
+  }
+  t+=`<tr class="res"><td>Net income vs 6p6</td><td class="pv"></td><td class="pv"></td>`+names.map(n=>{
+      const dv=(res(n)["99999"]-base["99999"])/1e6;
+      return `<td class="${n===cur?"on":""}">${Math.abs(dv)<0.05?'<span class="z">—</span>':delta(dv,false)}</td>`;}).join("")+`</tr>`;
+  t+=`</tbody></table>
+    <div class="mxn"><b>Reading the two grey columns.</b> They answer different questions, which is worth separating.
+      <b>Where the % comes from</b> is the size of the shock itself — volume, material price and crude are the ranges you set
+      in the brief; inflation, FX and rates you named as concerns without numbers, so those figures are mine.
+      <b>How it reaches the P&amp;L</b> is the transmission — which lines move and by how much of the shock. Some of that is
+      factual (which accounts hold material spend; what share of the book is non-EUR, which the cube can tell us exactly);
+      the rest is judgement (how much of each cost line flexes with volume, how much of a freight bill is really fuel).
+      <br><br>So yes — <b>the scenario ladder is mine throughout</b>: splitting your −10% into −3 / −6 / −10 is a construction, not a forecast.
+      What the chips distinguish is which inputs you can check against a source and which rest on my judgement alone.</div>
+    <div class="mxk"><span><span class="ch br">Your brief</span> from your original request</span>
+      <span><span class="ch mi">My assumption / estimate</span> challenge these first</span>
+      <span><span class="ch cu">From the cube</span> measured, not assumed</span>
+      <span><span class="ch ac">Chart of accounts</span> factual</span>
+      <span>Highlighted column = scenario on screen</span>
+      ${names.includes("Custom")?'<span><span class="ch mi" style="background:var(--org-t)">Custom</span> your own slider settings, kept for comparison</span>':""}</div>`;
+  document.getElementById("mxbody").innerHTML=t;
+  document.getElementById("mxov").hidden=false;
+}
+
+// ================= refresh base data from the cube =================
+// Re-runs the same query the snapshot came from. Nothing is committed unless every
+// line comes back with twelve finite months, so a partial answer cannot corrupt the base.
+const PULL=["41000","49000","51010","52010","53010","59010","61000","62000","63000",
+            "64000","65000","66000","66500","67000","67500","69000","79999","85999","87999"];
+const CUBE_QUERY={
+  cube_name:"Equipment Division", title:"6p6 FY2026 monthly P&L - GSE (refresh)",
+  pov:{scenario:"Forecast6p6",entity:"GSE",view:"Periodic",consolidation:"USD",flow:"FLWTop",origin:"Top",
+       ic:"Top",ud1:"CCTop",ud2:"REGTop",ud3:"PRDTop",ud4:"CSTTop",ud5:"UD5Top",ud6:"UD6Top",ud7:"UD7Top",ud8:"RPTTop"},
+  row_sets:[{primary_dimension_type:"Account",
+    members:PULL.map(a=>({dimension_members:[{dimension_type:"Account",name:a}]}))}],
+  column_sets:[{primary_dimension_type:"Time",
+    members:Array.from({length:12},(_,i)=>({dimension_members:[{dimension_type:"Time",name:"2026M"+(i+1)}]}))}]
+};
+function rfStatus(msg,kind){
+  const b=document.getElementById("rfbtn");
+  btnMsg(b,msg); b.className="ib"+(kind==="err"?" rferr":kind==="ok"?" rfok":"");
+  clearTimeout(rfStatus.t); if(kind) rfStatus.t=setTimeout(()=>rfStatus(""),kind==="ok"?6000:7000);
+}
+async function refresh(){
+  const btn=document.getElementById("rfbtn");
+  if(btn.dataset.busy) return;
+  btn.dataset.busy="1"; rfStatus("Refreshing…");
+  try{
+    if(!MCP) throw new Error("the OneStream connector is not available in this view");
+    const r=await MCP.callTool(CUBE_SERVER,CUBE_TOOL_NAME,CUBE_QUERY);
+    let p=r&&("payload" in r)?r.payload:r;
+    if(p&&p.structuredContent) p=p.structuredContent;
+    else if(p&&Array.isArray(p.content)&&p.content[0]&&typeof p.content[0].text==="string") p=JSON.parse(p.content[0].text);
+    if(typeof p==="string") p=JSON.parse(p);
+    p=p||{};
+    const rows=p.data||[];
+    if(!rows.length) throw new Error("query returned no rows");
+    const byAcct={}, desc={};
+    for(const row of rows){
+      const hdr=String(row.RowHdr0NameAndDesc||"").trim();
+      const code=hdr.split(/[\s-]/)[0];
+      const dsc=hdr.replace(/^[^\s-]+\s*-\s*/,"").trim();
+      const m=[]; for(let i=0;i<12;i++){ const v=row["Col"+i+"Value"]; m.push(v===""||v==null?0:+v); }
+      if(m.some(x=>!isFinite(x))) throw new Error("non-numeric value on "+code);
+      byAcct[code]=m; if(dsc) desc[code]=dsc;
+    }
+    // 85999 genuinely comes and goes in this cube, so it is optional; the rest are not
+    const OPT=new Set(["85999"]);
+    const missing=PULL.filter(a=>!byAcct[a]&&!OPT.has(a));
+    if(missing.length) throw new Error("missing lines: "+missing.join(", "));
+    for(const a of PULL) if(!byAcct[a]) byAcct[a]=Array(12).fill(0);
+    // build fresh Q4 / Jan–Sep, then the derived subtotals, before touching live state
+    const q={},n={};
+    for(const a of PULL){
+      q[a]=byAcct[a].slice(9).reduce((x,y)=>x+y,0);
+      n[a]=byAcct[a].slice(0,9).reduce((x,y)=>x+y,0);
+    }
+    for(const o of [q,n]){
+      o["40000"]=o["41000"]+o["49000"];
+      o["50000"]=COGS.reduce((s,k)=>s+o[k],0);
+      o["59999"]=o["40000"]-o["50000"];
+      o["69999"]=OPEX.reduce((s,k)=>s+o[k],0);
+      o["96999"]=o["59999"]-o["69999"]-o["79999"];
+    }
+    // flag any line whose description in the cube no longer matches the page
+    const drift=Object.keys(desc).filter(k=>{
+      const was=(NAMES[k]||(L[k]&&L[k][5])||"");
+      return was && desc[k] && normLbl(was)!==normLbl(desc[k]);
+    }).map(k=>`${k}: "${(NAMES[k]||L[k][5]).replace(/&amp;/g,"&")}" is now "${desc[k]}"`);
+    // what actually moved, before committing
+    const moved=[];
+    for(const a of PULL){
+      const o=(Q4[a]||0)+(M9[a]||0), w=q[a]+n[a];
+      const rel=Math.abs(o)>1?Math.abs(w-o)/Math.abs(o):(Math.abs(w)>1?1:0);
+      if(rel>1e-6) moved.push({k:a,from:o,to:w,rel});
+    }
+    moved.sort((x,y)=>Math.abs(y.to-y.from)-Math.abs(x.to-x.from));
+    Object.assign(DESC,desc);
+    Object.keys(Q4).forEach(k=>delete Q4[k]); Object.assign(Q4,q);
+    Object.keys(M9).forEach(k=>delete M9[k]); Object.assign(M9,n);
+    // stamp BOTH places the date appears — the header chip and the Report basis line
+    const d=new Date(), stamp=d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+    const time=d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+    const chip=document.getElementById("asat");
+    chip.innerHTML="<i></i>Base data "+stamp+", "+time;
+    chip.classList.add("live");
+    chip.title="Re-queried from the Equipment Division cube at "+time+" on "+stamp+". Original snapshot was 1 October 2026.";
+    document.getElementById("basisasat").textContent="Base figures refreshed "+stamp+" at "+time+" (original snapshot 1 October 2026)";
+    render();
+    const msg=document.getElementById("rfmsg");
+    const eur=v=>(v/1e6/RESTATE).toFixed(1);
+    if(!moved.length && !drift.length){
+      msg.className="rfmsg ok";
+      msg.innerHTML="<b>Refreshed at "+time+" \u2014 the cube returned exactly what is already on screen.</b> "+
+        "All "+PULL.length+" lines matched to the cent, so nothing needed updating. The base was already current.";
+      msg.hidden=false;
+      rfStatus("Up to date \u2014 no change","ok");
+      return;
+    }
+    if(moved.length){
+      msg.className="rfmsg ok";
+      msg.innerHTML="<b>Refreshed at "+time+" \u2014 "+moved.length+" of "+PULL.length+" lines changed in the cube.</b> "+
+        "Largest movements (FY, EUR m): "+moved.slice(0,4).map(x=>
+          `${lineName(x.k)} ${eur(x.from)} \u2192 ${eur(x.to)}`).join("; ")+
+        (moved.length>4?`; and ${moved.length-4} more.`:".")+
+        (drift.length?"<br><br><b>Also "+drift.length+" account"+(drift.length>1?"s":"")+" re-labelled:</b><br>"+drift.map(d=>"\u00b7 "+d).join("<br>"):"");
+      msg.hidden=false;
+      rfStatus("Refreshed \u2014 "+moved.length+" lines changed","ok");
+      return;
+    }
+    if(drift.length){
+      msg.className="rfmsg";
+      msg.innerHTML="<b>Refreshed at "+time+" \u2014 figures unchanged, but "+drift.length+" account"+(drift.length>1?"s have":" has")+
+        " been re-labelled in the cube.</b> The driver mapping was set up against the old names, "+
+        "so the elasticities on these lines may no longer be appropriate — check them in Model factors.<br>"+
+        drift.map(d=>"· "+d).join("<br>");
+      msg.hidden=false;
+      rfStatus("Refreshed \u2014 check labels","err");
+    }
+  }catch(e){
+    rfStatus("Refresh failed — using snapshot","err");
+    document.getElementById("rfmsg").className="rfmsg";
+    document.getElementById("rfmsg").textContent=
+      "Could not reach the OneStream cube: "+(e&&e.message||e)+(e&&e.code?" ("+e.code+")":"")+". The page is still showing its embedded snapshot, which is unchanged. "+
+      "Refreshing runs on your own \u201c"+CUBE_SERVER+"\u201d connector \u2014 connect it in claude.ai and allow it for this page, then try again.";
+    document.getElementById("rfmsg").hidden=false;
+    
+  }finally{ delete btn.dataset.busy; }
+}
+
+// ================= live base data from OneStream =================
+// The XFBR rule replaces the placeholder in #ospayload with:
+//   {version:1, source:"OneStream", cube, scenario, entity, consolidation, year, asat (ISO UTC),
+//    months:{"<acct>":[12 Periodic values]}, desc:{"<acct>":"<description>"}, logo?:"data:image/...", stats:{...}}
+// Nothing is committed unless every required line has twelve finite months, so a partial
+// payload cannot corrupt the base; on any problem the page stays on its built-in snapshot.
+const OPT=new Set(["85999"]);          // 85999 genuinely comes and goes in this cube
+function readPayload(){
+  const el=document.getElementById("ospayload"); if(!el) return null;
+  const t=(el.textContent||"").trim();
+  if(!t || t.indexOf("__PAY"+"LOAD__")===0) return null;   // not injected: demo mode
+  return JSON.parse(t);
+}
+function applyPayload(p){
+  if(!p || p.version!==1 || !p.months || typeof p.months!=="object") throw new Error("unexpected payload shape");
+  const byAcct={};
+  for(const a of PULL){
+    const m=p.months[a];
+    if(!m){ if(OPT.has(a)){ byAcct[a]=Array(12).fill(0); continue; } throw new Error("missing line "+a); }
+    if(!Array.isArray(m)||m.length!==12||m.some(x=>typeof x!=="number"||!isFinite(x)))
+      throw new Error("line "+a+" does not have twelve numeric months");
+    byAcct[a]=m;
+  }
+  const q={},n={};
+  for(const a of PULL){
+    q[a]=byAcct[a].slice(9).reduce((x,y)=>x+y,0);
+    n[a]=byAcct[a].slice(0,9).reduce((x,y)=>x+y,0);
+  }
+  for(const o of [q,n]){
+    o["40000"]=o["41000"]+o["49000"];
+    o["50000"]=COGS.reduce((s,k)=>s+o[k],0);
+    o["59999"]=o["40000"]-o["50000"];
+    o["69999"]=OPEX.reduce((s,k)=>s+o[k],0);
+    o["96999"]=o["59999"]-o["69999"]-o["79999"];
+  }
+  // descriptions: plain strings only; escaped wherever they reach markup
+  // labels are read live from the application's metadata by the rule; the page's own
+  // text is only a fallback when a description could not be read
+  const desc={};
+  if(p.desc && typeof p.desc==="object")
+    for(const k of [...PULL,...Object.keys(NAMES)]){ const s=p.desc[k]; if(typeof s==="string" && s.trim()) desc[k]=s.trim().slice(0,80); }
+  // tie-out: the page's derived FY net income must equal the cube's 99999
+  let tie=null;
+  if(Array.isArray(p.check99999) && p.check99999.length===12 && p.check99999.every(x=>typeof x==="number"&&isFinite(x))){
+    const cube=p.check99999.reduce((a,b)=>a+b,0);
+    const pre=n["96999"]-n["85999"]-n["87999"], q4=q["96999"]-q["85999"]-q["87999"];
+    const page=pre+q4, diff=page-cube;
+    tie={cube,page,diff,ok:Math.abs(diff)<=Math.max(2,1e-6*Math.abs(cube))};
+  }
+  // commit
+  Object.assign(DESC,desc);
+  Object.keys(Q4).forEach(k=>delete Q4[k]); Object.assign(Q4,q);
+  Object.keys(M9).forEach(k=>delete M9[k]); Object.assign(M9,n);
+  // stamp every place the basis appears (textContent only)
+  const d=p.asat?new Date(p.asat):new Date(), ok=!isNaN(d.getTime()), dd=ok?d:new Date();
+  const stamp=dd.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+  const time=dd.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+  BASE_ASAT=stamp;
+  const scen=String(p.scenario||"Forecast6p6"), ent=String(p.entity||"GSE"), cube=String(p.cube||"Equipment Division");
+  const chipEl=document.getElementById("asat");
+  chipEl.innerHTML="<i></i>"; chipEl.appendChild(document.createTextNode("Live from OneStream · "+stamp+", "+time));
+  chipEl.classList.add("live");
+  chipEl.title="Read from the "+cube+" cube ("+scen+", "+ent+") when this dashboard was opened, under your OneStream security.";
+  setText("basisasat","Base figures read live from OneStream on "+stamp+" at "+time);
+  const lbl=(id,d)=>typeof d==="string"&&d.trim()?id+" ("+d.trim().slice(0,60)+")":id;
+  setText("bcube",cube); setText("bscen",lbl(scen,p.scenarioLabel)); setText("bent",lbl(ent,p.entityLabel));
+  setText("eyebrow",[ent,(typeof p.entityLabel==="string"&&p.entityLabel.trim())?p.entityLabel.trim().slice(0,60):""].filter(Boolean).join(" · "));
+  if(tie){
+    setText("btie", tie.ok
+      ? "Net income ties to cube 99999 ("+(tie.cube/1e6).toFixed(2)+"m USD)"
+      : "Net income does NOT tie to cube 99999: page "+(tie.page/1e6).toFixed(2)+"m vs cube "+(tie.cube/1e6).toFixed(2)+"m USD");
+    const bt=document.getElementById("btie"); if(bt&&bt.parentNode&&!tie.ok) bt.parentNode.className="w";
+  }
+  const f=document.getElementById("ftr");
+  if(f){
+    f.textContent="";
+    const b1=document.createElement("b"); b1.textContent="Illustrative scenarios for discussion, not a submitted forecast.";
+    const b2=document.createElement("b"); b2.textContent="Base figures are read live from OneStream each time this dashboard opens.";
+    f.append(b1," The Base column is the 6+6 as submitted; every other column is a modelled overlay that exists only on this page. ",b2,
+      " Cube "+cube+", scenario "+scen+", entity "+ent+", FY"+(p.year||"2026")+", read "+stamp+" "+time+
+      ", restated at EUR/USD "+RESTATE.toFixed(4)+". Base ties to the cube; every scenario overlay is modelled here and is not stored in OneStream.");
+  }
+  if(typeof p.logo==="string" && /^data:image\/(png|jpeg|gif|svg\+xml);base64,[A-Za-z0-9+\/=]+$/.test(p.logo)){
+    const lg=document.getElementById("oslogo"); if(lg){ lg.src=p.logo; lg.hidden=false; }
+  }
+  if(tie && !tie.ok){
+    const msg=document.getElementById("rfmsg"); msg.className="rfmsg"; msg.textContent="";
+    const b0=document.createElement("b");
+    b0.textContent="Base does not tie to the cube: page net income "+(tie.page/1e6).toFixed(2)+"m vs cube 99999 "+(tie.cube/1e6).toFixed(2)+"m USD.";
+    msg.append(b0," Another account now posts between EBIT and net income; the model needs extending before these figures are used.");
+    msg.hidden=false;
+  }
+  if(tie) console.log("tie-out 99999:", tie.ok?"OK":"MISMATCH", Math.round(tie.diff));
+  if(p.versionStore==="onestream") loadOsVersions(p);
+  console.log("OneStream payload applied:", PULL.length, "lines", p.stats?JSON.stringify(p.stats):"");
+}
+function bootData(){
+  let p=null;
+  try{ p=readPayload(); }catch(e){ return demoMode("the embedded data could not be read ("+e.message+")"); }
+  if(!p) return demoMode(null);
+  try{ applyPayload(p); }catch(e){ demoMode("the OneStream data was incomplete ("+e.message+")"); }
+}
+function demoMode(why){
+  const f=document.getElementById("demoflag"); if(f) f.hidden=false;
+  if(why){
+    const msg=document.getElementById("rfmsg"); msg.className="rfmsg";
+    msg.textContent="The OneStream data could not be used because "+why+". Refresh the dashboard; if this persists, check the OneStream Error Log.";
+    msg.hidden=false;
+  }
+}
+
+// ================= saved views =================
+// Everything the user can change, in one object. Base data is deliberately excluded:
+// a saved view is a set of assumptions, not a copy of the cube.
+function captureState(){
+  return {v:3, cur, custom:{...custom}, customTouched, customFrom, forkSrc,
+    SC:Object.fromEntries(Object.keys(SC).filter(n=>n!=="Base").map(n=>[n,pickD(SC[n])])),
+    EN:{...EN}, view, mode, bridgeKey, openLine,
+    L:Object.fromEntries(DETAIL.map(k=>[k,L[k].slice(0,4)])),
+    NE:{...NE}, RATE:{...RATE}, ETR, RESTATE};
+}
+function restoreState(s){
+  if(!s) return false;
+  try{
+    if(s.custom) custom={...s.custom};
+    if(s.SC) for(const n in s.SC){ if(n==="Base") continue;
+      if(SC[n]) Object.assign(SC[n],pickD(s.SC[n]));
+      else { const c=cleanName(n); if(c&&!RESERVED.has(c)) addUser(c,s.SC[n],""); } }
+    if(s.EN) for(const k in s.EN) if(k in EN) EN[k]=s.EN[k];
+    if(s.L) for(const k in s.L) if(L[k]) for(let i=0;i<4;i++) L[k][i]=s.L[k][i];
+    if(s.NE) for(const k in s.NE) if(k in NE) NE[k]=s.NE[k];
+    if(s.RATE) for(const k in s.RATE) if(k in RATE) RATE[k]=s.RATE[k];
+    if(typeof s.ETR==="number") ETR=s.ETR;
+    if(typeof s.RESTATE==="number") RESTATE=s.RESTATE;
+    cur=s.cur||cur; view=s.view||view; mode=s.mode||mode;
+    bridgeKey=s.bridgeKey||bridgeKey; openLine=s.openLine||null;
+    customTouched=!!s.customTouched; customFrom=s.customFrom||customFrom; forkSrc=s.forkSrc||forkSrc;
+    const r=document.getElementById("rst"); if(r) r.value=RESTATE;
+    render(); return true;
+  }catch(e){ console.error("restore failed:",e.message); return false; }
+}
+const VKEY="ofi_saved_views_v4";
+const readViews =()=>{ try{ return JSON.parse(localStorage.getItem(VKEY)||"{}"); }catch(e){ return {}; } };
+const writeViews=v=>{ try{ localStorage.setItem(VKEY,JSON.stringify(v)); return true; }catch(e){ return false; } };
+function savedViews(){
+  const sel=document.getElementById("savesel"); if(!sel) return;
+  const v=readViews(), names=Object.keys(v).sort();
+  sel.innerHTML = names.length
+    ? names.map(n=>`<option value="${n.replace(/"/g,"&quot;")}">${n}</option>`).join("")
+    : `<option value="">no saved views</option>`;
+  for(const id of ["loadbtn","delbtn"]){ const b=document.getElementById(id); if(b) b.disabled=!names.length; }
+}
+function doSave(){
+  const inp=document.getElementById("savename");
+  const name=(inp.value||"").trim() || (cur+" "+new Date().toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}));
+  const v=readViews(); v[name]=captureState();
+  if(!writeViews(v)){ inp.value=""; inp.placeholder="could not save here"; return; }
+  inp.value=""; inp.placeholder="saved: "+name;
+  savedViews();
+  const sel=document.getElementById("savesel"); if(sel) sel.value=name;
+}
+
+// ================= export a standalone copy =================
+// Serialises this page into a single self-contained file with the live-data
+// controls removed, so it opens for anyone without OneStream access.
+function btnMsg(b,t){ const l=b.querySelector(".ibl"); if(l) l.textContent=t; else b.textContent=t; }
+function exportStatic(){
+  const btn=document.getElementById("expbtn");
+  try{
+    const css=document.getElementById("appcss").textContent;
+    const js =document.getElementById("appjs").textContent.replace(/const Q4=\{[^}]*\};/,"const Q4="+JSON.stringify(Q4)+";").replace(/const M9=\{[^}]*\};/,"const M9="+JSON.stringify(M9)+";");
+    const body=document.createElement("div");
+    // the main wrap plus the modal shells, as markup
+    body.innerHTML=document.getElementById("app").outerHTML+
+      ["mxov","fxov","tov","spot","tip"].map(id=>{const n=document.getElementById(id);return n?n.outerHTML:"";}).join("");
+    // strip the live-data controls, the working-state chips and the method card
+    for(const sel of ["#rfbtn","#expbtn","#svbtn","#cpbtn","#rfmsg","#fxflag","#asat","#mcard",
+                      "#savename","#savebtn","#savesel","#loadbtn","#delbtn"]){
+      const n=body.querySelector(sel); if(n) n.remove();
+    }
+    // the two now-empty saved-view rows
+    body.querySelectorAll(".cxbar").forEach(r=>{ if(!r.querySelector("select,input,button")) r.remove(); });
+    // the header meta row is now empty, so drop it rather than leave a gap
+    const meta=body.querySelector(".meta");
+    if(meta && !meta.textContent.trim() && !meta.querySelector("button")) meta.remove();
+    // empty the containers render() rebuilds anyway, to keep the file small
+    for(const sel of ["#pills","#kpis","#drivers","#legend","#pnl","#story","#wf","#cmp","#mxbody","#fxbody","#pnlttl","#scennote","#thesis"]){
+      const n=body.querySelector(sel); if(n) n.innerHTML="";
+    }
+    // the footer is the only place the basis and as-at date now appear
+    const ftr=body.querySelector("#ftr");
+    if(ftr){ ftr.innerHTML="<b>Illustrative scenarios for discussion, not a submitted forecast.</b> The Base column is "+
+      "the 6+6 as submitted; every other column is a modelled overlay that exists only on this page. "+
+      "<b>This is a fixed export with no live connection to OneStream.</b> "+
+      "Base figures were pulled from the OneStream Equipment Division cube on <b>"+BASE_ASAT+"</b> \u2014 scenario Forecast6p6, "+
+      "entity GSE, FY2026, restated at EUR/USD "+RESTATE.toFixed(4)+". Nothing on this page refreshes itself and it needs no "+
+      "system access to open \u2014 every figure is embedded in the file. Base ties to the cube exactly; every scenario overlay "+
+      "is modelled here and is not stored in OneStream."; }
+    const doc="<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"+
+      "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"+
+      "<title>FY2026 Q4 What-If Simulations (illustrative) \u2014 GSE</title>\n"+
+      "<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap\">\n"+
+      "<style>"+css+"</style>\n</head>\n<body>\n"+
+      body.innerHTML+"\n<script>\n"+js+
+      "\n/* state captured at export */\ntry{restoreState("+JSON.stringify(captureState())+");}catch(e){}\n"+
+      "<\/script>\n</body>\n</html>\n";
+    btnMsg(btn,"Saving\u2026");
+    saveFile("FY26-EOY-Scenarios-ofi-"+BASE_ASAT.replace(/ /g,"-")+".html",doc).then(ok=>{
+      btnMsg(btn,ok?"Saved \u2713":"Not saved"); btn.className="ib";
+      setTimeout(()=>{btnMsg(btn,"");},4000);
+    },e=>{
+      btnMsg(btn,"Export failed"); btn.title="Could not save: "+(e&&e.message||e);
+      setTimeout(()=>{btnMsg(btn,"");},5000);
+    });
+  }catch(e){
+    btnMsg(btn,"Export failed");
+    console.error("export failed:",e.message);
+    setTimeout(()=>{btnMsg(btn,"");},4000);
+  }
+}
+
+const STORE=(()=>{ try{ const k="__os_t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } })();
+function setText(id,s){ const e=document.getElementById(id); if(e) e.textContent=s; }
+// ================= versions (whole page) =================
+// A version is a snapshot of the WHOLE page: the settings of every adjustable scenario
+// (Mild, Central, Severe, Stagflation and Custom), the model factors (per-line shares,
+// non-EUR shares, rate settings, tax rate) and which assumptions are switched on.
+// Rolling back restores all of it. Base is the 6p6 and is never part of a version.
+// Storage:
+//  - inside OneStream: one file per version in the viewer's File Explorer folder
+//    (Documents/Users/<user>/FY26_EOY). The page cannot write there itself, so "Save version"
+//    copies a version code; pasting it into "Version code" and clicking the save icon in the
+//    dashboard header runs a rule that writes the file. The "Version" dropdown in the header
+//    lists the files and loads the chosen one into this page.
+//  - elsewhere (the claude.ai artifact): versions persist in this browser's storage.
+const VERKEY="ofi_page_versions_v4", OLDVERKEY="ofi_page_versions_none", EDITKEY="ofi_scenario_edits_v4", CODE_PREFIX="FY26V1.";
+const VSC=["Mild","Central","Severe","Stagflation"];          // adjustable presets (Custom handled separately)
+let VLIST=[];                   // [{id,n,at,by,file,src,snap}]; src = local | pending | os
+let OSV=null;                   // OneStream folder mode, set from the payload: {folder,user,error,loaded}
+const onv=(id,fn)=>{const e=document.getElementById(id); if(e) e.onclick=fn;};
+const fmtAt=s=>{const d=new Date(s); return isNaN(d)?"":d.toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});};
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const num=(x,lo,hi,dflt)=>typeof x==="number"&&isFinite(x)?Math.max(lo,Math.min(hi,x)):dflt;
+function curFactors(){
+  return {L:Object.fromEntries(DETAIL.map(k=>[k,L[k].slice(0,4)])),NE:{...NE},RATE:{...RATE},ETR};
+}
+function cleanF(f){
+  f=(f&&typeof f==="object")?f:{};
+  const o={L:{},NE:{},RATE:{},ETR:num(f.ETR,0,0.6,ETR0)};
+  for(const k of DETAIL){ const a=f.L&&f.L[k];
+    o.L[k]=Array.isArray(a)&&a.length===4?a.map((x,i)=>num(x,0,2,L0[k][i])):L0[k].slice(0,4); }
+  for(const k in NE0) o.NE[k]=num(f.NE&&f.NE[k],0,1,NE0[k]);
+  for(const k in RATE0) o.RATE[k]=num(f.RATE&&f.RATE[k],k==="base"?0.001:0,1,RATE0[k]);
+  return o;
+}
+const defaultF=()=>cleanF(null);
+function applyFactors(f){
+  for(const k of DETAIL) for(let i=0;i<4;i++) L[k][i]=f.L[k][i];
+  Object.assign(NE,f.NE); Object.assign(RATE,f.RATE); ETR=f.ETR;
+}
+const sameD=(a,b)=>DKEYS.every(k=>Math.abs(a[k]-b[k])<1e-12);
+const sameF=(a,b)=>JSON.stringify(cleanF(a))===JSON.stringify(cleanF(b));
+const allOn=()=>Object.fromEntries(DKEYS.map(k=>[k,1]));
+// ---- page snapshots
+function snap(){
+  return {sc:Object.fromEntries(VSC.map(n=>[n,pickD(SC[n])])), custom:pickD(custom), customTouched,
+          us:Object.fromEntries([...USER].map(n=>[n,{d:pickD(SC[n]),o:pickD(SC0[n]),from:SC[n].from||""}])),
+          f:curFactors(), en:Object.fromEntries(DKEYS.map(k=>[k,EN[k]?1:0]))};
+}
+function origSnap(){
+  return {sc:Object.fromEntries(VSC.map(n=>[n,{...SC0[n]}])), custom:pickD(SC.Base), customTouched:false, us:{}, f:defaultF(), en:allOn()};
+}
+function cleanSnap(o){
+  o=(o&&typeof o==="object")?o:{};
+  const base=origSnap();
+  const sc={}; for(const n of VSC) sc[n]=o.sc&&o.sc[n]?pickD(o.sc[n]):base.sc[n];
+  const en={}; for(const k of DKEYS) en[k]=o.en&&k in o.en?(o.en[k]?1:0):1;
+  const us={};
+  if(o.us&&typeof o.us==="object") for(const raw in o.us){ const n=cleanName(raw), u=o.us[raw];
+    if(!n||RESERVED.has(n)||!u||typeof u!=="object") continue;
+    us[n]={d:pickD(u.d||{}), o:pickD(u.o||u.d||{}), from:cleanName(u.from)}; }
+  return {sc, custom:o.custom?pickD(o.custom):base.custom, customTouched:!!o.customTouched, us, f:cleanF(o.f), en};
+}
+function sameSnap(a,b){
+  const ua=Object.keys(a.us||{}).sort(), ub=Object.keys(b.us||{}).sort();
+  if(ua.join("|")!==ub.join("|") || ua.some(n=>!sameD(a.us[n].d,b.us[n].d))) return false;
+  return VSC.every(n=>sameD(a.sc[n],b.sc[n])) && sameD(a.custom,b.custom) && sameF(a.f,b.f)
+    && DKEYS.every(k=>(a.en[k]?1:0)===(b.en[k]?1:0));
+}
+function applySnap(s){
+  for(const n of VSC) Object.assign(SC[n],s.sc[n]);
+  const want=s.us||{};
+  for(const n of [...USER]) if(!(n in want)) dropUser(n);
+  for(const n in want){ if(USER.has(n)){ Object.assign(SC[n],want[n].d); SC0[n]=pickD(want[n].o); } else addUser(n,want[n].d,want[n].from,want[n].o); }
+  custom={...custom,...s.custom}; customTouched=!!s.customTouched;
+  if(customTouched && customFrom==="the 6p6") customFrom="a saved version";
+  applyFactors(s.f);
+  for(const k of DKEYS) EN[k]=s.en[k]?1:0;
+  if(cur==="Custom" && !customTouched) cur="Base";
+}
+// what a snapshot changes against the original settings, in words
+function snapSummary(s){
+  const o=origSnap(), parts=VSC.filter(n=>!sameD(s.sc[n],o.sc[n]));
+  if(s.customTouched && !sameD(s.custom,o.custom)) parts.push("Custom");
+  const nu=Object.keys(s.us||{}).length; if(nu) parts.push(nu+" own scenario"+(nu>1?"s":""));
+  if(!sameF(s.f,o.f)) parts.push("model factors");
+  const off=DKEYS.filter(k=>!s.en[k]).length; if(off) parts.push(off+" assumption"+(off>1?"s":"")+" off");
+  return parts.length?parts.join(", "):"no changes";
+}
+// a stored version, in today's format or the earlier one-scenario format ({s, d, f})
+function cleanEntry(v){
+  if(!v||typeof v!=="object"||typeof v.n!=="string") return null;
+  let s;
+  if(v.sc||v.custom) s=cleanSnap(v);
+  else if(v.s&&v.d){
+    const o={sc:{},f:v.f};
+    if(v.s==="Custom"){ o.custom=v.d; o.customTouched=true; } else if(VSC.includes(v.s)) o.sc[v.s]=v.d; else return null;
+    s=cleanSnap(o);
+  } else return null;
+  return {id:String(v.id||newId()).replace(/[^A-Za-z0-9_-]/g,"").slice(0,40)||newId(), n:v.n.slice(0,40),
+    at:String(v.at||""), by:typeof v.by==="string"?v.by.slice(0,60):"", file:typeof v.file==="string"?v.file:"", src:v.src||"local", snap:s,
+    pid:typeof v.pid==="string"?v.pid.replace(/[^A-Za-z0-9_-]/g,"").slice(0,40):"", pn:typeof v.pn==="string"?v.pn.slice(0,40):"",
+    pidKnown:Object.prototype.hasOwnProperty.call(v,"pid"),
+    log:Array.isArray(v.log)?v.log.filter(x=>typeof x==="string").map(x=>x.slice(0,160)).slice(0,80):[]};
+}
+function persistVers(){
+  if(OSV||!STORE) return;
+  try{ localStorage.setItem(VERKEY,JSON.stringify(VLIST.filter(v=>v.src==="local").map(v=>({id:v.id,n:v.n,at:v.at,...(v.pidKnown?{pid:v.pid,pn:v.pn,log:v.log}:{}),...v.snap})))); }catch(e){}
+}
+function saveEdits(){
+  if(OSV||!STORE) return;
+  try{ localStorage.setItem(EDITKEY,JSON.stringify({v:3,...snap(),customFrom,base:BASEV})); }catch(e){}
+}
+function loadVers(){
+  if(OSV||!STORE) return;
+  try{
+    const a=JSON.parse(localStorage.getItem(VERKEY)||"null");
+    if(Array.isArray(a)) VLIST=a.map(v=>cleanEntry({...v,src:"local"})).filter(Boolean);
+    else {                                   // one-time carry-over of the earlier per-scenario versions
+      const old=JSON.parse(localStorage.getItem(OLDVERKEY)||"{}");
+      for(const n in old) if(Array.isArray(old[n])) for(const v of old[n]){ const e=cleanEntry({...v,s:n,src:"local"}); if(e) VLIST.push(e); }
+    }
+  }catch(e){ VLIST=[]; }
+  VLIST.sort((a,b)=>String(a.at).localeCompare(String(b.at)));
+  try{
+    const e=JSON.parse(localStorage.getItem(EDITKEY)||"null");
+    if(e&&e.v===3){ applySnap(cleanSnap(e)); customFrom=e.customFrom||customFrom;
+      if(e.base&&typeof e.base.id==="string"&&VLIST.some(v=>v.id===e.base.id)) BASEV={id:e.base.id,n:String(e.base.n||"")}; }
+    else if(e&&e.sc){                         // earlier format
+      for(const n in e.sc) if(VSC.includes(n)) Object.assign(SC[n],pickD(e.sc[n]));
+      if(e.custom){ custom={...custom,...pickD(e.custom)}; customTouched=!!e.customTouched; customFrom=e.customFrom||customFrom; }
+      if(e.f) applyFactors(cleanF(e.f));
+    }
+  }catch(e){}
+}
+// OneStream: versions read by the XFBR rule from the user's folder ({file, doc} per file)
+function loadOsVersions(p){
+  OSV={folder:String(p.versionFolder||""), user:String(p.user||""), error:typeof p.versionError==="string"?p.versionError:"", loaded:""};
+  VLIST=[];
+  for(const it of (Array.isArray(p.versions)?p.versions:[])){
+    let o=null; try{ o=typeof it.doc==="string"?JSON.parse(it.doc):it.doc; }catch(e){ continue; }
+    const v=cleanEntry({...(o||{}),file:String(it.file||""),src:"os"}); if(v) VLIST.push(v);
+  }
+  VLIST.sort((a,b)=>String(a.at).localeCompare(String(b.at)));
+  // the version chosen in the dashboard's "Version" dropdown is loaded into the page
+  const want=typeof p.restoreFile==="string"?p.restoreFile:"";
+  if(want){
+    const v=VLIST.find(x=>x.file===want);
+    if(v){ applySnap(v.snap); OSV.loaded=v.id; OSV.loadedName=v.n; BASEV={id:v.id,n:v.n}; }
+    else OSV.missing=want;
+  }
+}
+function addVersion(name,src){
+  const now=snap(), parent=BASEV&&findV(BASEV.id);
+  const v={id:newId(), n:name, at:new Date().toISOString(), by:"", file:"", src, snap:now,
+    pid:BASEV?BASEV.id:"", pn:BASEV?BASEV.n:"", pidKnown:true, log:diffSnap(parent?parent.snap:origSnap(),now)};
+  VLIST.push(v);
+  if(VLIST.length>100) VLIST.shift();
+  persistVers();
+  return v;
+}
+// version code: base64url of the JSON, so it survives being passed as a OneStream task argument
+function b64url(str){
+  const bytes=new TextEncoder().encode(str); let bin="";
+  for(let i=0;i<bytes.length;i++) bin+=String.fromCharCode(bytes[i]);
+  return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+function showCode(obj,title){
+  const code=CODE_PREFIX+b64url(JSON.stringify(obj));
+  const box=document.getElementById("vcode"); if(!box) return;
+  setText("vcodettl",title);
+  const ta=document.getElementById("vcodetxt"); ta.value=code;
+  setText("vcopied","");
+  ta.hidden=true;
+  box.hidden=false;
+}
+function copyCode(){
+  const ta=document.getElementById("vcodetxt"); if(!ta) return;
+  const done=ok=>{
+    // the code is only shown when it could not be copied for you
+    ta.hidden=ok;
+    setText("vcopied",ok?"✓ Copied":"Copying was blocked here — press Ctrl+C now (the text below is selected), then paste it at the top.");
+    if(!ok){ try{ ta.focus(); ta.select(); }catch(e){} }
+  };
+  ta.hidden=false;
+  try{ ta.focus(); ta.select(); }catch(e){}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ta.value).then(()=>done(true),()=>{ let ok=false; try{ ok=document.execCommand("copy"); }catch(e){} done(ok); });
+  } else { let ok=false; try{ ok=document.execCommand("copy"); }catch(e){} done(ok); }
+}
+function versions(){
+  const box=document.getElementById("vbox"); if(!box) return;
+  box.hidden=false;
+  setText("vscen","all scenarios");
+  const s=snap(), o=origSnap();
+  const match=VLIST.slice().reverse().find(v=>sameSnap(v.snap,s));
+  const isOrig=sameSnap(s,o);
+  const st=document.getElementById("vstate");
+  st.textContent = match ? "at version: "+match.n+(match.src==="pending"&&OSV?" (this session)":"") : isOrig ? "original settings" : "unsaved changes";
+  st.className="vst"+(match||isOrig?"":" ed");
+  st.title = isOrig ? "" : "Changed against the original: "+snapSummary(s);
+  const sel=document.getElementById("versel"), keep=sel.value; sel.textContent="";
+  { const op=document.createElement("option"); op.value="__orig"; op.textContent="Original settings (all scenarios, as shipped)"; sel.appendChild(op); }
+  VLIST.slice().reverse().forEach(v=>{ const op=document.createElement("option"); op.value=v.id;
+    op.textContent=v.n+(v.pidKnown&&v.pid&&findV(v.pid)?" (from "+findV(v.pid).n+")":"")+(fmtAt(v.at)?" · "+fmtAt(v.at):"")+(v.src==="pending"&&OSV?" · this session":"");
+    op.title=snapSummary(v.snap); sel.appendChild(op); });
+  const pick=keep&&(keep==="__orig"||VLIST.some(v=>v.id===keep))?keep:(OSV&&OSV.loaded)||(match&&match.id)||(VLIST.length?VLIST[VLIST.length-1].id:"__orig");
+  sel.value=pick;
+  document.getElementById("verload").disabled=false;
+  document.getElementById("verdel").disabled=sel.value==="__orig";
+  sel.onchange=()=>{ document.getElementById("verdel").disabled=sel.value==="__orig"; };
+  const ob=document.getElementById("verorig"); if(ob) ob.hidden=true;
+  for(const id of ["verexp","verimp"]){ const b=document.getElementById(id); if(b) b.hidden=!!OSV||(id==="verexp"&&!DL); }
+  for(const id of ["verrow2","verrow3"]){ const r=document.getElementById(id); if(r) r.hidden=!!OSV; }
+  document.getElementById("versave").textContent=OSV?"Save version…":"Save version";
+  let note;
+  if(OSV){
+    note = OSV.error ? "Versions folder could not be read: "+OSV.error
+      : "A version holds every scenario, the model factors and the assumption switches. To load or delete a saved version, use “Version” and Delete at the top of the dashboard.";
+    if(OSV.loadedName) note="Showing “"+OSV.loadedName+"”. "+note;
+    if(OSV.missing) note="The version chosen at the top was not found in your folder. "+note;
+  } else note = STORE ? "A version holds every scenario, the model factors and the assumption switches. Versions are kept in this browser."
+    : "Versions last until this page is closed.";
+  // keep the panel short: only problems are spelled out here; the full story is in Version history
+  const quiet = OSV ? (OSV.error ? "Versions folder could not be read: "+OSV.error : OSV.missing ? "The version chosen at the top was not found in your folder." : "")
+                    : (STORE ? "" : "Versions last until this page is closed.");
+  setText("vnote",quiet);
+  const vn=document.getElementById("vnote"); if(vn) vn.hidden=!quiet;
+  const vh=document.getElementById("vhist"); if(vh) vh.hidden=true;
+  st.style.cursor="pointer"; st.onclick=e=>{e.preventDefault();e.stopPropagation();openTree();};
+  { const sb=document.getElementById("svbtn"); if(sb){ sb.classList.toggle("is-dirty",!(match||isOrig)); sb.title=(match||isOrig)?"Save a version, roll back, import or export versions":"Unsaved changes \u2014 save a version"; } }
+  st.title=(st.title?st.title+" \u2014 ":"")+"click for version history";
+}
+const selVersion=()=>{ const id=document.getElementById("versel").value; return VLIST.find(v=>v.id===id); };
+onv("versave",()=>{
+  const inp=document.getElementById("vername");
+  const n=(inp.value||"").trim().slice(0,40) || ("Version "+(VLIST.length+1));
+  const v=addVersion(n, OSV?"pending":"local"); inp.value=""; inp.placeholder="saved: "+n;
+  BASEV={id:v.id,n:v.n}; saveEdits();
+  if(OSV){ showCode({op:"save",id:v.id,n:v.n,at:v.at,pid:v.pid,pn:v.pn,log:v.log,...v.snap},
+    "“"+n+"” ready — press Ctrl+V in “Version code” at the top, then click save.");
+    copyCode(); }
+  render();
+});
+onv("verload",()=>{
+  const id=document.getElementById("versel").value;
+  const target = id==="__orig" ? origSnap() : (selVersion()||{}).snap;
+  if(!target) return;
+  // never lose work: unsaved changes are kept (in this session) before rolling back
+  const s=snap();
+  if(!VLIST.some(x=>sameSnap(x.snap,s)) && !sameSnap(s,origSnap()))
+    addVersion("Before rollback · "+fmtAt(new Date().toISOString()), OSV?"pending":"local");
+  applySnap(target);
+  BASEV = id==="__orig" ? null : {id, n:(selVersion()||{}).n||""};
+  saveEdits(); render();
+});
+onv("verdel",()=>{
+  const v=selVersion(); if(!v) return;
+  VLIST=VLIST.filter(x=>x.id!==v.id);
+  relinkChildren(v);
+  if(v.src==="os" && v.file){
+    showCode({op:"delete",file:v.file},
+      "To remove “"+v.n+"” from OneStream too, paste this (Ctrl+V) into “Version code” at the top and click the save icon.");
+    copyCode();
+  } else persistVers();
+  render();
+});
+onv("vcopy",copyCode);
+onv("vcodex",()=>{ const b=document.getElementById("vcode"); if(b) b.hidden=true; });
+onv("verexp",()=>{
+  try{
+    const doc=JSON.stringify({kind:"fy26-eoy-scenario-versions",v:3,exported:new Date().toISOString(),
+      versions:VLIST.map(v=>({id:v.id,n:v.n,at:v.at,...v.snap}))},null,1);
+    const vn=document.getElementById("vnote");
+    saveFile("FY26-EOY-versions.json",doc).then(ok=>{
+      setText("vnote",ok?"Versions saved to FY26-EOY-versions.json.":"Versions file not saved."); if(vn) vn.hidden=false;
+    },e=>{ setText("vnote","Export failed: "+(e&&e.message||e)); if(vn) vn.hidden=false; });
+  }catch(e){ setText("vnote","Export is not available here ("+e.message+")."); }
+});
+onv("verimp",()=>{ const f=document.getElementById("verfile"); if(f){ f.value=""; f.click(); } });
+{const f=document.getElementById("verfile"); if(f) f.onchange=()=>{
+  const file=f.files&&f.files[0]; if(!file) return;
+  file.text().then(t=>{
+    const o=JSON.parse(t);
+    if(!o||o.kind!=="fy26-eoy-scenario-versions") throw new Error("not a versions file");
+    let inc=[];
+    if(Array.isArray(o.versions)) inc=o.versions.map(v=>cleanEntry({...v,src:"local"})).filter(Boolean);
+    else if(o.versions&&typeof o.versions==="object")
+      for(const n in o.versions) if(Array.isArray(o.versions[n])) for(const v of o.versions[n]){ const e=cleanEntry({...v,s:n,src:"local"}); if(e) inc.push(e); }
+    let added=0;
+    for(const v of inc) if(!VLIST.some(x=>x.id===v.id||(x.n===v.n&&x.at===v.at))){ VLIST.push(v); added++; }
+    persistVers(); render(); setText("vnote","Imported "+added+" version"+(added===1?"":"s")+".");
+  }).catch(e=>setText("vnote","Import failed: "+e.message));
+};}
+
+// ---- lineage: which version the page is currently based on, and what changed against it
+let BASEV=null;                 // {id, n} of the version last loaded or saved; null = the original settings
+const FNAME=["Volume share","Material share","Crude pass-through","Inflation share"];
+const NENAME={rev:"Non-EUR share of revenue",cogs:"Non-EUR share of COGS",opex:"Non-EUR share of opex",fin:"Non-EUR share of finance costs"};
+const RATENAME={flt:"Repricing share of borrowings",base:"Average borrowing rate"};
+const DNAME=Object.fromEntries(DRV.map(d=>[d.k,d.n]));
+const fx2=v=>(Math.round(v*1000)/1000).toString();
+const pct1=v=>(v*100).toFixed(1)+"%";
+// plain-language list of everything that differs between two page snapshots (a = before, b = after)
+function diffSnap(a,b){
+  const out=[];
+  const au=a.us||{}, bu=b.us||{};
+  for(const n in bu) if(!(n in au)) out.push("Added scenario \u201c"+n+"\u201d"+(bu[n].from?" (from "+bu[n].from+")":""));
+  for(const n in au) if(!(n in bu)) out.push("Deleted scenario \u201c"+n+"\u201d");
+  for(const n in bu) if(n in au) for(const k of DKEYS)
+    if(Math.abs(au[n].d[k]-bu[n].d[k])>1e-12) out.push(n+" · "+DNAME[k]+" "+dval(k,au[n].d[k])+" → "+dval(k,bu[n].d[k]));
+  for(const n of VSC) for(const k of DKEYS)
+    if(Math.abs(a.sc[n][k]-b.sc[n][k])>1e-12) out.push(n+" · "+DNAME[k]+" "+dval(k,a.sc[n][k])+" → "+dval(k,b.sc[n][k]));
+  if(a.customTouched||b.customTouched) for(const k of DKEYS)
+    if(Math.abs(a.custom[k]-b.custom[k])>1e-12) out.push("Custom · "+DNAME[k]+" "+dval(k,a.custom[k])+" → "+dval(k,b.custom[k]));
+  for(const k of DETAIL) for(let i=0;i<4;i++)
+    if(Math.abs(a.f.L[k][i]-b.f.L[k][i])>1e-12) out.push("Model factors · "+lineName(k)+" "+FNAME[i].toLowerCase()+" "+fx2(a.f.L[k][i])+" → "+fx2(b.f.L[k][i]));
+  for(const k in NENAME) if(Math.abs(a.f.NE[k]-b.f.NE[k])>1e-12) out.push("Model factors · "+NENAME[k]+" "+pct1(a.f.NE[k])+" → "+pct1(b.f.NE[k]));
+  for(const k in RATENAME) if(Math.abs(a.f.RATE[k]-b.f.RATE[k])>1e-12) out.push("Model factors · "+RATENAME[k]+" "+pct1(a.f.RATE[k])+" → "+pct1(b.f.RATE[k]));
+  if(Math.abs(a.f.ETR-b.f.ETR)>1e-12) out.push("Model factors · Marginal tax rate "+pct1(a.f.ETR)+" → "+pct1(b.f.ETR));
+  const offB=DKEYS.filter(k=>a.en[k]&&!b.en[k]), onB=DKEYS.filter(k=>!a.en[k]&&b.en[k]);
+  if(offB.length) out.push("Switched off: "+offB.map(k=>DNAME[k]).join(", "));
+  if(onB.length) out.push("Switched back on: "+onB.map(k=>DNAME[k]).join(", "));
+  return out;
+}
+const findV=id=>VLIST.find(v=>v.id===id);
+// what a version changed vs its parent, worked out from the parent's own settings (so it stays right
+// when a version in between is deleted and the chain is re-linked). null = cannot be known.
+const isOrphan=v=>v.pidKnown!==false && !!v.pid && !findV(v.pid);
+const brokenLink=v=>v.pidKnown===false || isOrphan(v);
+function logFor(v){
+  const p=!brokenLink(v)&&v.pid?findV(v.pid):null;
+  return diffSnap(p?p.snap:origSnap(), v.snap);
+}
+// deleting a version: anything saved from it now hangs off the deleted version's own parent
+function relinkChildren(del){
+  for(const c of VLIST) if(c.pid===del.id){
+    if(del.pidKnown===false || isOrphan(del)){ c.pid=""; c.pn=""; c.pidKnown=true; }
+    else { c.pid=del.pid; c.pn=del.pn; }
+  }
+  if(BASEV&&BASEV.id===del.id) BASEV = del.pidKnown!==false&&del.pid&&findV(del.pid) ? {id:del.pid,n:del.pn} : null;
+}
+function parentSnapOf(base){ const p=base&&findV(base.id); return p?p.snap:origSnap(); }
+// V2 <- V1 <- Original, following the stored parent links (stops on a missing or circular link)
+function chainOf(v){
+  const names=[v.n], seen=new Set([v.id]); let cur_=v;
+  for(let i=0;i<30;i++){
+    if(!cur_.pid||cur_.pidKnown===false){ names.push("Original"); break; }
+    const p=findV(cur_.pid);
+    if(!p){ names.push("Original"); break; }
+    if(seen.has(p.id)) break;
+    names.push(p.n); seen.add(p.id); cur_=p;
+  }
+  return names.join(" ← ");
+}
+function histItem(parent,text){ const li=document.createElement("li"); li.textContent=text; parent.appendChild(li); }
+function history(){
+  const box=document.getElementById("vhist"); if(!box) return;
+  box.textContent="";
+  const s=snap(), base=BASEV&&findV(BASEV.id);
+  const add=(title,lines,empty)=>{
+    const h=document.createElement("div"); h.className="vht"; h.textContent=title; box.appendChild(h);
+    if(!lines||!lines.length){ const p=document.createElement("div"); p.className="vhe"; p.textContent=empty||"none"; box.appendChild(p); return; }
+    const ul=document.createElement("ul"); lines.slice(0,12).forEach(t=>histItem(ul,t));
+    if(lines.length>12) histItem(ul,"… and "+(lines.length-12)+" more");
+    box.appendChild(ul);
+  };
+  if(base){
+    // one log, newest first: unsaved changes, then each saved step back to the original
+    const c=document.createElement("div"); c.className="vhc"; c.textContent="Based on: "+chainOf(base); box.appendChild(c);
+    const since=diffSnap(base.snap,s);
+    if(since.length) add("Not saved yet \u2014 changed since \u201c"+base.n+"\u201d",since);
+    let v=base; const seen=new Set();
+    for(let i=0;i<20&&v&&!seen.has(v.id);i++){
+      seen.add(v.id);
+      const when=fmtAt(v.at), who=v.by&&OSV?" by "+v.by:"";
+      const vs=" \u2014 vs "+(!brokenLink(v)&&v.pid?(findV(v.pid).n):"original settings");
+      add(v.n+(when?" \u00b7 "+when:"")+who+vs, logFor(v), "no changes");
+      if(brokenLink(v)||!v.pid) break;
+      const p=findV(v.pid);
+      v=p;
+    }
+    // net effect of the whole chain, useful when a link is missing
+    const net=diffSnap(origSnap(),base.snap);
+    add("Net change of \u201c"+base.n+"\u201d vs the original",net,"same as the original settings");
+  } else {
+    const since=diffSnap(origSnap(),s);
+    const c=document.createElement("div"); c.className="vhc"; c.textContent="Based on: Original settings"; box.appendChild(c);
+    if(since.length) add("Not saved yet — changed since the original",since);
+  }
+  box.hidden=false;
+}
+
+// ---- version tree: how versions grew out of each other; click a node for its changes
+const SVGNS="http://www.w3.org/2000/svg";
+function svgEl(tag,attrs,text){
+  const e=document.createElementNS(SVGNS,tag);
+  for(const k in attrs) e.setAttribute(k,attrs[k]);
+  if(text!=null) e.textContent=text;           // labels are user text: never parsed as markup
+  return e;
+}
+// nodes: Original (root), every version, and "Current (not saved)" when the page differs from its base
+function treeModel(){
+  const root={key:"__orig", kind:"orig", n:"Original settings", children:[], snap:origSnap()};
+  const nodes={__orig:root};
+  for(const v of VLIST) nodes[v.id]={key:v.id, kind:"ver", v, n:v.n, children:[], snap:v.snap};
+  for(const v of VLIST){
+    const node=nodes[v.id];
+    let parent=root, link="known";
+    if(v.pidKnown!==false && v.pid && nodes[v.pid] && v.pid!==v.id) parent=nodes[v.pid];
+    node.link=link; parent.children.push(node);
+  }
+  const s=snap(), baseKey=BASEV&&nodes[BASEV.id]?BASEV.id:"__orig", base=nodes[baseKey];
+  if(!sameSnap(base.snap,s)) base.children.push({key:"__cur", kind:"cur", n:"Current (not saved)", children:[], snap:s, link:"known"});
+  const byAt=(a,b)=>String(a.v?a.v.at:"~").localeCompare(String(b.v?b.v.at:"~"));
+  (function sortRec(n){ n.children.sort(byAt); n.children.forEach(sortRec); })(root);
+  return {root, nodes, baseKey};
+}
+function drawTree(){
+  const host=document.getElementById("vtree"); if(!host) return;
+  host.textContent="";
+  const {root, baseKey}=treeModel();
+  const NW=150, NH=40, GX=46, GY=14;
+  let row=0; const placed=[];
+  (function lay(n,depth){                      // leaves get rows in order; parents sit in the middle
+    n.depth=depth;
+    if(!n.children.length){ n.row=row++; }
+    else { n.children.forEach(c=>lay(c,depth+1)); n.row=(n.children[0].row+n.children[n.children.length-1].row)/2; }
+    placed.push(n);
+  })(root,0);
+  const maxD=Math.max(...placed.map(n=>n.depth));
+  const W=(maxD+1)*NW+maxD*GX+20, H=Math.max(row,1)*(NH+GY)+10;
+  const X=n=>10+n.depth*(NW+GX), Y=n=>5+n.row*(NH+GY);
+  const svg=svgEl("svg",{viewBox:"0 0 "+W+" "+H, width:W, height:H, class:"vtsvg", role:"img", "aria-label":"Version tree"});
+  for(const n of placed) for(const c of n.children){
+    const x1=X(n)+NW, y1=Y(n)+NH/2, x2=X(c), y2=Y(c)+NH/2, mx=(x1+x2)/2;
+    svg.appendChild(svgEl("path",{d:`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`, class:"vte"+(c.kind==="cur"||c.link!=="known"?" dash":"")}));
+  }
+  for(const n of placed){
+    const g=svgEl("g",{class:"vtn "+n.kind+(n.key===baseKey?" base":"")+(n.key===vtSel?" sel":""), transform:`translate(${X(n)},${Y(n)})`, tabindex:"0"});
+    g.appendChild(svgEl("rect",{width:NW, height:NH, rx:8}));
+    const label=n.n.length>20?n.n.slice(0,19)+"…":n.n;
+    g.appendChild(svgEl("text",{x:10, y:16, class:"t1"},label));
+    const sub = n.kind==="orig" ? "as shipped" : n.kind==="cur" ? "on screen now" :
+      (fmtAt(n.v.at)||"");
+    g.appendChild(svgEl("text",{x:10, y:31, class:"t2"},sub));
+    if(n.key===baseKey) g.appendChild(svgEl("circle",{cx:NW-10, cy:10, r:4, class:"dot"}));
+    g.appendChild(svgEl("title",{},n.n));
+    g.onclick=()=>{ vtSel=n.key; drawTree(); showNode(n.key); };
+    g.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); g.onclick(); } };
+    svg.appendChild(g);
+  }
+  host.appendChild(svg);
+}
+let vtSel=null;
+function showNode(key){
+  const box=document.getElementById("vtdet"); if(!box) return;
+  box.textContent="";
+  const {nodes}=treeModel(); const n=nodes[key]||(key==="__cur"?null:null);
+  const s=snap(), base=BASEV&&findV(BASEV.id);
+  let title, meta, sections=[];
+  if(key==="__orig"){ title="Original settings"; meta="The scenarios and model factors as shipped. Every version grows from here.";
+  } else if(key==="__cur"){
+    title="Current (not saved)"; meta="What is on screen now, compared with "+(base?"“"+base.n+"”":"the original settings")+".";
+    sections.push(["Changed since "+(base?"“"+base.n+"”":"the original"), diffSnap(base?base.snap:origSnap(),s), "no changes"]);
+  } else {
+    const v=findV(key); if(!v) return;
+    title=v.n;
+    meta=[fmtAt(v.at)?"Saved "+fmtAt(v.at):"", v.by?"by "+v.by:"", v.src==="pending"&&OSV?"(this session — not yet in OneStream)":""].filter(Boolean).join(" ");
+    const direct=!brokenLink(v)&&v.pid;
+    sections.push(["What changed vs "+(direct?"“"+findV(v.pid).n+"”":"the original settings"), logFor(v), "no changes"]);
+    if(direct) sections.push(["Net change vs the original settings", diffSnap(origSnap(),v.snap), "same as the original settings"]);
+  }
+  const h=document.createElement("h4"); h.textContent=title; box.appendChild(h);
+  if(meta){ const m=document.createElement("div"); m.className="vtm"; m.textContent=meta; box.appendChild(m); }
+  for(const [t,lines,empty] of sections){
+    const st=document.createElement("div"); st.className="vht"; st.textContent=t; box.appendChild(st);
+    if(!lines||!lines.length){ const e=document.createElement("div"); e.className="vhe"; e.textContent=empty; box.appendChild(e); continue; }
+    const ul=document.createElement("ul"); lines.forEach(x=>histItem(ul,x)); box.appendChild(ul);
+  }
+  if(key!=="__cur"){
+    const bar=document.createElement("div"); bar.className="vtact";
+    const b=document.createElement("button"); b.className="gb"; b.textContent="Show this version on the page";
+    b.onclick=()=>{
+      const sel=document.getElementById("versel"); if(sel) sel.value=key;
+      const lb=document.getElementById("verload"); if(lb&&lb.onclick) lb.onclick();
+      drawTree(); showNode(key);
+    };
+    bar.appendChild(b);
+    if(OSV){ const t=document.createElement("span"); t.className="vtm";
+      t.textContent=key==="__orig"?"":"To keep it selected after a refresh, also pick it in “Version” at the top.";
+      bar.appendChild(t); }
+    box.appendChild(bar);
+  }
+  box.hidden=false;
+}
+function openTree(){
+  vtSel = BASEV&&findV(BASEV.id) ? BASEV.id : "__orig";
+  drawTree(); showNode(vtSel);
+  const o=document.getElementById("vtov"); if(o) o.hidden=false;
+}
+
+// ================= model factors (editable) =================
+const fxDirty=()=>DETAIL.some(k=>L[k][0]!==L0[k][0]||L[k][1]!==L0[k][1]||L[k][2]!==L0[k][2]||L[k][3]!==L0[k][3])
+  || NE.rev!==NE0.rev || NE.cogs!==NE0.cogs || NE.opex!==NE0.opex || NE.fin!==NE0.fin
+  || RATE.flt!==RATE0.flt || RATE.base!==RATE0.base || ETR!==ETR0;
+function factors(){
+  const g=[["rev","Revenue"],["cogs","Cost of goods sold"],["opex","Operating expenses"],["da","Depreciation"],["fin","Finance costs"]];
+  let t=`<div class="mxn" style="margin:0 0 14px">These are the factors you have been told to challenge — now you can.
+    Every number is <b>how much of that line the driver actually reaches</b>, and they all work the same way: a volume share of 0.10 on
+    compensation means a 10% fall in volume takes 0.10 × 10% = 1% off that line. A material share of 0.4 means only 40% of that
+    line is material spend, so a 15% price rise lifts it 6%. <b>1.0 means the whole line moves; 0 means the driver does not touch it.</b> Edits recalculate the whole page immediately.
+    <b>Base always stays equal to the 6p6</b> whatever you put here, because with every driver at zero there is nothing for a factor to scale.</div>
+    <div id="fxlines"><table class="mx fx"><thead><tr id="fxhead">
+      <th>P&amp;L line</th><th>Q4 base</th>
+      <th title="Share of this line that moves with volume">Volume share</th>
+      <th title="Share of a crude move that reaches this line">Crude pass-through</th>
+      <th title="Share of this line exposed to general cost inflation">Inflation share</th>
+      <th title="Share of this line that is material spend">Material share</th>
+    </tr></thead><tbody>`;
+  for(const [blk,label] of g){
+    const ks=DETAIL.filter(k=>L[k][4]===blk);
+    if(!ks.length) continue;
+    t+=`<tr class="sec"><td colspan="6">${label}</td></tr>`;
+    for(const k of ks){
+      const ch=(i)=>L[k][i]!==L0[k][i]?" ed":"";
+      t+=`<tr><td>${lineName(k)}</td><td>${(Q4[k]/1e6/RESTATE).toFixed(1)}</td>
+        <td><input class="fi${ch(0)}" type="number" min="0" max="2" step="0.05" value="${L[k][0]}" data-k="${k}" data-i="0"></td>
+        <td><input class="fi${ch(2)}" type="number" min="0" max="2" step="0.05" value="${L[k][2]}" data-k="${k}" data-i="2"></td>
+        <td><input class="fi${ch(3)}" type="number" min="0" max="2" step="0.05" value="${L[k][3]}" data-k="${k}" data-i="3"></td>
+        <td><input class="fi${ch(1)}" type="number" min="0" max="2" step="0.05" value="${L[k][1]}" data-k="${k}" data-i="1"></td></tr>`;
+    }
+  }
+  t+=`</tbody></table></div>
+    <div id="fxgroup"><table class="mx fx"><tbody>
+    <tr class="sec"><td colspan="6">Group-level factors</td></tr>`;
+  for(const [key,label,note] of [["rev","Non-EUR share of revenue","ID10 + MY10 over the GSE total"],
+      ["cogs","Non-EUR share of COGS","measured from the cube"],["opex","Non-EUR share of opex","measured from the cube"],
+      ["fin","Non-EUR share of finance costs","assumed same as opex"]]){
+    t+=`<tr><td>${label}<span class="src">${note}</span></td><td></td>
+      <td colspan="2"><input class="fi${NE[key]!==NE0[key]?" ed":""}" type="number" min="0" max="1" step="0.005" value="${NE[key]}" data-ne="${key}"></td>
+      <td colspan="2" style="text-align:left;color:var(--mut);font-size:10.5px">applies to every line in that block</td></tr>`;
+  }
+  for(const [key,label,note,mx] of [["flt","Repricing share of borrowings","the part of the finance-cost line a rate move actually lifts",1],
+      ["base","Current average borrowing rate","the rate the repricing is measured against",0.3]]){
+    t+=`<tr><td>${label}<span class="src">${note}</span></td><td></td>
+      <td colspan="2"><input class="fi${RATE[key]!==RATE0[key]?" ed":""}" type="number" min="0" max="${mx}" step="0.005" value="${RATE[key]}" data-rt="${key}"></td>
+      <td colspan="2" style="text-align:left;color:var(--mut);font-size:10.5px">estimate \u2014 no debt schedule in the 6p6</td></tr>`;
+  }
+  t+=`<tr><td>Marginal tax rate<span class="src">FY26 effective rate on profit before tax</span></td><td></td>
+      <td colspan="2"><input class="fi${ETR!==ETR0?" ed":""}" type="number" min="0" max="0.6" step="0.005" value="${ETR.toFixed(4)}" data-etr="1"></td>
+      <td colspan="2" style="text-align:left;color:var(--mut);font-size:10.5px">applied to the change in profit</td></tr>`;
+  t+=`</tbody></table></div>
+    <div class="mxk"><span><span class="ch mi">Highlighted</span> changed from the shipped default</span>
+      <span style="flex:1"></span>
+      <button class="gb" id="fxreset" ${fxDirty()?"":"disabled"}>Reset all factors to defaults</button></div>`;
+  const body=document.getElementById("fxbody");
+  body.innerHTML=t;
+  body.querySelectorAll("input.fi").forEach(inp=>inp.onchange=()=>{
+    const v=parseFloat(inp.value);
+    if(!isFinite(v)){ factors(); return; }
+    if(inp.dataset.ne) NE[inp.dataset.ne]=Math.max(0,Math.min(1,v));
+    else if(inp.dataset.rt) RATE[inp.dataset.rt]=Math.max(inp.dataset.rt==="base"?0.001:0,Math.min(1,v));
+    else if(inp.dataset.etr) ETR=Math.max(0,Math.min(0.6,v));
+    else L[inp.dataset.k][+inp.dataset.i]=Math.max(0,Math.min(2,v));
+    saveEdits(); render(); factors();
+  });
+  const rs=document.getElementById("fxreset");
+  if(rs) rs.onclick=()=>{
+    DETAIL.forEach(k=>{for(const i of [0,1,2,3]) L[k][i]=L0[k][i];});
+    NE.rev=NE0.rev; NE.cogs=NE0.cogs; NE.opex=NE0.opex; NE.fin=NE0.fin;
+    RATE.flt=RATE0.flt; RATE.base=RATE0.base; ETR=ETR0;
+    saveEdits(); render(); factors();
+  };
+  document.getElementById("fxov").hidden=false;
+}
+
+// ================= guided tour =================
+const TOUR=[
+ {sel:"#tabs",title:"1 · Pick a scenario",act:()=>openSub(),
+  body:"Hover <b>Scenario</b> to open the five pre-built scenarios, from the 6p6 as submitted through to a stagflation tail case. Click any one and the whole page — figures, storyboard and charts — recalculates against it. <b>Base</b> is your 6+6 exactly as it sits in OneStream.",pos:"below"},
+ {sel:"#kpis",title:"2 · Read the headline",act:()=>closeSub(true),
+  body:"Revenue, margin, EBIT and net income for the scenario, each showing the movement against the 6p6. A purple bar on the left means below plan, green means above.",pos:"below"},
+ {sel:"#drvcard",title:"3 · The assumptions panel",
+  body:"Every assumption behind the scenario, on the left. Each has a <b>switch</b> — turn assumptions off to isolate a combination and see what volume alone, or volume plus material price, does to the P&L.<br><br>Dragging a slider adjusts the scenario you are on — its pill gets an orange dot and the note lists what changed. <b>Save</b> at the top right keeps a named version of every scenario that you can <b>Roll back</b> to. Base stays locked to the 6p6: moving a slider there starts a <b>Custom</b> case instead.",pos:"right",act:()=>{if(mode!=="story"){mode="story";render();}}},
+ {sel:"#viewtog",title:"4 · Full year or Q4 only",
+  body:"<b>Full year</b> shows all of FY2026 — nine months of 6p6 plus a shocked Q4. <b>Q4 only</b> strips out the frozen Jan–Sep and shows just the quarter being stressed, where the damage is far more visible against a smaller base. The movements are identical either way, since only Q4 is shocked; what changes is the base they sit on.",pos:"below",
+  act:()=>{if(view!=="fy"){view="fy";render();}}},
+ {sel:'#pnl tr[data-k="99999"]',title:"5 · Click a line to break it down",
+  body:"<b>Click any line in the P&L</b> — this is net income, already opened for you. It expands to show which assumption moved that line and by how much. The small coloured bars in the last column are the driver mix at a glance, and the same click retargets the bridge chart.",pos:"below",
+  act:()=>{openLine="99999";bridgeKey="99999";render();}},
+ {sel:"#modebar",title:"6 · Storyboard or charts",
+  body:"<b>Storyboard</b> explains each assumption in plain language — what changes, which lines it touches, how much of each moves and the arithmetic. <b>Charts</b> gives the same thing as a waterfall bridge and a scenario comparison. Same numbers, two ways of reading them.",pos:"below"},
+ {sel:"#mxbtn",title:"7 · The assumption matrix",
+  body:"Every assumption against every scenario on one page, with the resulting revenue, margin, EBIT and net income underneath, and where each input came from. This is the sheet to put in front of a review meeting.",pos:"below"},
+ {sel:"#fxbtn",title:"8 · Two different kinds of input",
+  body:"Everything so far has been <b>how big the shock is</b> — volume down 10%, crude up 5%. That is only half the model. The other half is <b>how much of each P&L line the shock reaches</b>, and that half is my estimate rather than cube data. Those are the factors, and they live in here.",
+  pos:"below"},
+ {sel:"#fxhead",title:"9 · The per-line factors",
+  body:"One row per posting line, four things you can change.<br><br><b>Volume share</b> — how much of that line disappears if you sell less. 1.0 means fully variable (raw material, freight); 0.10 means barely any of it moves (compensation — only overtime and commission); 0 means fixed (rent, telecom).<br><br><b>Crude pass-through</b> — how much of a crude move lands on that line. Freight is 0.60 because fuel is roughly 60% of a haulage bill; the rest is wages and leases.<br><br><b>Inflation share</b> and <b>Material share</b> \u2014 how much of the line is exposed to general inflation, and how much of it is material spend. All four columns behave identically: 1.0 moves the whole line, 0 means the driver skips it, and anything in between moves that proportion \u2014 so a line that is 40% material can be set to 0.4.",
+  pos:"below", keepFx:1, act:()=>{factors();}},
+ {sel:"#fxgroup",title:"10 · Group factors, and the safety net",
+  body:"<b>Non-EUR shares</b> — how much of revenue, COGS and opex sits in Indonesia and Malaysia. These three are measured from the cube rather than guessed, so change them only if the entity mix has moved.<br><br><b>Marginal tax rate</b> — applied to the change in profit. Set to the 36.9% full-year effective rate on profit before tax.<br><br>Edits recalculate everything at once and changed fields turn orange. <b>Base always stays equal to the 6p6</b> — with every driver at zero there is nothing for a factor to scale — so you cannot break the tie-back by experimenting. Reset is at the bottom.",
+  pos:"above", keepFx:1, act:()=>{factors();}}];
+let ti=-1, tourEl=null;
+// Position the spotlight and card from the target's CURRENT rect. Called again on
+// every scroll and resize, so the box can never drift away from what it is framing.
+function tourLocate(){
+  if(ti<0||!tourEl) return;
+  const st=TOUR[ti], r=tourEl.getBoundingClientRect();
+  const sp=document.getElementById("spot"), tp=document.getElementById("tip"), pad=6;
+  sp.style.left=(r.left-pad)+"px";  sp.style.top=(r.top-pad)+"px";
+  sp.style.width=(r.width+pad*2)+"px"; sp.style.height=(r.height+pad*2)+"px";
+  const W=innerWidth,H=innerHeight,tw=330,th=tp.offsetHeight||180,GAP=14;
+  let L,T;
+  if(st.pos==="right"){ L=r.right+GAP; T=r.top; }
+  else if(st.pos==="left"){ L=r.left-tw-GAP; T=r.top+20; }
+  else if(st.pos==="above"){ L=r.left; T=r.top-th-GAP; }
+  else { L=r.left; T=r.bottom+GAP; }
+  if(L+tw>W-12) L=W-tw-12;
+  if(L<12) L=12;
+  if(T+th>H-12) T=r.top-th-GAP;          // no room below — flip above
+  if(T<12){                               // no room above either — sit beside it
+    T=Math.max(12,Math.min(r.top,H-th-12));
+    if(r.left>tw+2*GAP) L=Math.max(12,r.left-tw-GAP);
+    else if(W-r.right>tw+2*GAP) L=Math.min(W-tw-12,r.right+GAP);
+  }
+  // last resort: never let the card sit on top of the box it is pointing at
+  const hits=()=>L<r.right+pad && r.left-pad<L+tw && T<r.bottom+pad && r.top-pad<T+th;
+  if(hits()){
+    if(H-r.bottom-GAP>th+12){ T=r.bottom+GAP; L=Math.max(12,Math.min(r.left,W-tw-12)); }
+    else if(r.top-GAP>th+12){ T=r.top-th-GAP; L=Math.max(12,Math.min(r.left,W-tw-12)); }
+    else if(W-r.right-GAP>tw+12){ L=r.right+GAP; T=Math.max(12,Math.min(r.top,H-th-12)); }
+    else if(r.left-GAP>tw+12){ L=r.left-tw-GAP; T=Math.max(12,Math.min(r.top,H-th-12)); }
+  }
+  tp.style.left=Math.round(L)+"px"; tp.style.top=Math.round(T)+"px";
+}
+function tourAt(i){
+  ti=i; const st=TOUR[i];
+  // only the factor-panel steps keep it open; every other step closes it,
+  // so jumping backwards from those steps cannot leave it hanging
+  if(!st.keepFx){const o=document.getElementById("fxov"); if(o) o.hidden=true;}
+  if(st.act) st.act();
+  const el=document.querySelector(st.sel);
+  if(!el) return tourEnd();
+  tourEl=el;
+  const sp=document.getElementById("spot"), tp=document.getElementById("tip");
+  tp.innerHTML=`<h4>${st.title}</h4><p>${st.body}</p>
+    <div class="nav"><span class="stepn">${i+1} of ${TOUR.length}</span>
+      ${i?'<button id="tprev">Back</button>':""}
+      <button class="go" id="tnext">${i===TOUR.length-1?"Done":"Next"}</button>
+      <button class="skip" id="tskip">Skip</button></div>`;
+  document.getElementById("tnext").onclick=()=>{ i===TOUR.length-1?tourEnd():tourAt(i+1); };
+  document.getElementById("tskip").onclick=tourEnd;
+  const pv=document.getElementById("tprev"); if(pv) pv.onclick=()=>tourAt(i-1);
+  sp.hidden=false; tp.hidden=false;
+  el.scrollIntoView({behavior:"smooth",block:"center"});
+  tourLocate();
+  // smooth scrolling is asynchronous — keep re-placing until the page stops moving,
+  // rather than guessing at a fixed delay
+  let last="", still=0, t0=Date.now();
+  (function settle(){
+    if(ti!==i) return;
+    const r=tourEl.getBoundingClientRect(), key=r.top.toFixed(1)+","+r.left.toFixed(1);
+    still = key===last ? still+1 : 0;
+    last=key; tourLocate();
+    if(still<4 && Date.now()-t0<1400) requestAnimationFrame(settle);
+  })();
+}
+function tourStart(){ const o=document.getElementById("tov"); if(o) o.hidden=false; tourAt(0); }
+function tourEnd(){ ti=-1; for(const id of ["tov","spot","tip","fxov"]){const o=document.getElementById(id); if(o) o.hidden=true;}
+  try{localStorage.setItem("ofi_tour_seen","1");}catch(e){} }
+
+function thesis(){
+  // the Outcome tag only says what the header does not: shown when the Q4-only view is on
+  const kt=document.getElementById("kpitag");
+  if(kt){ kt.textContent="Q4 only \u00b7 Oct\u2013Dec"; kt.hidden=view!=="q4"; }
+}
+function render(){
+  thesis();pills();drivers();versions();legend();kpis();pnl();savedViews();
+  const _ff=document.getElementById("fxflag"); if(_ff) _ff.hidden = !fxDirty();
+  document.getElementById("pnlttl").innerHTML = view==="fy"
+    ? `Full-year 2026 P&amp;L <span class="tag">EUR m</span>`
+    : `Q4 2026 P&amp;L — Oct to Dec only <span class="tag">EUR m</span>`;
+  document.getElementById("story").style.display  = mode==="story" ?"":"none";
+  document.getElementById("charts").style.display = mode==="charts"?"":"none";
+  document.getElementById("modehint").textContent = mode==="story"
+    ? "One card per live assumption, explaining which lines it moves and why."
+    : `Bridge is showing ${lineName(bridgeKey)} — click any row in the table to switch it.`;
+  if(mode==="story") story(); else charts();
+}
+document.querySelectorAll(".tog button[data-v]").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tog button[data-v]").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); view=b.dataset.v; render();});
+document.querySelectorAll(".modebar button[data-m]").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".modebar button[data-m]").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); mode=b.dataset.m; render();});
+const on=(id,fn)=>{const e=document.getElementById(id); if(e) e.onclick=fn;};
+on("mxbtn",matrix);
+on("fxbtn",factors);
+on("vtreebtn",openTree);
+on("vtreebtn2",openTree);
+on("vtx",()=>{const o=document.getElementById("vtov"); if(o) o.hidden=true;});
+{const o=document.getElementById("vtov"); if(o) o.onclick=e=>{if(e.target.id==="vtov")e.target.hidden=true;};}
+on("rfbtn",refresh);
+on("expbtn",exportStatic);
+on("savebtn",doSave);
+on("loadbtn",()=>{ const s=document.getElementById("savesel");
+  if(s&&s.value){ restoreState(readViews()[s.value]); savedViews(); s.value=s.value; } });
+on("delbtn",()=>{ const s=document.getElementById("savesel");
+  if(s&&s.value){ const v=readViews(); delete v[s.value]; writeViews(v); savedViews(); } });
+on("fxx",()=>{const o=document.getElementById("fxov"); if(o) o.hidden=true;});
+{const o=document.getElementById("fxov"); if(o) o.onclick=e=>{if(e.target.id==="fxov")e.target.hidden=true;};}
+on("mxx",()=>{const o=document.getElementById("mxov"); if(o) o.hidden=true;});
+{const o=document.getElementById("mxov"); if(o) o.onclick=e=>{if(e.target.id==="mxov")e.target.hidden=true;};}
+on("tourbtn",tourStart);
+addEventListener("keydown",e=>{ if(e.key!=="Escape")return;
+  for(const id of ["mxov","fxov","vtov","svov","cpov"]){const o=document.getElementById(id); if(o) o.hidden=true;}
+  closeSub(true);
+  if(ti>=0) tourEnd(); });
+addEventListener("resize",tourLocate);
+addEventListener("scroll",tourLocate,{passive:true});
+{const _r=document.getElementById("rst"); if(_r) _r.oninput=function(){const v=parseFloat(this.value); if(v>0.3){RESTATE=v;render();}};}
+on("allon",()=>{DRV.forEach(d=>EN[d.k]=1);render();});
+on("alloff",()=>{DRV.forEach(d=>EN[d.k]=0);render();});
+// the refresh notice is collapsible: headline always visible, detail on demand
+(function(){
+  const m=document.getElementById("rfmsg"); if(!m||!window.MutationObserver) return;
+  const fold=()=>{
+    if(m.hidden || m.querySelector(":scope>details")) return;
+    obs.disconnect();
+    const b=m.querySelector(":scope>b");
+    let head;
+    if(b){ head=b.textContent; b.remove(); }
+    else { const t=m.textContent, p=t.indexOf(". "); head=p>0?t.slice(0,p+1):t; m.textContent=p>0?t.slice(p+2):""; }
+    const rest=[]; while(m.firstChild){ rest.push(m.firstChild); m.removeChild(m.firstChild); }
+    const d=document.createElement("details"), sm=document.createElement("summary"), body=document.createElement("div");
+    const tg=document.createElement("span"); tg.className="tg"; tg.textContent="details";
+    sm.append(document.createTextNode(head),tg); body.className="rfbody"; rest.forEach(n=>body.appendChild(n));
+    if(!body.textContent.trim()) tg.remove();
+    d.ontoggle=()=>{ tg.textContent=d.open?"hide":"details"; };
+    const x=document.createElement("button"); x.className="rfx"; x.title="Dismiss"; x.textContent="\u00d7";
+    x.onclick=()=>{ m.hidden=true; };
+    d.append(sm,body); m.append(x,d);
+    obs.observe(m,{childList:true,attributes:true,attributeFilter:["hidden"]});
+  };
+  const obs=new MutationObserver(fold);
+  obs.observe(m,{childList:true,attributes:true,attributeFilter:["hidden"]});
+})();
+// ---- Save and Copy dialogs
+const showOv=id=>{ const o=document.getElementById(id); if(o) o.hidden=false; };
+const hideOv=id=>{ const o=document.getElementById(id); if(o) o.hidden=true; };
+on("svbtn",()=>{ render(); showOv("svov"); });
+on("cpbtn",()=>{ closeSub(true); forkArmed=false; if(cur!=="Custom"&&cur!=="Base"&&SC[cur]) forkSrc=cur; setText("cpmsg",""); render(); showOv("cpov"); });
+on("svx",()=>hideOv("svov")); on("cpx",()=>hideOv("cpov"));
+for(const id of ["svov","cpov"]){ const o=document.getElementById(id); if(o) o.addEventListener("click",e=>{ if(e.target===o) o.hidden=true; }); }
+// ---- Scenario sub-bar: opens on hover or keyboard focus; select toggles it on touch screens
+let subT=null;
+function openSub(){
+  const sb=document.getElementById("subbar"), st=document.getElementById("scenTab"); if(!sb) return;
+  clearTimeout(subT);
+  if(sb.hidden){ sb.hidden=false; sb.classList.remove("anim"); void sb.offsetWidth; sb.classList.add("anim");
+    setTimeout(()=>sb.classList.remove("anim"),1000); }
+  if(st) st.setAttribute("aria-expanded","true");
+}
+function closeSub(now){
+  const sb=document.getElementById("subbar"), st=document.getElementById("scenTab"); if(!sb) return;
+  clearTimeout(subT);
+  const go=()=>{ sb.hidden=true; if(st) st.setAttribute("aria-expanded","false"); };
+  if(now) go(); else subT=setTimeout(go,220);
+}
+{ const tabs=document.getElementById("tabs"), st=document.getElementById("scenTab"), sb=document.getElementById("subbar");
+  if(tabs&&st&&sb){
+    const hover=window.matchMedia&&matchMedia("(hover:hover)").matches;
+    st.addEventListener("mouseenter",()=>{ if(hover) openSub(); });
+    sb.addEventListener("mouseenter",()=>clearTimeout(subT));
+    tabs.addEventListener("mouseleave",()=>{ if(hover) closeSub(); });
+    for(const id of ["cpbtn","mxbtn","fxbtn","tourbtn"]){ const b=document.getElementById(id); if(b) b.addEventListener("mouseenter",()=>closeSub(true)); }
+    st.addEventListener("click",()=>{ sb.hidden?openSub():closeSub(true); });
+    st.addEventListener("keydown",e=>{ if(e.key==="ArrowDown"){ e.preventDefault(); openSub(); const f=sb.querySelector(".pill"); if(f) f.focus(); } });
+    tabs.addEventListener("focusout",e=>{ if(!tabs.contains(e.relatedTarget)) closeSub(true); });
+  } }
+// ---- Copy scenario dialog
+function nextName(){ let i=1; while(SC["Custom "+i]||RESERVED.has("Custom "+i)) i++; return "Custom "+i; }
+function copyUI(){
+  const fs=document.getElementById("forksrc"), ts=document.getElementById("cpto"), nm=document.getElementById("cpname"),
+        nl=document.getElementById("cpnamelab"), fk=document.getElementById("fork"), rc=document.getElementById("rstc"),
+        ud=document.getElementById("usdel");
+  if(!fs||!ts) return;
+  const froms=[...Object.keys(SC),...(customTouched?["Custom"]:[])];
+  if(!froms.includes(forkSrc)) forkSrc="Base";
+  const tos=["__new","Custom",...Object.keys(SC).filter(n=>n!=="Base")];
+  if(!tos.includes(cpTo)) cpTo="__new";
+  const opt=(v,t,sel)=>{ const o=document.createElement("option"); o.value=v; o.textContent=t; if(sel) o.selected=true; return o; };
+  fs.textContent=""; froms.forEach(n=>fs.appendChild(opt(n,n,n===forkSrc)));
+  ts.textContent=""; ts.appendChild(opt("__new","+ New scenario",cpTo==="__new"));
+  tos.slice(1).forEach(n=>ts.appendChild(opt(n,n+(USER.has(n)?" (yours)":""),n===cpTo)));
+  const isNew=cpTo==="__new";
+  nm.hidden=nl.hidden=!isNew; if(isNew) nm.placeholder=nextName();
+  const overwrite = !isNew && (cpTo!=="Custom" || customTouched);
+  fk.textContent = forkArmed ? "Overwrite "+cpTo+"?" : isNew ? "Create scenario" : "Copy into "+cpTo;
+  fk.className = forkArmed ? "arm" : "go";
+  ud.hidden = !USER.has(cpTo);
+  rc.disabled = !customTouched;
+  fs.onchange=e=>{ forkSrc=e.target.value; forkArmed=false; setText("cpmsg",""); copyUI(); };
+  ts.onchange=e=>{ cpTo=e.target.value; forkArmed=false; setText("cpmsg",""); copyUI(); };
+  fk.onclick=()=>{
+    const src=forkSrc==="Custom"?custom:SC[forkSrc]; if(!src) return;
+    if(isNew){
+      const n=cleanName(nm.value)||nextName();
+      if(RESERVED.has(n)||SC[n]){ setText("cpmsg","\u201c"+n+"\u201d is already taken \u2014 pick another name."); return; }
+      addUser(n,src,forkSrc); cur=n; cpTo=n; nm.value="";
+    } else {
+      if(overwrite && !forkArmed){ forkArmed=true; copyUI(); return; }
+      if(cpTo==="Custom"){ custom={...pickD(src)}; customFrom=forkSrc; customTouched=true; }
+      else Object.assign(SC[cpTo],pickD(src));
+      cur=cpTo;
+    }
+    forkArmed=false; setText("cpmsg",""); saveEdits(); render();
+    const o=document.getElementById("cpov"); if(o) o.hidden=true;
+  };
+  ud.onclick=()=>{
+    if(!USER.has(cpTo)) return;
+    if(ud.dataset.arm!=="1"){ ud.dataset.arm="1"; ud.textContent="Delete "+cpTo+"?"; ud.className="arm"; return; }
+    delete ud.dataset.arm; ud.textContent="Delete scenario"; ud.className="";
+    dropUser(cpTo); cpTo="__new"; saveEdits(); render();
+  };
+  rc.onclick=()=>{
+    custom={...SC.Base}; customFrom="the 6p6"; customTouched=false; forkArmed=false;
+    if(cur==="Custom") cur="Base"; saveEdits(); render(); };
+}
+loadVers();
+bootData();
+render();
+// the guide opens itself only where the browser can remember it has been seen
+if(STORE){ try{ if(!localStorage.getItem("ofi_tour_seen")) setTimeout(tourStart,650); }catch(e){} }
+</script>
+
+<div id="osw-msg" style="display:none;position:fixed;inset:0;z-index:99999;background:#fff;font:14px Segoe UI,Arial,sans-serif;color:#33415c;align-items:center;justify-content:center;text-align:center;padding:24px"></div>
+<script>
+(function(){
+  // Data arrives from OneStream in ?z= (gzip + base64url JSON), split across n Web Content components:
+  // p=1 is this visible panel, p=2..n are thin helper strips that postMessage their piece here (k = hash of the payload).
+  var q=new URLSearchParams(location.search),z=q.get('z')||'',e=q.get('e'),k=q.get('k')||'',p=+(q.get('p')||1),n=+(q.get('n')||1);
+  var box=document.getElementById('osw-msg'),app=document.getElementById('app');
+  function b(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var x=atob(s),u=new Uint8Array(x.length);for(var i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u;}
+  function msg(m){box.textContent=m;box.style.display='flex';}
+  function postAll(m){function walk(w,d){var f;try{f=w.frames;}catch(x){return;}for(var i=0;i<f.length;i++){try{if(f[i]!==window)f[i].postMessage(m,'*');}catch(x){}if(d<3)walk(f[i],d+1);}}try{walk(window.top,0);}catch(x){}}
+  var bc=null;try{if(k)bc=new BroadcastChannel('osw-'+k);}catch(x){}
+  if(p>1){
+    // helper strip: show nothing, hand the piece to the main panel (now and whenever it asks)
+    document.documentElement.style.background='transparent';document.body.style.background='transparent';
+    Array.prototype.forEach.call(document.body.children,function(c){if(c.tagName!=='SCRIPT')c.style.display='none';});
+    if(e)return;
+    var m1={osw:1,t:'part',key:k,part:p,z:z},send=function(){postAll(m1);if(bc)try{bc.postMessage(m1);}catch(x){}};
+    try{localStorage.setItem('osw:'+k+':'+p,z);}catch(x){}
+    addEventListener('message',function(ev){var d=ev.data;if(d&&d.osw&&d.t==='need'&&d.key===k)send();});
+    if(bc)bc.onmessage=function(ev){if(ev.data&&ev.data.t==='need')send();};
+    send();var c=0,iv=setInterval(function(){send();if(++c>30)clearInterval(iv);},400);
+    return;
+  }
+  function run(json){
+    document.getElementById('ospayload').textContent=json;
+    var s=document.createElement('script');s.textContent=document.getElementById('appjs').textContent;
+    document.body.appendChild(s);box.style.display='none';
+  }
+  if(e){try{msg(new TextDecoder().decode(b(e)));}catch(x){msg('Error');}return;}
+  if(!k&&!z){msg('No data. Open this page from the OneStream dashboard (FY26 EOY Scenarios).');return;}
+  var pieces={1:z},done=false;
+  function draw(){
+    if(done)return;for(var i=1;i<=n;i++)if(pieces[i]==null)return;done=true;
+    var all='';for(var j=1;j<=n;j++)all+=pieces[j];
+    new Response(new Blob([b(all)]).stream().pipeThrough(new DecompressionStream('gzip'))).text()
+      .then(function(s){JSON.parse(s);run(s);})
+      .catch(function(x){msg('Could not read the data: '+(x&&x.message||x));});
+  }
+  function take(part,piece){if(part>1&&part<=n&&pieces[part]==null){pieces[part]=piece||'';draw();}}
+  addEventListener('message',function(ev){var d=ev.data;if(d&&d.osw&&d.t==='part'&&d.key===k)take(+d.part,d.z);});
+  if(bc)bc.onmessage=function(ev){var d=ev.data;if(d&&d.t==='part')take(+d.part,d.z);};
+  if(n>1)msg('Loading the scenario data from OneStream…');
+  draw();
+  var tries=0,iv2=setInterval(function(){
+    if(done){clearInterval(iv2);return;}
+    for(var i=2;i<=n;i++){try{var v=localStorage.getItem('osw:'+k+':'+i);if(v!=null)take(i,v);}catch(x){}}
+    if(tries%3===0){var need={osw:1,t:'need',key:k};postAll(need);if(bc)try{bc.postMessage(need);}catch(x){}}
+    if(++tries>40){clearInterval(iv2);if(!done){var miss=[];for(var j=2;j<=n;j++)if(pieces[j]==null)miss.push(j);msg('Waiting for helper panel(s) '+miss.join(', ')+' timed out. Refresh the dashboard; if it repeats, check the helper Web Content components are on the dashboard.');}}
+  },250);
+})();
+</script>
+</body></html>
