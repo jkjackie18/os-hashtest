@@ -114,7 +114,6 @@ body.fm .charts .lg,body.fa .charts .lg,body.fm .ch .sub,body.fa .ch .sub{displa
 <script>
 window.__main=function(P){
 'use strict';
-if(!P||!P.projects){P=DEMO();P.demo=true;}
 if(!P.months){P.months=[];for(var yy=0;yy<5;yy++)for(var mm=1;mm<=12;mm++)P.months.push(P.years[yy]+'M'+mm);}
 var $=function(id){return document.getElementById(id);};
 var PAL=['#6366F1','#14B8A6','#F59E0B','#EC4899','#3B82F6','#8B5CF6','#10B981','#F97316','#06B6D4','#94A3B8'];
@@ -292,20 +291,6 @@ if(window.ResizeObserver)new ResizeObserver(onResize).observe(document.body);els
 document.addEventListener('keydown',function(e){if(menu.classList.contains('open'))return;if(e.key==='ArrowRight')$('next').click();if(e.key==='ArrowLeft')$('prev').click();});
 render(true);
 
-function DEMO(){var months=[],yrs=[2025,2026,2027,2028,2029,2030];for(var y=2025;y<=2029;y++)for(var m=1;m<=12;m++)months.push(y+'M'+m);
-  function series(seed,st,en,amp){var b=[],a=[];for(var i=0;i<60;i++){var on=i>=st&&i<=en,r=Math.abs(Math.sin(seed*7.1+i*1.7))*.8+.2;b.push(on?Math.round(amp*r*(i%7===3?3.2:1)):0);a.push(on&&i<=20?Math.round(b[i]*(0.82+Math.abs(Math.cos(i+seed))*.32)):0);}return [b,a];}
-  var defs=[['CP0001','Core Banking Modernisation',965000,24602,.12,1.69,.08,.30,20260801,20290306,3160000],
-    ['PRJ1001','Payment Switch Technology Update',1012000,298112,.19,1.42,.12,0,20260501,20290306,3010000],
-    ['CP0002','Payments Domain Platform',759000,38107,.04,0,.47,.32,20261019,20290730,1170000],
-    ['CP0003','Customer Domain & CRM Platform',1277000,63984,.05,3.98,.40,0,20270705,20291118,800000],
-    ['CP0006','GPU & Compute Leasing Agreement',661000,847118,.40,3.67,.26,.24,20260414,20290722,2900000],
-    ['CP0007','Agentic AI Platform',426000,90208,.14,4.11,.16,.18,20260301,20290717,450000]];
-  var accs=[['Consumables','Consumables & Supplies',.30],['DirectLabor','Direct Labor',.22],['Equipment','Equipment',.2],['Freight','Freight & Logistics',.06],['Meeting','Meeting Expense',.03],['Other','Other Costs',.08],['Subcontract','Subcontract',.07],['Travel','Travel',.04]].map(function(a){return {id:a[0],label:a[1],w:a[2]};});
-  var shape=[[1,1,1,1,1,1,1,1],[.15,.2,.1,.5,.8,1.2,3,1.4],[1,.8,1.1,.6,.9,1.5,2.1,.7],[.2,.3,.2,.5,.7,1.4,1.6,1.1]];
-  var projects=defs.map(function(d,i){var s=series(i+1,12+i,59-i*2,d[2]/12||40000);var c={};accs.forEach(function(a,j){c[a.id]=[0,1,2,3].map(function(t){return Math.round(d[10]/4*a.w*shape[t][j]*(t===0?1.25:t===1?.5:t===2?.95:.35)*(1+((i+j)%3)*.08));});});
-    var ltd=0;for(var q=0;q<=21;q++)ltd+=s[1][q];
-    return {id:d[0],name:d[1],kpi:{bud:d[2],npv:d[3],roi:d[4],pay:d[5],irr:d[6],pct:d[7],start:d[8],end:d[9],eac:d[10],ltd:ltd,etc:d[10]-ltd},mB:s[0],mA:s[1],cost:c};});
-  return {years:yrs,months:months,costYears:[2026,2027,2028,2029],lastActual:21,open:'CP0001',asOf:'',plan:'Program Budget',actual:'Program Actuals',accounts:accs,projects:projects};}
 };
 </script><script>
 (function(){
@@ -313,7 +298,7 @@ function DEMO(){var months=[],yrs=[2025,2026,2027,2028,2029,2030];for(var y=2025
   function b(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var x=atob(s),u=new Uint8Array(x.length);for(var i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u;}
   function fail(m){document.getElementById('app').innerHTML='<div style="margin:16px;padding:12px;border:1px solid #f3c2c2;background:#fdecec;color:#8a1f1f;border-radius:8px"></div>';document.getElementById('app').firstChild.textContent=m;}
   if(e){try{fail(new TextDecoder().decode(b(e)));}catch(x){fail('Error');}return;}
-  if(!z){window.__main(null);return;}
+  if(!z){fail('No data. Open this page from the OneStream dashboard.');return;}
   new Response(new Blob([b(z)]).stream().pipeThrough(new DecompressionStream('gzip'))).text()
     .then(function(s){window.__main(JSON.parse(s));})
     .catch(function(x){fail('Could not read the data: '+(x&&x.message||x));});
