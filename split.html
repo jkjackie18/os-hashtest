@@ -25,25 +25,30 @@ td{padding:4px 10px;border-bottom:1px solid #EEF1F7}td:first-child{color:#6A7390
     var d=JSON.parse(s),key=d.key,part=+d.part,parts=+d.parts,mine={part:part,len:(d.pad||'').length,expect:d.padLen,pad:d.pad};
     document.getElementById('lbl').textContent='Split test · '+(part===1?'MAIN panel':'helper panel '+part)+' of '+parts+' · URL '+location.href.length+' chars';
     row('Own data received',mine.len+' / '+mine.expect+(mine.len===mine.expect?' ✓':' ✗'));
+    // postMessage to every frame on the OneStream page (works even when the frames are sandboxed / opaque-origin)
+    function postAll(m){var n=0;function walk(w,d){var f;try{f=w.frames;}catch(e){return;}for(var i=0;i<f.length;i++){try{if(f[i]!==window){f[i].postMessage(m,'*');n++;}}catch(e){}if(d<3)walk(f[i],d+1);}}try{walk(window.top,0);}catch(e){}return n;}
     var bc=null;try{bc=new BroadcastChannel('osw-'+key);}catch(e){row('BroadcastChannel','not available: '+e.message);}
     try{localStorage.setItem('osw:'+key+':'+part,JSON.stringify({len:mine.len,expect:mine.expect,pad:mine.pad}));row('localStorage write','OK');}catch(e){row('localStorage write','blocked: '+e.message);}
     window.__osw={key:key,part:part,len:mine.len,pad:mine.pad};
     if(part!==1){
       // helper: announce its data now and whenever the main panel asks
-      var send=function(){if(bc)bc.postMessage({t:'part',part:part,len:mine.len,expect:mine.expect,pad:mine.pad});};
+      var msg={osw:1,t:'part',key:key,part:part,len:mine.len,expect:mine.expect,pad:mine.pad};
+      var send=function(){if(bc)bc.postMessage(msg);postAll(msg);};
       if(bc)bc.onmessage=function(ev){if(ev.data&&ev.data.t==='need')send();};
+      addEventListener('message',function(ev){var m=ev.data;if(m&&m.osw&&m.t==='need'&&m.key===key)send();});
       send();var n=0,iv=setInterval(function(){send();if(++n>20)clearInterval(iv);},500);
       set('ok','Helper ready');return;
     }
     // main: collect parts 2..parts by three routes and report which worked
-    var got={},via={bc:[],ls:[],frames:[]},cells={};
+    var got={},via={bc:[],ls:[],frames:[],pm:[]},cells={};
     for(var p=2;p<=parts;p++)cells[p]=row('Part '+p,'waiting…');
-    var rBC=row('Route: BroadcastChannel','–'),rLS=row('Route: localStorage','–'),rFR=row('Route: sibling frame','–');
+    var rPM=row('Route: postMessage via page frames','–'),rBC=row('Route: BroadcastChannel','–'),rLS=row('Route: localStorage','–'),rFR=row('Route: sibling frame','–');
     function take(p,len,expect,pad,route){
       if(!(p in cells))return;
       if(via[route].indexOf(p)<0)via[route].push(p);
       if(!got[p]){got[p]={len:len,ok:len===expect&&pad&&pad.length===len,ms:Math.round(performance.now()-T0),route:route};
         cells[p].textContent=(got[p].ok?'✓ ':'✗ ')+len+' / '+expect+' chars via '+route+' after '+got[p].ms+' ms';}
+      rPM.textContent=via.pm.length?'works (parts '+via.pm.join(', ')+')':'nothing yet';
       rBC.textContent=via.bc.length?'works (parts '+via.bc.join(', ')+')':'nothing yet';
       rLS.textContent=via.ls.length?'works (parts '+via.ls.join(', ')+')':'nothing yet';
       rFR.textContent=via.frames.length?'works (parts '+via.frames.join(', ')+')':'nothing yet';
@@ -51,13 +56,15 @@ td{padding:4px 10px;border-bottom:1px solid #EEF1F7}td:first-child{color:#6A7390
       if(all){var tot=mine.len;for(var q2=2;q2<=parts;q2++)tot+=got[q2].len;set('ok','Assembled '+parts+' parts · '+tot+' chars of data');}
     }
     if(bc){bc.onmessage=function(ev){var m=ev.data;if(m&&m.t==='part')take(m.part,m.len,m.expect,m.pad,'bc');};bc.postMessage({t:'need'});}
+    addEventListener('message',function(ev){var m=ev.data;if(m&&m.osw&&m.t==='part'&&m.key===key)take(m.part,m.len,m.expect,m.pad,'pm');});
+    row('Frames reachable on the page',String(postAll({osw:1,t:'need',key:key})));
     addEventListener('storage',function(ev){var m=/^osw:(.+):(\d+)$/.exec(ev.key||'');if(m&&m[1]===key&&ev.newValue){var o=JSON.parse(ev.newValue);take(+m[2],o.len,o.expect,o.pad,'ls');}});
     var tries=0,poll=setInterval(function(){
       for(var p=2;p<=parts;p++){
         try{var v=localStorage.getItem('osw:'+key+':'+p);if(v){var o=JSON.parse(v);take(p,o.len,o.expect,o.pad,'ls');}}catch(e){}
       }
       try{var fr=window.parent.frames;for(var i=0;i<fr.length;i++){try{var w=fr[i].__osw;if(w&&w.key===key&&w.part!==1)take(w.part,w.len,mine.expect,w.pad,'frames');}catch(e){}}}catch(e){}
-      if(bc&&tries%4===0)bc.postMessage({t:'need'});
+      if(tries%4===0){if(bc)bc.postMessage({t:'need'});postAll({osw:1,t:'need',key:key});}
       if(++tries>40){clearInterval(poll);for(var q=2;q<=parts;q++)if(!got[q])cells[q].textContent='✗ not received in 20 s';
         var all=true;for(var q3=2;q3<=parts;q3++)if(!got[q3])all=false;if(!all)set('bad','Some parts missing');}
     },500);
