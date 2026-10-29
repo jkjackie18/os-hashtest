@@ -16,7 +16,7 @@ td{padding:5px 10px;border-bottom:1px solid #EEF1F7;vertical-align:top}td:first-
 <h1>OneStream → hosted page test <span id="st" class="status wait">Waiting</span></h1>
 <div class="grid" id="vals"></div>
 <table id="diag"></table>
-<div style="font-size:12px;color:#6A7390">This page contains no data. Everything shown above arrived in the part of the URL after “#”, which browsers never send to the web server.</div>
+<div style="font-size:12px;color:#6A7390">This page contains no data. Everything shown above arrived in the URL: after “#” (never sent to the web server) or after “?” (sent to the web server).</div>
 </div>
 <script>
 (function(){
@@ -24,8 +24,9 @@ td{padding:5px 10px;border-bottom:1px solid #EEF1F7;vertical-align:top}td:first-
   function row(k,v){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.textContent=k;b.textContent=v;tr.appendChild(a);tr.appendChild(b);document.getElementById('diag').appendChild(tr);}
   function tile(l,v){var d=document.createElement('div');d.className='k';var a=document.createElement('div');a.className='l';a.textContent=l;var b=document.createElement('div');b.className='v';b.textContent=v;d.appendChild(a);d.appendChild(b);document.getElementById('vals').appendChild(d);}
   var framed;try{framed=window.top!==window;}catch(e){framed='yes (cross-origin)';}
-  var h=location.hash.slice(1);
-  row('Hash length (characters)',h.length.toLocaleString());
+  var hh=location.hash.slice(1),qs=location.search.slice(1),h=hh||qs;
+  row('Data after # (characters)',hh.length.toLocaleString());
+  row('Data after ? (characters)',qs.length.toLocaleString());
   row('Shown inside a frame',String(framed));
   row('Referrer',document.referrer||'(none)');
   row('Page origin',location.origin);
