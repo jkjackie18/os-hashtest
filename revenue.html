@@ -858,7 +858,7 @@ function fit(b,pad){const box=$('mapbox');const ar=box.clientWidth/box.clientHei
   if(w/h>ar){const nh=w/ar;y-=(nh-h)/2;h=nh;}else{const nw=h*ar;x-=(nw-w)/2;w=nw;}return [x,y,w,h];}
 function gbox(sel){const els=[...document.querySelectorAll(sel)];let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;els.forEach(e=>{const b=e.getBBox();x0=Math.min(x0,b.x);y0=Math.min(y0,b.y);x1=Math.max(x1,b.x+b.width);y1=Math.max(y1,b.y+b.height);});return [x0,y0,x1-x0,y1-y0];}
 const HOME=()=>{const els=document.querySelectorAll('#map #cl path');if(els.length){const b=gbox('#map #cl path');if(b[2]>0&&b[3]>0)return fit(b,0.06);}const a=prj(84,44),b=prj(178,-47);return fit([a[0],a[1],b[0]-a[0],b[1]-a[1]],0);};
-function mapFam(){const l=level();if(l===0)return null;if(S.path[1]!==D.mapDiv)return '__none';return l>=2?S.path[2]:null;}
+function mapFam(){const l=level();if(l===0)return null;if(D.mapDiv===D.root||!D.mapDiv)return S.path[1];if(S.path[1]!==D.mapDiv)return '__none';return l>=2?S.path[2]:null;}
 function cval(k){const c=D.countries[k],f=mapFam();if(!f||f==='__none')return c.values;return c.fam[f]||null;}
 let RANGE=[0,1],SORTV=[];const tN=v=>{const lin=RANGE[1]>RANGE[0]?(v-RANGE[0])/(RANGE[1]-RANGE[0]):.6;const n=SORTV.length;const rk=n>1?SORTV.filter(x=>x<v-0.5).length/(n-1):.6;return 0.55*rk+0.45*lin;};
 function colOf(v){if(!v||!(+v[S.m-1]))return '#e8ecf6';return S.mapMode==='mov'?movHex(v):pal(0.06+0.94*tN(v[S.m-1]));}
