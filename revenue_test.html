@@ -240,6 +240,18 @@
 #rank .rkmore{display:block;width:100%;margin-top:6px;padding:7px 0;border:0;border-radius:9px;background:#eef2fb;color:#13244f;font:600 12.5px "Segoe UI Variable Text","Segoe UI",Inter,system-ui,Arial;cursor:pointer}
 #rank .rkmore:hover{background:#e2e8f7}
 #rank tr.r.rkhide{display:none}
+.hubside h3{font-size:15px!important}
+.hubside .rh{margin-bottom:4px}
+.hubside>#famBars .fr{flex:none!important}
+.fr{font-size:13px!important;padding:5px 4px!important;gap:2px 8px!important;grid-template-columns:10px minmax(110px,1fr) 64px 70px 44px!important}
+.fr .dot{width:10px!important;height:10px!important}.fr .vv{font-size:13px!important}.fr .pc{font-size:12px!important}
+.fr .dc{font-size:11px!important;margin-top:0!important}.fr .bb{height:10px!important}
+.hubside>#donut h3{margin-bottom:4px!important}
+.dn2{grid-template-columns:132px 1fr!important;gap:12px!important}
+#donut svg{width:132px;height:132px}
+#donut .dl div{font-size:12px!important;padding:2px 0!important}
+.ph .crumb:empty{display:none}
+#rank .rknote{margin-top:6px;font-size:11.5px;color:#6b7896}
 </style></head><body>
 <div class="hero2">
   <div class="hleft"><div class="hico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cfe0ff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z" fill="rgba(120,170,255,.35)"/><path d="M3.5 7.2L12 12l8.5-4.8M12 12v9.5"/></svg></div>
@@ -1177,9 +1189,14 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
     const mb=$('mapbox');if(mb&&mb.offsetParent){const top=mb.getBoundingClientRect().top+scrollY;const h=Math.max(380,H-top-14);mb.style.height=h+'px';if(R)R.style.maxHeight=h+'px';}
     const st=$('stage');if(st&&st.offsetParent){const top=st.getBoundingClientRect().top+scrollY;const hp=Math.max(300,H-top-14);const w=Math.round(hp*PHOTO.W/PHOTO.H);
       if(HUB)HUB.style.gridTemplateColumns='minmax(0,'+w+'px) minmax(300px,1fr)';if(SIDE)SIDE.style.maxHeight=(st.getBoundingClientRect().bottom-HUB.getBoundingClientRect().top)+'px';}}
+  // live descriptions: panel title = product root description; breadcrumb only once drilled in
+  const ROOTL=P[D.root].label;const hv=$('hview');if(hv&&hv.parentNode)hv.parentNode.textContent=ROOTL;THEME.all=ROOTL;
+  const _crumb=crumb;crumb=function(){_crumb();if(level()===0)$('crumb').innerHTML='';};crumb();
+  // donut: scalable
+  const _list=renderList;renderList=function(){_list();const sv=document.querySelector('#donut svg');if(sv)sv.setAttribute('viewBox','0 0 236 236');};renderList();
   // ranking: show only what fits above the insight card; "Show all" expands (the panel then scrolls)
   let RKALL=false;const _rank=renderRank;
-  renderRank=function(rows,tot){_rank(rows,tot);const rk=$('rank'),ins=$('insight');if(!rk||!R)return;const trs=[...rk.querySelectorAll('tr.r')];if(!trs.length)return;
+  renderRank=function(rows,tot){const nz=rows.filter(r=>+r.v[S.m-1]||+(base(r.v)||0)),nzero=rows.length-nz.length;_rank(nz,tot);if(nzero){const n=document.createElement('div');n.className='rknote';n.textContent=nzero+' '+(S.ctry?(nzero>1?'regions':'region'):(nzero>1?'countries':'country'))+' with no revenue in '+MN[S.m-1]+' (grey on the map)';$('rank').appendChild(n);}const rk=$('rank'),ins=$('insight');if(!rk||!R)return;const trs=[...rk.querySelectorAll('tr.r')];if(!trs.length)return;
     const avail=(parseFloat(R.style.maxHeight)||R.clientHeight)-(ins?ins.offsetHeight:0)-24;const head=rk.offsetHeight-trs.reduce((a,t)=>a+t.offsetHeight,0);
     const rowH=trs[0].offsetHeight||35;let k=Math.max(4,Math.floor((avail-head-44)/rowH));if(RKALL||k>=trs.length)k=trs.length;
     trs.forEach((t,i)=>t.classList.toggle('rkhide',i>=k));
