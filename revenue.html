@@ -1253,13 +1253,13 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
 })();
 
 
-// ---- cross-filter (build xf5: family level in the page + header product focus): product node on the Regions page, country on the Products page ----
+// ---- cross-filter (build xf8: family level in the page + header product focus): product node on the Regions page, country on the Products page ----
 (function(){
   const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   // full country x product tree when the rule sent it (WebUrl XF=1); otherwise families only
   Object.entries(DATA.countries||{}).forEach(([m,o])=>{const k=GEOKEY[m]||m,c=D.countries[k];if(!c||!o.prod)return;c.prod={};Object.entries(o.prod).forEach(([q,x])=>c.prod[q]=withPy(x.v,x.p));});
   const DEEP=Object.values(D.countries).some(c=>c.prod&&Object.keys(c.prod).length);
-  try{console.log('RA cross-filter xf5 deep='+DEEP);}catch(e){}
+  try{console.log('RA cross-filter xf8 deep='+DEEP);}catch(e){}
   const SIMPLE=!D.mapDiv||D.mapDiv===D.root;
   const FO=DATA.focus&&P[DATA.focus.k]?DATA.focus:null;const FOCUS=FO?FO.k:null;
 
@@ -1335,8 +1335,8 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
     goFocus();}
 
   // ---- remember where the user was (tab, Globe/Flat, open country, Products country, product path) and come back after a reload ----
-  const SKEY='ra_view_'+D.root,TTL=8*3600e3;
-  const st={tab:'prod',map:null,ctry:null,cf:null,path:null};let RESTORING=true;
+  const SKEY='ra_view_'+D.root,TTL=10*60e3;   // only a reload within 10 minutes counts as 'carry on'; a later open starts on Products
+  const st={tab:'prod',map:null,ctry:null,cf:null,path:null,focus:FOCUS||null};let RESTORING=true;
   const save=()=>{if(RESTORING)return;try{localStorage.setItem(SKEY,JSON.stringify(Object.assign({},st,{at:Date.now()})));}catch(e){}};
   const vt=document.getElementById('vtabs');if(vt)vt.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{st.tab=b.dataset.v;save();}));
   const gs=document.getElementById('gseg');if(gs)gs.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{st.map=b.dataset.v;save();}));
@@ -1346,15 +1346,22 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
   const _cs3=cs.onchange;cs.onchange=function(){const r=_cs3.apply(this,arguments);st.cf=CF;save();return r;};
   const rs=document.getElementById('reset');if(rs)rs.addEventListener('click',()=>{try{localStorage.removeItem(SKEY);}catch(e){}st.tab='prod';st.map=null;st.ctry=null;st.cf=null;st.path=null;},true);
   let sv=null;try{sv=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
-  if(sv&&Date.now()-(sv.at||0)<TTL){setTimeout(()=>{try{
+  // after restoring, measure again once the board has its final size (the map / globe fit to the real box)
+  const refit=()=>{try{dispatchEvent(new Event('resize'));if(S.ctry&&!document.querySelector('.globe-on')){setVB(fit(gbox('#sl path'),S.ctry==='SG'?0.12:0.08));}layoutCards();renderMap();}catch(e){}};
+  const whenReady=f=>{const go=()=>setTimeout(()=>requestAnimationFrame(()=>requestAnimationFrame(f)),250);document.readyState==='complete'?go():addEventListener('load',go,{once:true});};
+  // a header product is for the regions: open on the Regions tab even when the browser keeps no memory
+  let MEM=false;try{localStorage.setItem(SKEY+'_t','1');MEM=localStorage.getItem(SKEY+'_t')==='1';localStorage.removeItem(SKEY+'_t');}catch(e){}
+  const toRegions=()=>{if(FOCUS&&vt){const b=vt.querySelector('button[data-v="reg"]');if(b&&!b.classList.contains('on'))b.click();}};
+  if(sv&&Date.now()-(sv.at||0)<TTL){whenReady(()=>{try{
       if(!FOCUS&&Array.isArray(sv.path)&&sv.path.length>1&&sv.path[0]===D.root&&sv.path.every(k=>P[k]))drillTo(sv.path);
-      if(sv.map&&gs){const b=gs.querySelector(`button[data-v="${sv.map}"]`);if(b&&!b.classList.contains('on'))b.click();}
-      if(sv.tab==='reg'&&vt){const b=vt.querySelector('button[data-v="reg"]');if(b)b.click();}
+      try{if(sv.map&&gs){const b=gs.querySelector(`button[data-v="${sv.map}"]`);if(b&&!b.classList.contains('on'))b.click();}}catch(e){}
+      try{if(sv.tab==='reg'&&vt){const b=vt.querySelector('button[data-v="reg"]');if(b)b.click();}}catch(e){}
       if(sv.ctry&&D.countries[sv.ctry]&&D.geo.states[sv.ctry])openCountry(sv.ctry,true);
       else if(sv.cf&&D.countries[sv.cf]){cs.value=sv.cf;cs.onchange();}
-    }catch(e){}RESTORING=false;Object.assign(st,{tab:sv.tab||'prod',map:sv.map||null,ctry:S.ctry||null,cf:CF,path:S.path.slice()});save();},60);}
-  else RESTORING=false;
-  try{const f=document.getElementById('bfootR');if(f)f.setAttribute('title','page build xf5');}catch(e){}
+    }catch(e){try{console.log('RA restore failed: '+e.message);}catch(x){}}
+    try{if(FOCUS&&FOCUS!==(sv.focus||null))toRegions();}catch(e){}   /* the header product just changed: show it on the map */RESTORING=false;Object.assign(st,{tab:document.querySelector('#vtabs button.on')?document.querySelector('#vtabs button.on').dataset.v:(sv.tab||'prod'),map:sv.map||null,ctry:S.ctry||null,cf:CF,path:S.path.slice(),focus:FOCUS||null});save();setTimeout(refit,350);setTimeout(refit,1200);});}
+  else{RESTORING=false;save();}   // fresh open: Products page; remember the header product for the next reload
+  try{const f=document.getElementById('bfootR');if(f)f.setAttribute('title','page build xf8 · view memory '+(MEM?'on':'off'));}catch(e){}
   syncFam();syncCty();renderMap();
 })();
 
