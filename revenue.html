@@ -1253,13 +1253,13 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
 })();
 
 
-// ---- cross-filter (build xf4: family level in the page + header product focus): product node on the Regions page, country on the Products page ----
+// ---- cross-filter (build xf5: family level in the page + header product focus): product node on the Regions page, country on the Products page ----
 (function(){
   const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   // full country x product tree when the rule sent it (WebUrl XF=1); otherwise families only
   Object.entries(DATA.countries||{}).forEach(([m,o])=>{const k=GEOKEY[m]||m,c=D.countries[k];if(!c||!o.prod)return;c.prod={};Object.entries(o.prod).forEach(([q,x])=>c.prod[q]=withPy(x.v,x.p));});
   const DEEP=Object.values(D.countries).some(c=>c.prod&&Object.keys(c.prod).length);
-  try{console.log('RA cross-filter xf4 deep='+DEEP);}catch(e){}
+  try{console.log('RA cross-filter xf5 deep='+DEEP);}catch(e){}
   const SIMPLE=!D.mapDiv||D.mapDiv===D.root;
   const FO=DATA.focus&&P[DATA.focus.k]?DATA.focus:null;const FOCUS=FO?FO.k:null;
 
@@ -1277,7 +1277,7 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
   if(DEEP&&SIMPLE){mapFam=function(){return node();};const _cval=cval;cval=function(k){const n=node();if(!n)return _cval(k);const c=D.countries[k];if(!c||c.ghost)return _cval(k);const v=nodeVal(c,n);return v.some(x=>x)||(v.py&&v.py.some(x=>x))?v:null;};}
   // Products page: countries with revenue in the year or the comparison year, largest first
   const hasRev=c=>c.values.slice(0,D.months).some(x=>x)||(c.values.py&&c.values.py.some(x=>x));
-  const tools=document.querySelector('.hub .ph .tools');
+  const tools=document.querySelector('.hub .ph .tools')||document.querySelector('.hub .ph')||document.querySelector('.ph');
   const cs=document.createElement('select');cs.id='ctySel';cs.className='regsel xsel';cs.title='Show products for one country';
   const fillCty=()=>{const v=cs.value;cs.innerHTML='<option value="">All countries</option>'+Object.entries(D.countries).filter(([k,c])=>!c.ghost&&hasRev(c)).sort((a,b)=>b[1].values[S.m-1]-a[1].values[S.m-1]).map(([k,c])=>`<option value="${k}">${esc(c.name)}</option>`).join('');cs.value=v;};
   fillCty();if(tools)tools.insertBefore(cs,tools.firstChild);
@@ -1333,6 +1333,28 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
     const goFocus=()=>{const pa=pathTo(FOCUS);if(P[FOCUS].children.length)drillTo(pa);else{FROMSEL=true;XLEAF=FOCUS;drillTo(pa.slice(0,-1));FROMSEL=false;}};
     const _fch=fs.onchange;fs.onchange=()=>{if(fs.value===FOCUS){goFocus();return;}_fch();};
     goFocus();}
+
+  // ---- remember where the user was (tab, Globe/Flat, open country, Products country, product path) and come back after a reload ----
+  const SKEY='ra_view_'+D.root,TTL=8*3600e3;
+  const st={tab:'prod',map:null,ctry:null,cf:null,path:null};let RESTORING=true;
+  const save=()=>{if(RESTORING)return;try{localStorage.setItem(SKEY,JSON.stringify(Object.assign({},st,{at:Date.now()})));}catch(e){}};
+  const vt=document.getElementById('vtabs');if(vt)vt.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{st.tab=b.dataset.v;save();}));
+  const gs=document.getElementById('gseg');if(gs)gs.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{st.map=b.dataset.v;save();}));
+  const _o3=openCountry;openCountry=function(k){const r=_o3.apply(this,arguments);st.ctry=S.ctry||null;st.cf=CF;save();return r;};
+  const _c3=closeCountry;closeCountry=function(){const r=_c3.apply(this,arguments);st.ctry=null;st.cf=CF;save();return r;};
+  const _d3=drillTo;drillTo=function(p){const r=_d3.apply(this,arguments);st.path=S.path.slice();save();return r;};
+  const _cs3=cs.onchange;cs.onchange=function(){const r=_cs3.apply(this,arguments);st.cf=CF;save();return r;};
+  const rs=document.getElementById('reset');if(rs)rs.addEventListener('click',()=>{try{localStorage.removeItem(SKEY);}catch(e){}st.tab='prod';st.map=null;st.ctry=null;st.cf=null;st.path=null;},true);
+  let sv=null;try{sv=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
+  if(sv&&Date.now()-(sv.at||0)<TTL){setTimeout(()=>{try{
+      if(!FOCUS&&Array.isArray(sv.path)&&sv.path.length>1&&sv.path[0]===D.root&&sv.path.every(k=>P[k]))drillTo(sv.path);
+      if(sv.map&&gs){const b=gs.querySelector(`button[data-v="${sv.map}"]`);if(b&&!b.classList.contains('on'))b.click();}
+      if(sv.tab==='reg'&&vt){const b=vt.querySelector('button[data-v="reg"]');if(b)b.click();}
+      if(sv.ctry&&D.countries[sv.ctry]&&D.geo.states[sv.ctry])openCountry(sv.ctry,true);
+      else if(sv.cf&&D.countries[sv.cf]){cs.value=sv.cf;cs.onchange();}
+    }catch(e){}RESTORING=false;Object.assign(st,{tab:sv.tab||'prod',map:sv.map||null,ctry:S.ctry||null,cf:CF,path:S.path.slice()});save();},60);}
+  else RESTORING=false;
+  try{const f=document.getElementById('bfootR');if(f)f.setAttribute('title','page build xf5');}catch(e){}
   syncFam();syncCty();renderMap();
 })();
 
