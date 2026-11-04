@@ -1,4 +1,108 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}/* ---- FY26 one-pager: slim header, left navigation rail, fit-to-window main page ---- */
+body.fyc{overflow:hidden}
+.fyc #app{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100vh}
+.fyc .mast{grid-column:1/-1;margin-bottom:0}
+.fyc .mast .wrap{padding-block:9px!important;display:flex!important;align-items:center;flex-wrap:wrap;gap:4px 18px}
+.fyc .mast h1{order:0;font-size:20px!important;font-weight:600;white-space:nowrap}
+.fyc .mast .meta{order:1;font-size:11px}
+.fyc .mast .mtop{order:2;margin-left:auto;gap:10px}
+.fyc .mast .ib{height:30px;min-width:30px}
+.fyc .tabs{display:none!important}
+/* rail: always-visible icon strip; hover slides it out with labels over the page */
+.frail{position:fixed;left:0;top:var(--hdrh,52px);bottom:0;width:56px;z-index:40;background:var(--band);display:flex;flex-direction:column;gap:4px;padding:10px 7px;border-top:1px solid var(--band-line);overflow:hidden;transition:width .3s cubic-bezier(.65,0,.35,1),box-shadow .3s}
+.frail:hover,.frail:focus-within{width:212px;box-shadow:10px 0 30px rgba(0,0,0,.25)}
+.frail button{display:flex;flex-direction:row;align-items:center;gap:14px;border:0;background:transparent;color:var(--band-fg);opacity:.75;padding:9px 10px;border-radius:10px;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;text-align:left;transition:background .18s,opacity .18s}
+.frail button svg{width:22px;height:22px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.frail button span{opacity:0;transition:opacity .2s}
+.frail:hover button span,.frail:focus-within button span{opacity:1;transition-delay:.08s}
+.frail button:hover{opacity:1;background:var(--band-hover)}
+.frail button.on{opacity:1;background:var(--band-fg);color:var(--band)}
+.frail .sp{flex:1}
+/* main page */
+.fyc main{grid-column:1;grid-row:2;min-height:0;overflow:hidden;position:relative;padding-left:56px}
+.fyc main>.wrap{padding-block:12px 10px!important;gap:10px!important;height:100%;display:flex!important;flex-direction:column}
+.fyc .scenbar{display:flex;align-items:center;gap:10px;flex:none;background:var(--sub-bg);border:1px solid var(--sub-line);padding:6px 10px}
+.fyc .scenbar .sbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sub-mut);padding-right:10px;border-right:1px solid var(--sub-line)}
+.fyc .scenbar .pills{flex-wrap:wrap}
+.fyc .kpisec{flex:none;gap:6px!important}
+.fyc .kpisec h2{display:none}
+.fyc .kpi{padding:8px 14px!important;gap:2px!important}
+.fyc .kpi .v{font-size:21px!important}
+.fyc .kpi .l{font-size:10.5px!important}.fyc .kpi .d{font-size:11.5px!important}
+.fyc .cols{flex:1;min-height:0;gap:14px!important;grid-template-columns:310px minmax(0,1fr) var(--chw,minmax(360px,.8fr))!important;align-items:stretch!important;position:relative}
+.fyc .cols>div{min-height:0;gap:0!important;display:flex!important;flex-direction:column}
+.fyc #drvcard{flex:1;min-height:0;overflow:auto;padding:14px!important;gap:10px!important}
+.fyc .drv{padding:8px 0!important}
+.fyc #pnlcard{flex:1;min-height:0;display:flex!important;flex-direction:column;gap:8px!important}
+.fyc #pnlcard h2{flex:none}
+.fyc #pnlcard .tbl{flex:1;min-height:0;overflow:auto;border-top:1px solid var(--line)}
+.fyc #pnl th{position:sticky;top:0;background:var(--bg);z-index:2}
+.fyc #pnl td{padding-top:5px!important;padding-bottom:5px!important}
+.fyc #pnlcard>.note{flex:none;margin:0}
+/* storyboard page */
+.fyc .fpage{display:none;flex:1;min-height:0;overflow:auto;gap:24px;flex-direction:column}
+.fyc .fpage.on{display:flex}
+.fyc main.pg-sub .mainpg{display:none!important}
+/* matrix / factors / copy open as pages in the content area, not as pop-ups */
+.fyc .ov.pg{position:absolute;inset:0;pointer-events:auto;background:var(--bg);padding:12px 16px;align-items:stretch;justify-content:stretch;z-index:30;}
+.fyc .ov.pg .mdl{max-width:none!important;max-height:none;height:100%;box-shadow:none;border-color:var(--line)}
+.fyc .ov.pg .mdl.sm{max-width:760px!important;height:auto;align-self:flex-start}
+
+@keyframes pgin{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+/* P&L collapsed to subtotals; the caret opens the accounts */
+.fyc #pnl tr.gx{display:none}
+.fyc #pnl .car2{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin:0 6px 0 -2px;border:1px solid var(--line);border-radius:4px;font-size:10px;line-height:1;cursor:pointer;color:var(--acc-tx);background:var(--bg);transition:transform .2s,background .15s;vertical-align:1px}
+.fyc #pnl .car2:hover{background:var(--acc-t)}
+.fyc #pnl .car2.op{transform:rotate(90deg)}
+.fyc .pxall{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border:1px solid var(--line);background:var(--bg);cursor:pointer;margin-left:8px}
+.fyc .pxall:hover{background:var(--hover)}
+/* analytics on the main page: bridge + scenario comparison */
+.fyc #mcharts{min-height:0;display:flex!important;flex-direction:column;gap:12px!important}
+.fyc #mcharts .card{flex:1;min-height:0;padding:12px 14px!important;gap:6px!important;display:flex!important;flex-direction:column}
+.fyc .card.xp>#wf,.fyc .card.xp>#cmp,.fyc #mcharts .card>#wf,.fyc #mcharts .card>#cmp{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.fyc #mcharts svg.cv,.fyc .card.xp svg.cv{width:100%;height:100%;max-height:100%}
+.fyc .chint{flex:none!important;font-size:11.5px;color:var(--mut);margin-top:-2px;display:block!important}
+.fyc #modebar button[data-m="charts"]{display:none}
+/* chart cards: expand (morph over the page) and a drag handle to resize the chart column */
+.fyc #mcharts{position:relative}
+.fyc .chh{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.fyc .chh h3{margin:0;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
+.fyc .chx{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;gap:5px;flex:none}
+.fyc .chx:hover{background:var(--hover)}
+.fyc .chx svg{width:12px!important;height:12px!important;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.fyc .card.xp{position:absolute;padding:12px 14px!important;gap:6px!important;display:flex!important;flex-direction:column;z-index:25;box-shadow:var(--shadow);background:var(--panel);transition:left .5s cubic-bezier(.65,0,.35,1),top .5s cubic-bezier(.65,0,.35,1),width .5s cubic-bezier(.65,0,.35,1),height .5s cubic-bezier(.65,0,.35,1)}
+.fyc .cols.chxp>div:not(.xp){opacity:.18;transition:opacity .5s}
+.fyc .cols>div{transition:opacity .5s}
+.fyc .chgrip{position:absolute;left:-12px;top:0;bottom:0;width:10px;cursor:col-resize;z-index:5;display:flex;align-items:center;justify-content:center}
+.fyc .chgrip::before{content:"";width:4px;height:48px;border-radius:2px;background:var(--line);transition:background .15s,height .15s}
+.fyc .chgrip:hover::before,.fyc .chgrip.drag::before{background:var(--acc);height:80px}
+body.fyc.coldrag{cursor:col-resize;user-select:none}
+/* P&L colour: the compared scenario column is shaded; accounts sit indented on a soft band under their subtotal */
+.fyc #pnl th:nth-child(3),.fyc #pnl td:nth-child(3){background:var(--acc-t)!important;color:var(--acc-tx)}
+.fyc #pnl tr.tot td:nth-child(3){font-weight:700}
+.fyc #pnl th:nth-child(3){color:var(--acc-tx)!important;font-weight:700}
+.fyc #pnl tr.dt td{background:var(--soft);font-size:12.5px;color:var(--mut);border-bottom-color:var(--grid)}
+.fyc #pnl tr.dt td:first-child{padding-left:30px!important;position:relative;color:var(--fg)}
+.fyc #pnl tr.dt td:first-child::before{content:"";position:absolute;left:14px;top:0;bottom:0;border-left:2px solid var(--acc)}
+.fyc #pnl tr.dt td:nth-child(3){background:color-mix(in srgb,var(--acc-t) 70%,var(--soft))!important}
+.fyc #pnl tr.hd.op td{background:var(--soft);color:var(--acc-tx);font-weight:600}
+.fyc #pnl tr.tot.grp td{border-top:1.5px solid var(--fg)}
+/* scenario switch: chart bars grow from the axis, line fades in */
+.fyc .grow svg.cv rect{transform-box:fill-box;transform-origin:50% 100%;animation:fygrow .65s cubic-bezier(.22,1,.36,1) both}
+.fyc .grow svg.cv rect.neg,.fyc .grow svg.cv rect[data-n="1"]{transform-origin:50% 0}
+.fyc .grow svg.cv path,.fyc .grow svg.cv polyline,.fyc .grow svg.cv circle,.fyc .grow svg.cv .vl{animation:fyfade .7s ease .25s both}
+@keyframes fygrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes fyfade{from{opacity:0}to{opacity:1}}
+/* page slide (scroll feel) */
+.fstage{position:fixed;inset:var(--hdrh,52px) 0 0 56px;overflow:hidden;z-index:30;pointer-events:none}
+.fstage .ov:not(.pg){pointer-events:auto}
+.fyc .sIn{animation:fySIn .56s cubic-bezier(.65,0,.35,1) both}
+.fyc .sOut{animation:fySOut .56s cubic-bezier(.65,0,.35,1) both;pointer-events:none}
+@keyframes fySIn{from{transform:translateY(calc(var(--dir,1) * 100%))}to{transform:none}}
+@keyframes fySOut{from{transform:none}to{transform:translateY(calc(var(--dir,1) * -100%))}}
+.frail.shut{width:56px!important;box-shadow:none!important}
+.frail.shut button span{opacity:0!important;transition:none!important}
+</style></head><body>
 <title>Fy26 Eoy Scenarios</title>
 <meta charset="utf-8">
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -692,6 +796,8 @@ const L={
  "69000":[0.20,0,0.00,1,"opex","Supplemental expenses",1],
  "79999":[0.00,0,0.00,0,"opex","Depreciation &amp; amortisation",0],
  "85999":[0.00,0,0.00,0,"fin","Finance costs",0]};
+const FYT=window.FY26THEME||{};
+if(FYT.lines)for(const k in FYT.lines)if(L[k])FYT.lines[k].forEach((v,i)=>{if(i<4&&typeof v==="number")L[k][i]=v;});
 const L0=JSON.parse(JSON.stringify(L));   // shipped factor defaults
 const COGS=["51010","52010","53010","59010"];
 const OPEX=["61000","62000","63000","64000","65000","66000","66500","67000","67500","69000"];
@@ -728,6 +834,7 @@ const DRV=[
  {k:"infl", n:"Cost inflation",  min:0,   max:8,  step:.1, sc:100,  hint:"Incremental Q4 inflation above plan on compensation and fixed opex."},
  {k:"fx",   n:"FX vs EUR",       min:-20, max:10, step:.5, sc:100,  hint:"Move in the non-EUR functional currencies (IDR, MYR) against EUR. Negative = they weaken. Net favourable, because more cost than revenue sits outside the euro."},
  {k:"rate", n:"Interest rate",   min:-100,max:400,step:25, sc:10000,hint:"Scales the 6p6 finance-cost line, where one exists. Only the repricing share moves \u2014 set that in Model factors."}];
+DRV.forEach(d=>{const o=(FYT.drivers||{})[d.k];if(o)["n","hint","min","max","step"].forEach(p=>{if(o[p]!=null)d[p]=o[p];});});
 
 const SC={
  "Base":        {vol:0,    mat:0,    crude:0,    infl:0,    fx:0,    rate:0,
@@ -741,6 +848,7 @@ const SC={
  "Stagflation": {vol:-.10, mat:.15,  crude:.10,  infl:.03,  fx:-.10, rate:.015,
    note:"Severe volumes and input costs, but wage and fixed-cost inflation doubles to 3% and rates go 150bp. The tail case: the damage is in the cost base, not the top line."}};
 
+Object.keys(FYT.scenarios||{}).forEach(n=>{if(SC[n])Object.assign(SC[n],FYT.scenarios[n]);});
 // shipped driver settings per scenario: "Original settings" restores these, and the
 // "adjusted" markers compare against them. Base is the 6p6 itself and stays locked.
 const DKEYS=["vol","mat","crude","infl","fx","rate"];
@@ -877,6 +985,7 @@ const NAMES={"40000":"Net revenue","50000":"Total COGS","59999":"Gross margin","
 
 const ORDER=["vol","mat","crude","infl","fx","rate"];
 const OLBL={vol:"Volume (rain)",mat:"Material price",crude:"Crude → freight &amp; energy",infl:"Cost inflation",fx:"FX vs EUR",rate:"Interest rate"};
+Object.keys(FYT.drivers||{}).forEach(k=>{const o=FYT.drivers[k];if(o&&(o.label||o.n))OLBL[k]=o.label||o.n;});
 function attribute(key){
   const tgt=E(), acc={...SC.Base}; let prev=calc(acc)[view][key]; const out={};
   for(const k of ORDER){acc[k]=tgt[k];const n=calc(acc)[view][key];out[k]=(n-prev)/1e6;prev=n;}
@@ -2471,11 +2580,162 @@ function copyUI(){
     custom={...SC.Base}; customFrom="the 6p6"; customTouched=false; forkArmed=false;
     if(cur==="Custom") cur="Base"; saveEdits(); render(); };
 }
+// ---- driver theme: generic storyboard wording and scenario display names ----
+if(FYT.drivers){
+  const dn=dk=>{const d=DRV.find(x=>x.k===dk);return d?d.n:dk;};
+  narrative=function(dk){
+    const v=E()[dk], ni=solo(dk,"99999"), top=DETAIL.map(k=>[k,solo(dk,k)]).filter(x=>Math.abs(x[1])>0.004).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));
+    const P=Math.abs(v*100).toFixed(v===0?0:1)+"%";
+    if(!top.length) return `<b>${dn(dk)}</b> at ${P} does not move any line with the current factors.`;
+    return `<b>${dn(dk)} ${v>=0?"+":"−"}${P}</b> moves net income by <b>${ni>=0?"+":"−"}${Math.abs(ni).toFixed(1)}m</b>; the largest effect is on ${esc(lineName(top[0][0]))} (${top[0][1]>=0?"+":"−"}${Math.abs(top[0][1]).toFixed(1)}m).`;
+  };
+  steps=function(dk){
+    const d=DRV.find(x=>x.k===dk)||{n:dk,hint:""}, v=E()[dk], P=Math.abs(v*100).toFixed(1)+"%";
+    const hit=DETAIL.map(k=>[k,factor(dk,k)]).filter(x=>x[1][0]);
+    const eff=DETAIL.map(k=>[k,solo(dk,k)]).filter(x=>Math.abs(x[1])>0.004);
+    const m=k=>solo(dk,k);
+    return [
+      `<b>${esc(d.n)}</b> comes in <b>${P} ${v>0?"above":"below"}</b> what the 6p6 assumed for Oct–Dec. ${d.hint||""}`,
+      hit.length?`It touches <b>${hit.length} line${hit.length>1?"s":""}</b>: `+hit.map(x=>`${esc(lineName(x[0]))} (${x[1][1]})`).join(", ")+`. Change these weights in <b>Model factors</b>.`:"No line has a weight for this driver - set them in <b>Model factors</b>.",
+      eff.length?eff.map(x=>`${esc(lineName(x[0]))} <b>${x[1]>=0?"+":"−"}${Math.abs(x[1]).toFixed(2)}m</b>`).join(" · "):"Nothing moves at the current setting.",
+      `Revenue ${m("40000")>=0?"+":"−"}${Math.abs(m("40000")).toFixed(2)}m, gross margin ${m("59999")>=0?"+":"−"}${Math.abs(m("59999")).toFixed(2)}m, EBIT ${m("96999")>=0?"+":"−"}${Math.abs(m("96999")).toFixed(2)}m, net income after tax ${m("99999")>=0?"+":"−"}${Math.abs(m("99999")).toFixed(2)}m.`];
+  };
+}
+if(FYT.scenarioNames&&Object.keys(FYT.scenarioNames).length){
+  const SNM=FYT.scenarioNames, rx=new RegExp("\\b("+Object.keys(SNM).map(s=>s.replace(/[^A-Za-z]/g,"")).join("|")+")\\b","g");
+  const fix=root=>{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const ns=[];while(w.nextNode())ns.push(w.currentNode);
+    ns.forEach(n=>{if(n.parentNode&&/^(SCRIPT|STYLE|TEXTAREA)$/.test(n.parentNode.nodeName))return;const s=n.nodeValue;if(rx.test(s)){rx.lastIndex=0;n.nodeValue=s.replace(rx,x=>SNM[x]||x);}rx.lastIndex=0;});};
+  let pend=false;new MutationObserver(()=>{if(pend)return;pend=true;requestAnimationFrame(()=>{pend=false;fix(document.body);});}).observe(document.body,{subtree:true,childList:true,characterData:true});
+  setTimeout(()=>fix(document.body),0);
+}
+
 loadVers();
 bootData();
 render();
 // the guide opens itself only where the browser can remember it has been seen
 if(STORE){ try{ if(!localStorage.getItem("ofi_tour_seen")) setTimeout(tourStart,650); }catch(e){} }
+
+// ---- FY26 one-pager: slim header, left navigation rail, fit-to-window main page ----
+(function(){
+  const G=id=>document.getElementById(id),app=G("app"),mast=document.querySelector(".mast"),main=document.querySelector("main"),wrap=main&&main.querySelector(".wrap");
+  if(!app||!mast||!main||!wrap)return;
+  document.body.classList.add("fyc");
+  const IC={main:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/>',
+    copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
+    matrix:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>',
+    factors:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+    impact:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+    notes:'<path d="M4 19V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h6M8 11h6"/>',
+    guide:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/>'};
+  const NAV=[["main","Main"],["copy","Copy scenario"],["matrix","Assumption matrix"],["factors","Model factors"],["impact","Assumption impact"],["notes","Notes & method"],["guide","Guide"]];
+  const rail=document.createElement("nav");rail.className="frail";rail.setAttribute("aria-label","Pages");
+  rail.innerHTML=NAV.map(([k,t])=>(k==="guide"?'<span class="sp"></span>':"")+`<button data-p="${k}" title="${t}"><svg viewBox="0 0 24 24">${IC[k]}</svg><span>${t}</span></button>`).join("");
+  app.insertBefore(rail,main);
+  // scenario pills: always visible on the main page
+  const sb=document.createElement("div");sb.className="scenbar";sb.innerHTML='<span class="sbl">Scenario</span>';const pl=G("pills");if(pl)sb.appendChild(pl);
+  const kpiSec=G("kpis")&&G("kpis").closest("section");if(kpiSec){kpiSec.classList.add("kpisec");wrap.insertBefore(sb,kpiSec);}
+  const cols=wrap.querySelector(".cols");[sb,kpiSec,cols].forEach(e=>e&&e.classList.add("mainpg"));
+  // storyboard page: "How each assumption lands", method and the footnote
+  const PG={impact:document.createElement("div"),notes:document.createElement("div")};
+  Object.entries(PG).forEach(([k,d])=>{d.className="fpage";d.id="pg_"+k;wrap.appendChild(d);});
+  const s3=G("s3")&&G("s3").closest("section");if(s3)PG.impact.appendChild(s3);
+  const mc=G("mcard");if(mc){PG.notes.appendChild(mc);const dt=mc.querySelector("details");if(dt)dt.open=true;}const ft=G("ftr");if(ft)PG.notes.appendChild(ft);
+  // overlays that become pages
+  const OV={copy:["cpbtn","cpov","cpx"],matrix:["mxbtn","mxov","mxx"],factors:["fxbtn","fxov","fxx"]};
+  let curPg="main",sw=false;
+  const setOn=p=>rail.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.p===p));
+  // pages slide like a scroll: going down the list the new page rises from below, going up it drops from above
+  const ORDERP=["main","copy","matrix","factors","impact","notes"],SL=560;
+  const stage=document.createElement("div");stage.className="fstage";document.body.appendChild(stage);
+  Object.values(OV).forEach(([,o])=>{const ov=G(o);if(ov)stage.appendChild(ov);});
+  const slideEl=p=>OV[p]?G(OV[p][1]):wrap;
+  function anim(el,cls,dir){if(!el)return;el.style.setProperty("--dir",dir);el.classList.remove("sIn","sOut");void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),SL+40);}
+  function closePages(keep){Object.values(OV).forEach(([,o])=>{const ov=G(o);if(!ov||ov===keep)return;if(!ov.hidden){ov.hidden=true;}ov.classList.remove("pg");});}
+  function show(p){if(p==="guide"){show("main");const tb=G("tourbtn");if(tb)tb.click();return;}
+    if(p===curPg)return;
+    const dir=ORDERP.indexOf(p)>ORDERP.indexOf(curPg)?1:-1,outEl=slideEl(curPg),inEl=slideEl(p),wasOv=OV[curPg]?G(OV[curPg][1]):null;
+    sw=true;
+    // the page being left stays on screen while it slides out
+    if(wasOv&&outEl!==inEl){anim(wasOv,"sOut",dir);const w=wasOv;setTimeout(()=>{if(curPg!==Object.keys(OV).find(k=>G(OV[k][1])===w)){sw=true;w.hidden=true;w.classList.remove("pg");sw=false;}},SL);closePages(w);}
+    else closePages();
+    if(outEl!==inEl&&!wasOv)anim(wrap,"sOut",dir);main.classList.toggle("pg-sub",!!PG[p]);Object.entries(PG).forEach(([k,d])=>d.classList.toggle("on",k===p));
+    if(OV[p]){const [b,o]=OV[p];const bt=G(b);if(bt)bt.click();const ov=G(o);if(ov){ov.classList.add("pg");ov.hidden=false;}}
+    anim(inEl,"sIn",dir);
+    curPg=p;setOn(p);sw=false;fit();}
+  // after a click the rail folds away even with the pointer still on it; it opens again on the next hover
+  rail.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{show(b.dataset.p);b.blur();rail.classList.add("shut");}));
+  rail.addEventListener("mouseleave",()=>rail.classList.remove("shut"));
+  Object.entries(OV).forEach(([p,[,o]])=>{const ov=G(o);if(!ov)return;new MutationObserver(()=>{if(sw)return;if(ov.hidden&&curPg===p){ov.classList.remove("pg");curPg="main";setOn("main");}}).observe(ov,{attributes:true,attributeFilter:["hidden"]});
+    ov.addEventListener("click",e=>{if(ov.classList.contains("pg")&&e.target===ov)e.stopPropagation();},true);});
+  // guide: point the steps at the new places
+  try{if(typeof TOUR!=="undefined"){TOUR.forEach(st=>{
+      if(st.sel==="#tabs"){st.sel=".scenbar";st.body="Click a <b>scenario</b> here — from the 6p6 as submitted through to a stagflation tail case — and the whole page recalculates against it. <b>Base</b> is your 6+6 exactly as it sits in OneStream.";const a0=st.act;st.act=()=>show("main");}
+      else if(st.sel==="#modebar"){const a=st.act;st.act=()=>{show("impact");if(a)a();};st.body=st.body+" Open it from <b>Assumption impact</b> on the left.";}
+      else if(st.sel==="#mxbtn"){st.sel='.frail [data-p="matrix"]';st.pos="right";const a=st.act;st.act=()=>{show("main");if(a)a();};}
+      else if(st.sel==="#fxbtn"){st.sel='.frail [data-p="factors"]';st.pos="right";}
+      else if(!st.keepFx){const a=st.act;st.act=()=>{if(curPg!=="main")show("main");if(a)a();};}});}}catch(e){}
+  // analytics on the main page: the bridge and scenario comparison move into a third column and always draw
+  const ch=G("charts");if(cols&&ch){const col=document.createElement("div");col.id="mcharts";
+    [...ch.querySelectorAll(":scope > .card")].forEach(c=>col.appendChild(c));cols.appendChild(col);
+    const wf=G("wf");if(wf&&wf.parentNode){const h=document.createElement("div");h.className="chint";h.textContent="Click a P&L line to show its bridge";wf.parentNode.insertBefore(h,wf);}}
+  try{if(typeof mode!=="undefined"&&mode!=="story")mode="story";}catch(e){}
+  const MC=G("mcharts");
+  if(MC&&cols){const EXI='<svg viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>';
+    MC.querySelectorAll(":scope > .card").forEach(card=>{const h3=card.querySelector("h3");if(!h3)return;const hh=document.createElement("div");hh.className="chh";card.insertBefore(hh,h3);hh.appendChild(h3);
+      const b=document.createElement("button");b.className="chx";b.innerHTML=EXI+"<span>Expand</span>";hh.appendChild(b);let S0=null,busy=false;
+      const box=()=>{const g=cols.getBoundingClientRect(),v=card.getBoundingClientRect();return {l:v.left-g.left,t:v.top-g.top,w:v.width,h:v.height,gw:g.width,gh:g.height};};
+      const place=o=>{card.style.left=o.l+"px";card.style.top=o.t+"px";card.style.width=o.w+"px";card.style.height=o.h+"px";};
+      b.onclick=()=>{if(busy)return;busy=true;const on=!card.classList.contains("xp");
+        if(on){S0=box();const ph=document.createElement("div");ph.className="chph";ph.style.cssText="flex:1;min-height:0";card.after(ph);card._ph=ph;
+          card.style.transition="none";card.classList.add("xp");cols.classList.add("chxp");cols.appendChild(card);place(S0);void card.offsetWidth;card.style.transition="";
+          requestAnimationFrame(()=>place({l:0,t:0,w:S0.gw,h:S0.gh}));setTimeout(()=>{busy=false;},520);}
+        else{cols.classList.remove("chxp");const ph=card._ph,pr=ph.getBoundingClientRect(),g=cols.getBoundingClientRect();place({l:pr.left-g.left,t:pr.top-g.top,w:pr.width,h:pr.height});
+          setTimeout(()=>{card.classList.remove("xp");["left","top","width","height"].forEach(k=>card.style[k]="");ph.replaceWith(card);busy=false;},520);}
+        b.querySelector("span").textContent=on?"Collapse":"Expand";};});
+    // drag the left edge of the chart column to make it wider or narrower
+    const grip=document.createElement("div");grip.className="chgrip";grip.title="Drag to resize";MC.appendChild(grip);
+    grip.addEventListener("pointerdown",e=>{e.preventDefault();grip.setPointerCapture(e.pointerId);grip.classList.add("drag");document.body.classList.add("coldrag");
+      const mv=ev=>{const g=cols.getBoundingClientRect();const w=Math.max(300,Math.min(g.width-310-14-420,g.right-ev.clientX));cols.style.setProperty("--chw",w+"px");};
+      const up=()=>{grip.classList.remove("drag");document.body.classList.remove("coldrag");grip.removeEventListener("pointermove",mv);grip.removeEventListener("pointerup",up);};
+      grip.addEventListener("pointermove",mv);grip.addEventListener("pointerup",up);});
+    grip.addEventListener("dblclick",()=>cols.style.removeProperty("--chw"));}
+  // scenario / view switch: replay the chart growth and count the KPI values from the old to the new figure
+  let LAST=null,KV=[];
+  const kNum=el=>{const m=(el.textContent||"").replace(/[\u2212]/g,"-").match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):null;};
+  function countKpis(){const els=[...document.querySelectorAll("#kpis .kpi .v")];const to=els.map(kNum);
+    els.forEach((el,i)=>{const a=KV[i],b=to[i];if(a==null||b==null||a===b)return;const txt=el.textContent,dec=(txt.match(/\.(\d+)/)||["",""])[1].length,suf=txt.replace(/^[^\d-]*-?[\d.,]+/,"");
+      const t0=performance.now(),D=650;const st=now=>{const k=Math.min(1,(now-t0)/D),e=1-Math.pow(1-k,3);el.textContent=(a+(b-a)*e).toFixed(dec)+suf;if(k<1)requestAnimationFrame(st);else el.textContent=txt;};requestAnimationFrame(st);});
+    KV=to;}
+  function markBars(){document.querySelectorAll("#mcharts svg.cv rect, .card.xp svg.cv rect").forEach(r=>{const h=+r.getAttribute("height")||0;if(r.hasAttribute("data-n"))return;
+      // bars hanging below the zero line grow downwards
+      const y=+r.getAttribute("y")||0,sv=r.ownerSVGElement;if(!sv)return;r.setAttribute("data-n","0");});
+    document.querySelectorAll("#mcharts svg.cv rect, .card.xp svg.cv rect").forEach((r,i)=>{r.style.animationDelay=(i%12)*35+"ms";});}
+  if(typeof render==="function"){const _r=render;render=function(){_r();try{charts();}catch(e){}
+    let key=null;try{key=cur+"|"+view;}catch(e){}
+    if(LAST!==null&&key!==LAST){const host=[G("mcharts"),document.querySelector(".card.xp")].filter(Boolean);host.forEach(h=>{h.classList.remove("grow");void h.offsetWidth;markBars();h.classList.add("grow");});
+      setTimeout(()=>host.forEach(h=>h.classList.remove("grow")),1300);countKpis();}
+    else KV=[...document.querySelectorAll("#kpis .kpi .v")].map(kNum);
+    LAST=key;};}
+  // remember the starting scenario, so the very first switch animates too
+  try{LAST=cur+"|"+view;}catch(e){}KV=[...document.querySelectorAll("#kpis .kpi .v")].map(kNum);
+  // P&L: collapse each block (Revenue, COGS, Operating expenses) to its subtotal; the caret opens the accounts
+  const OPEN=new Set();
+  function collapse(){const t=G("pnl");if(!t)return;const rows=[...t.querySelectorAll("tr")];let grp=null,hd=null,det=[];
+    const close=(tot)=>{if(!grp)return;const op=OPEN.has(grp);if(hd){hd.classList.toggle("gx",!op);hd.classList.toggle("op",op);}det.forEach(r=>{r.classList.toggle("gx",!op);r.classList.add("dt");});if(tot)tot.classList.toggle("grp",op);
+      if(tot){const td=tot.querySelector("td");if(td&&!td.querySelector(".car2")){const c=document.createElement("span");c.className="car2"+(op?" op":"");c.textContent="\u25B8";c.title=op?"Hide the accounts":"Show the accounts";
+        const g=grp;c.onclick=e=>{e.stopPropagation();OPEN.has(g)?OPEN.delete(g):OPEN.add(g);collapse();};td.insertBefore(c,td.firstChild);}else if(td){const c=td.querySelector(".car2");c.classList.toggle("op",op);}}
+      grp=null;hd=null;det=[];};
+    rows.forEach(r=>{if(r.classList.contains("hd")){grp=r.textContent.trim();hd=r;det=[];if(!r.dataset.b){r.dataset.b=1;r.style.cursor="pointer";const g=grp;r.onclick=()=>{OPEN.delete(g);collapse();};}return;}
+      if(!grp)return;if(r.classList.contains("tot")){close(r);return;}det.push(r);});
+    const bx=G("pxall");if(bx){const n=t.querySelectorAll("tr.hd").length;bx.textContent=OPEN.size>=n&&n?"Collapse all":"Expand all";}}
+  if(typeof pnl==="function"){const _p=pnl;pnl=function(){_p();collapse();};}
+  const vt=G("viewtog");if(vt){const bx=document.createElement("button");bx.className="pxall";bx.id="pxall";vt.appendChild(bx);
+    bx.onclick=()=>{const t=G("pnl");const hs=[...t.querySelectorAll("tr.hd")].map(r=>r.textContent.trim());if(OPEN.size>=hs.length)OPEN.clear();else hs.forEach(h=>OPEN.add(h));collapse();};}
+  collapse();try{charts();}catch(e){}
+  function fit(){document.documentElement.style.setProperty("--hdrh",mast.offsetHeight+"px");}
+  addEventListener("resize",fit);fit();setOn("main");
+})();
+
 </script>
 
 <div id="osw-msg" style="display:none;position:fixed;inset:0;z-index:99999;background:#fff;font:14px Segoe UI,Arial,sans-serif;color:#33415c;align-items:center;justify-content:center;text-align:center;padding:24px"></div>
@@ -2502,9 +2762,13 @@ if(STORE){ try{ if(!localStorage.getItem("ofi_tour_seen")) setTimeout(tourStart,
     return;
   }
   function run(json){
-    document.getElementById('ospayload').textContent=json;
-    var s=document.createElement('script');s.textContent=document.getElementById('appjs').textContent;
-    document.body.appendChild(s);box.style.display='none';
+    var go=function(){document.getElementById('ospayload').textContent=json;
+      var s=document.createElement('script');s.textContent=document.getElementById('appjs').textContent;
+      document.body.appendChild(s);box.style.display='none';};
+    var th=(q.get('t')||'').toLowerCase();
+    if(!th||window.FY26THEME||!/^[a-z0-9_-]{1,40}$/.test(th)){go();return;}
+    var g=document.createElement('script'),done=false,fin=function(){if(!done){done=true;go();}};
+    g.charset='utf-8';g.src='themes/'+th+'_fy26.js';g.onload=fin;g.onerror=fin;setTimeout(fin,10000);document.head.appendChild(g);
   }
   if(e){try{msg(new TextDecoder().decode(b(e)));}catch(x){msg('Error');}return;}
   if(!k&&!z){msg('No data. Open this page from the OneStream dashboard (FY26 EOY Scenarios).');return;}
