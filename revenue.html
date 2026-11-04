@@ -1253,13 +1253,13 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
 })();
 
 
-// ---- cross-filter (build xf8: family level in the page + header product focus): product node on the Regions page, country on the Products page ----
+// ---- cross-filter (build xf9: family level in the page + header product focus): product node on the Regions page, country on the Products page ----
 (function(){
   const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   // full country x product tree when the rule sent it (WebUrl XF=1); otherwise families only
   Object.entries(DATA.countries||{}).forEach(([m,o])=>{const k=GEOKEY[m]||m,c=D.countries[k];if(!c||!o.prod)return;c.prod={};Object.entries(o.prod).forEach(([q,x])=>c.prod[q]=withPy(x.v,x.p));});
   const DEEP=Object.values(D.countries).some(c=>c.prod&&Object.keys(c.prod).length);
-  try{console.log('RA cross-filter xf8 deep='+DEEP);}catch(e){}
+  try{console.log('RA cross-filter xf9 deep='+DEEP);}catch(e){}
   const SIMPLE=!D.mapDiv||D.mapDiv===D.root;
   const FO=DATA.focus&&P[DATA.focus.k]?DATA.focus:null;const FOCUS=FO?FO.k:null;
 
@@ -1305,7 +1305,7 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
     $('crumb').insertAdjacentHTML('beforeend',`<span class="xchip">${esc(n)}${!DEEP&&level()>0?' · families only, categories show all countries':''}<button title="Clear country">×</button></span>`);
     const b=$('crumb').querySelector('.xchip button');if(b)b.onclick=e=>{e.stopPropagation();closeCountry();};};
   const _rm=renderMap;renderMap=function(){const r=_rm.apply(this,arguments);let t=$('xnote');if(!t&&br){t=document.createElement('span');t.id='xnote';t.className='xnote';br.insertBefore(t,br.firstChild);}
-    if(t){const mf=mapFam();t.textContent=S.ctry&&mf&&mf!=='__none'&&mf!==FOCUS?'Regions show all products · pick a product in the header':'';t.style.display=t.textContent?'':'none';}return r;};
+    if(t){const mf=mapFam();t.textContent=S.ctry&&mf&&mf!=='__none'&&mf!==FOCUS?(FOCUS?'Regions show all products · pick a product in the header':'Regions inside a country show all products'):'';t.style.display=t.textContent?'':'none';}return r;};
 
   // lowest-level products: a click on the Products page selects the product (it has nothing to drill into);
   // the map on the Regions page then shows that product. Click it again to clear.
@@ -1361,7 +1361,7 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
     }catch(e){try{console.log('RA restore failed: '+e.message);}catch(x){}}
     try{if(FOCUS&&FOCUS!==(sv.focus||null))toRegions();}catch(e){}   /* the header product just changed: show it on the map */RESTORING=false;Object.assign(st,{tab:document.querySelector('#vtabs button.on')?document.querySelector('#vtabs button.on').dataset.v:(sv.tab||'prod'),map:sv.map||null,ctry:S.ctry||null,cf:CF,path:S.path.slice(),focus:FOCUS||null});save();setTimeout(refit,350);setTimeout(refit,1200);});}
   else{RESTORING=false;save();}   // fresh open: Products page; remember the header product for the next reload
-  try{const f=document.getElementById('bfootR');if(f)f.setAttribute('title','page build xf8 · view memory '+(MEM?'on':'off'));}catch(e){}
+  try{const f=document.getElementById('bfootR');if(f)f.setAttribute('title','page build xf9 · view memory '+(MEM?'on':'off'));}catch(e){}
   syncFam();syncCty();renderMap();
 })();
 
