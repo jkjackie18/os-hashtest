@@ -1196,7 +1196,7 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
   const _list=renderList;renderList=function(){_list();const sv=document.querySelector('#donut svg');if(sv)sv.setAttribute('viewBox','0 0 236 236');};renderList();
   // ranking: show only what fits above the insight card; "Show all" expands (the panel then scrolls)
   let RKALL=false;const _rank=renderRank;
-  renderRank=function(rows,tot){const nz=rows.filter(r=>+r.v[S.m-1]||+(base(r.v)||0)),nzero=rows.length-nz.length;_rank(nz,tot);if(nzero){const n=document.createElement('div');n.className='rknote';n.textContent=nzero+' '+(S.ctry?(nzero>1?'regions':'region'):(nzero>1?'countries':'country'))+' with no revenue in '+MN[S.m-1]+' (grey on the map)';$('rank').appendChild(n);}const rk=$('rank'),ins=$('insight');if(!rk||!R)return;const trs=[...rk.querySelectorAll('tr.r')];if(!trs.length)return;
+  renderRank=function(rows,tot){const nz=rows.filter(r=>+r.v[S.m-1]||+(base(r.v)||0)),nzero=rows.length-nz.length;_rank(nz,tot);const rk=$('rank'),ins=$('insight');if(!rk||!R)return;const trs=[...rk.querySelectorAll('tr.r')];if(!trs.length)return;
     const avail=(parseFloat(R.style.maxHeight)||R.clientHeight)-(ins?ins.offsetHeight:0)-24;const head=rk.offsetHeight-trs.reduce((a,t)=>a+t.offsetHeight,0);
     const rowH=trs[0].offsetHeight||35;let k=Math.max(4,Math.floor((avail-head-44)/rowH));if(RKALL||k>=trs.length)k=trs.length;
     trs.forEach((t,i)=>t.classList.toggle('rkhide',i>=k));
