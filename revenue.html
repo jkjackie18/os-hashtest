@@ -191,6 +191,83 @@
 .globe-on #globe{display:block}
 .globe-on #map,.globe-on #lines,.globe-on #cards{visibility:hidden}
 .gseg{margin-right:10px}
+/* ---- compact, fit-to-window layout ---- */
+.hero2{padding:8px 18px!important;align-items:center!important;gap:8px 12px!important;flex-wrap:wrap!important}
+.hero2 .hico{width:34px!important;height:34px!important;border-radius:10px!important}.hero2 .hico svg{width:20px;height:20px}
+.hero2 .hleft{gap:10px!important;min-width:0}
+.hero2 .hey{font-size:10px!important;letter-spacing:1.2px!important}
+.hero2 h1{font-size:17px!important;margin:0!important;white-space:nowrap}
+.hero2 .hs{font-size:11.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:420px}
+.hero2 .hctl{gap:8px!important;flex-wrap:wrap!important;margin-left:auto}
+.hero2 .dd{padding:3px 10px!important;min-width:104px!important;border-radius:9px!important}
+.hero2 .dd span{font-size:10px!important}.hero2 .dd select{font-size:13px!important}
+.hero2 .rbtn{padding:8px 12px!important;font-size:13px!important;border-radius:9px!important}
+.hero2 .vtabs{margin:0 0 0 14px!important;background:rgba(255,255,255,.08)!important;box-shadow:none!important;padding:3px!important;flex:none}
+.hero2 .vtabs button{color:#cfe0ff!important;padding:7px 14px!important;font-size:13px!important}
+.hero2 .vtabs button:hover{background:rgba(255,255,255,.12)!important}
+.hero2 .vtabs button.on{background:#fff!important;color:#0b1b3f!important}
+.wrap{padding:10px 16px 10px!important}
+.kpis{gap:10px!important;margin-bottom:10px!important}
+.kpi2{padding:8px 12px!important;min-height:0!important;grid-template-columns:34px 1fr!important;gap:10px!important;border-radius:12px!important;align-items:center}
+.kpi2 .ik{width:34px!important;height:34px!important;border-radius:10px!important}.kpi2 .ik svg{width:18px;height:18px}
+.kpi2 .kl{font-size:11.5px!important}
+.kpi2 .kv{font-size:19px!important;margin:0!important;line-height:1.2!important}.kpi2 .kv.md{font-size:16px!important}
+.kpi2 .kd{font-size:12px!important;margin:0!important;display:inline-block}
+.kpi2 .ks{display:none!important}
+.kpi2:nth-child(2) .ks:last-child{display:block!important;margin-top:1px!important;font-size:12px!important}
+.kpi2 .bars{transform:scale(.5);transform-origin:right center;right:12px!important;bottom:auto!important;top:50%;margin-top:-25px}
+.kpi2 svg[width="118"]{width:84px!important;height:32px!important}
+.board{padding:10px 14px 10px!important;margin-bottom:0!important;border-radius:16px!important}
+.board .eyebrow,.board .btitle,.board .refresh,.board .bfoot{display:none!important}
+.board .bhead{display:flex!important;align-items:center!important;gap:12px!important;margin-bottom:8px!important;flex-wrap:wrap}
+.board .bhead>div:first-child{flex:1;min-width:200px}
+.board .bsub{font-size:13px!important}
+.board .bseg{margin-top:0!important;padding:3px!important}.board .bseg button{padding:6px 14px!important;font-size:13px!important}
+.board .bright{margin-top:0!important;gap:8px!important}
+.board .regsel{padding-top:6px!important;padding-bottom:6px!important;font-size:13px!important}
+.bgrid{grid-template-columns:1fr 390px!important;gap:12px!important}
+.lcol{display:none!important}
+.mapwrap{min-height:0!important;border-radius:14px!important}
+.rcol{overflow:auto;gap:10px!important}
+.rcol .gcard{padding:12px 14px!important}
+.hub{gap:12px!important;margin-bottom:0!important}
+.hubmain{padding:10px 12px!important}.hubside{gap:10px!important;overflow-y:auto;overflow-x:hidden}
+.hubside .gcard2{padding:12px 14px!important}
+.foot{display:none!important}
+.rcol .rank td{white-space:nowrap}
+.hero2 .hey{display:none!important}
+.mapwrap{height:640px}
+#rank .rkmore{display:block;width:100%;margin-top:6px;padding:7px 0;border:0;border-radius:9px;background:#eef2fb;color:#13244f;font:600 12.5px "Segoe UI Variable Text","Segoe UI",Inter,system-ui,Arial;cursor:pointer}
+#rank .rkmore:hover{background:#e2e8f7}
+#rank tr.r.rkhide{display:none}
+.hubside h3{font-size:15px!important}
+.hubside .rh{margin-bottom:4px}
+.hubside>#famBars .fr{flex:none!important}
+.fr{font-size:13px!important;padding:5px 4px!important;gap:2px 8px!important;grid-template-columns:10px minmax(110px,1fr) 64px 70px 44px!important}
+.fr .dot{width:10px!important;height:10px!important}.fr .vv{font-size:13px!important}.fr .pc{font-size:12px!important}
+.fr .dc{font-size:11px!important;margin-top:0!important}.fr .bb{height:10px!important}
+.hubside>#donut h3{margin-bottom:4px!important}
+.dn2{grid-template-columns:132px 1fr!important;gap:12px!important}
+#donut svg{width:132px;height:132px}
+#donut .dl div{font-size:12px!important;padding:2px 0!important}
+.ph .crumb:empty{display:none}
+#rank .rknote{margin-top:6px;font-size:11.5px;color:#6b7896}
+/* sliding Products | Regions switch */
+.hero2 .vtabs{position:relative!important;border-radius:999px!important;padding:4px!important;background:rgba(255,255,255,.10)!important;border:1px solid rgba(255,255,255,.18)}
+.hero2 .vtabs button{position:relative;z-index:1;border-radius:999px!important;background:transparent!important;transition:color .3s ease!important}
+.hero2 .vtabs button:hover{background:transparent!important;color:#fff!important}
+.hero2 .vtabs button.on,.hero2 .vtabs button.on:hover{background:transparent!important;color:#0b1b3f!important}
+.hero2 .vtabs .vthumb{position:absolute;top:4px;bottom:4px;left:4px;border-radius:999px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.25);transition:transform .35s cubic-bezier(.65,0,.35,1),width .35s cubic-bezier(.65,0,.35,1);z-index:0}
+/* switch centred in the header (falls back inline on narrow windows) */
+.hero2{position:relative}
+@media (min-width:1400px){.hero2 .vtabs{position:absolute!important;left:50%;top:50%;transform:translate(-50%,-50%);margin:0!important}}
+/* page slides with the switch: products and regions sit side by side on a track */
+.vview{overflow:hidden;transition:height .55s cubic-bezier(.65,0,.35,1)}
+.vtrack{display:flex;align-items:flex-start;transition:transform .55s cubic-bezier(.65,0,.35,1);will-change:transform}
+.vtrack.reg{transform:translateX(-100%)}
+.vtrack>.hub{display:grid!important;flex:0 0 100%;width:100%;min-width:0;transition:opacity .55s ease}
+.vtrack>#board{display:block!important;flex:0 0 100%;width:100%;min-width:0;transition:opacity .55s ease}
+.vtrack:not(.reg)>#board,.vtrack.reg>.hub{opacity:.15;pointer-events:none}
 </style></head><body>
 <div class="hero2">
   <div class="hleft"><div class="hico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cfe0ff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z" fill="rgba(120,170,255,.35)"/><path d="M3.5 7.2L12 12l8.5-4.8M12 12v9.5"/></svg></div>
@@ -1117,6 +1194,41 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
     renderMap();}
   gs.querySelectorAll('button').forEach(b=>b.onclick=()=>setGlobe(b.dataset.v==='globe'));
   setGlobe(true);setView('prod');
+})();
+
+// ---- compact, fit-to-window layout: tabs move into the header; map / photo fill the rest of the window ----
+(function(){
+  const hl=document.querySelector('.hero2 .hleft'),tabs=$('vtabs');if(hl&&tabs)hl.after(tabs);
+  if(tabs){const th=document.createElement('span');th.className='vthumb';tabs.insertBefore(th,tabs.firstChild);
+    const slide=()=>{const b=tabs.querySelector('button.on');if(!b)return;th.style.width=b.offsetWidth+'px';th.style.transform='translateX('+(b.offsetLeft-4)+'px)';};
+    tabs.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>requestAnimationFrame(slide)));addEventListener('resize',slide);requestAnimationFrame(slide);}
+  const R=document.querySelector('.rcol'),HUB=document.querySelector('.hub'),SIDE=document.querySelector('.hubside');
+  // track: hub | board side by side; the switch slides the track
+  const BOARD=$('board'),VP=document.createElement('div'),TR=document.createElement('div');VP.className='vview';TR.className='vtrack';
+  HUB.parentNode.insertBefore(VP,HUB);TR.appendChild(HUB);TR.appendChild(BOARD);VP.appendChild(TR);
+  const vpH=()=>{const a=TR.classList.contains('reg')?BOARD:HUB;VP.style.height=a.offsetHeight+'px';};
+  if(tabs)tabs.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{TR.classList.toggle('reg',b.dataset.v==='reg');vpH();}));
+  function fitAll(){const H=innerHeight;
+    const mb=$('mapbox');if(mb&&mb.offsetParent){const top=mb.getBoundingClientRect().top+scrollY;const h=Math.max(380,H-top-14);mb.style.height=h+'px';if(R)R.style.maxHeight=h+'px';}
+    const st=$('stage');if(st&&st.offsetParent){const top=st.getBoundingClientRect().top+scrollY;const hp=Math.max(300,H-top-14);const w=Math.round(hp*PHOTO.W/PHOTO.H);
+      if(HUB)HUB.style.gridTemplateColumns='minmax(0,'+w+'px) minmax(300px,1fr)';if(SIDE)SIDE.style.maxHeight=(st.getBoundingClientRect().bottom-HUB.getBoundingClientRect().top)+'px';}}
+  // live descriptions: panel title = product root description; breadcrumb only once drilled in
+  const ROOTL=P[D.root].label;const hv=$('hview');if(hv&&hv.parentNode)hv.parentNode.textContent=ROOTL;THEME.all=ROOTL;
+  const _crumb=crumb;crumb=function(){_crumb();if(level()===0)$('crumb').innerHTML='';};crumb();
+  // donut: scalable
+  const _list=renderList;renderList=function(){_list();const sv=document.querySelector('#donut svg');if(sv)sv.setAttribute('viewBox','0 0 236 236');};renderList();
+  // ranking: show only what fits above the insight card; "Show all" expands (the panel then scrolls)
+  let RKALL=false;const _rank=renderRank;
+  renderRank=function(rows,tot){const nz=rows.filter(r=>+r.v[S.m-1]||+(base(r.v)||0)),nzero=rows.length-nz.length;_rank(nz,tot);const rk=$('rank'),ins=$('insight');if(!rk||!R)return;const trs=[...rk.querySelectorAll('tr.r')];if(!trs.length)return;
+    const avail=(parseFloat(R.style.maxHeight)||R.clientHeight)-(ins?ins.offsetHeight:0)-24;const head=rk.offsetHeight-trs.reduce((a,t)=>a+t.offsetHeight,0);
+    const rowH=trs[0].offsetHeight||35;let k=Math.max(4,Math.floor((avail-head-44)/rowH));if(RKALL||k>=trs.length)k=trs.length;
+    trs.forEach((t,i)=>t.classList.toggle('rkhide',i>=k));
+    if(trs.length>Math.max(4,Math.floor((avail-head-44)/rowH))){const b=document.createElement('button');b.className='rkmore';b.textContent=RKALL?'Show less ▴':'Show all '+trs.length+' ▾';
+      b.onclick=()=>{RKALL=!RKALL;renderMap();if(!RKALL)R.scrollTop=0;};rk.appendChild(b);}};
+  // flat map: ocean labels sized for the current box (they were sized once at start)
+  function oceans(){const t=document.querySelectorAll('#map text.ocean');if(!t.length)return;const of=HOME()[2]/115;t.forEach(el=>{el.setAttribute('font-size',of);const ts=el.querySelector('tspan');if(ts)ts.setAttribute('dy',of*1.45);});}
+  let busy=false;addEventListener('resize',()=>{if(busy)return;busy=true;fitAll();dispatchEvent(new Event('resize'));fitAll();oceans();vpH();busy=false;});
+  dispatchEvent(new Event('resize'));renderMap();
 })();
 
 </script><div id="osw-msg" style="display:none;position:fixed;inset:0;z-index:99999;background:#fff;font:14px Segoe UI,Arial,sans-serif;color:#33415c;align-items:center;justify-content:center;text-align:center;padding:24px"></div>
