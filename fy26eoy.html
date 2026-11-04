@@ -531,6 +531,62 @@ main section:nth-of-type(2){animation-delay:.05s}main section:nth-of-type(3){ani
 h2{font-size:14px;letter-spacing:.08em}
 h2 .n{font-weight:700}
 @media print{.tabs,.actions,.mixbar,input[type=range],.sw{display:none!important}}
+/* colour test 1-3 */
+.fyc #pnl td:nth-child(2) .neg,.fyc #pnl td:nth-child(3) .neg{color:inherit}
+.fyc #pnl td.dpn{color:var(--neg)} .fyc #pnl td.dpp{color:var(--pos)}
+.fyc .kpis{border-color:var(--line)}
+.fyc #wf rect[style*="--bar-end"]{fill:var(--band)!important}
+:root[data-theme="dark"] .fyc #wf rect[style*="--bar-end"]{fill:#B6BDFF!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .fyc #wf rect[style*="--bar-end"]{fill:#B6BDFF!important}}
+.fyc #drivers input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;height:18px;--p:50%;--c:var(--fg)}
+.fyc #drivers input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(var(--c),var(--c)) 0 0/var(--p) 100% no-repeat,var(--line)}
+.fyc #drivers input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5px;border-radius:50%;background:var(--bg);border:2px solid var(--c);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.fyc #drivers input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--line)}
+.fyc #drivers input[type=range]::-moz-range-progress{height:4px;border-radius:2px;background:var(--c)}
+.fyc #drivers input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--c)}
+/* section dividers v2: no tinted boxes; one white surface, column headers with a coloured underline, hairline rules between columns */
+.fyc .cols{gap:0!important}
+.fyc .cols>div:has(#pnlcard),.fyc .cols>#mcharts{border-left:1px solid var(--line);padding-left:16px;margin-left:16px}
+.fyc #drvcard,.fyc #pnlcard,.fyc #mcharts .card{background:transparent!important;border:0!important;box-shadow:none!important}
+.fyc #drvcard{padding:4px 12px 4px 0!important}
+.fyc #mcharts .card{padding:6px 0 4px!important}
+.fyc #mcharts .card+.card{border-top:1px solid var(--grid)!important;padding-top:12px!important}
+.fyc .zl{display:flex;align-items:center;gap:8px;flex:none;font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--fg);padding:2px 0 8px;margin-bottom:8px;border-bottom:2px solid var(--zc,var(--fg))}
+.fyc .zl b{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--zc,var(--fg));color:#fff;font-size:10px;letter-spacing:0}
+.fyc .zl.z1{--zc:#6B7280}.fyc .zl.z2{--zc:var(--band)}.fyc .zl.z3{--zc:var(--acc)}
+/* KPI tiles - option J: flat navy tiles, Net income in brand blue, white text, variance as a red/green pill */
+.fyc .kpis{border:0!important;gap:8px;background:transparent}
+.fyc .kpi{border:0!important;border-radius:10px;background:#1B2057;color:#fff;padding:9px 14px 8px!important}
+.fyc .kpi::before{display:none}
+.fyc .kpi .l{color:#fff!important;opacity:1;letter-spacing:.08em}
+.fyc .kpi .v{color:#fff!important;font-weight:650;letter-spacing:-.01em}
+.fyc .kpi .d span[style]{color:#fff!important}
+.fyc .kpi .d .neg{background:#FFE1E1!important;color:#9B1C1C!important}
+.fyc .kpi .d .pos{background:#D5F7E3!important;color:#05603A!important}
+.fyc .kpi .d .z{color:#fff!important;opacity:1;border:0!important;background:transparent!important;padding:0!important}
+.fyc .kpi:last-child{background:#5564FF}
+.fyc .kpi:last-child .v{font-size:24px!important}
+/* scenario tick-list */
+.fyc .chg{display:flex;gap:6px;align-items:flex-start;flex:none}
+#cmpdd{position:relative}
+#cmpdd .ddb svg{width:11px!important;height:11px!important;transition:transform .2s}
+#cmpdd.open .ddb svg{transform:rotate(180deg)}
+#cmpdd .ddm{display:none;position:absolute;right:0;top:calc(100% + 4px);z-index:60;min-width:190px;background:var(--bg);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:6px}
+#cmpdd.open .ddm{display:block}
+#cmpdd label{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:6px;font-size:12.5px;cursor:pointer;color:var(--fg)}
+#cmpdd label:hover{background:var(--hover)}
+#cmpdd label i{width:14px;height:14px;border:1.5px solid var(--axis);border-radius:3px;flex:none;display:grid;place-items:center}
+#cmpdd label.on i{background:var(--acc);border-color:var(--acc)}
+#cmpdd label.on i::after{content:"";width:7px;height:4px;border:2px solid #fff;border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
+#cmpdd label.lk{cursor:default;opacity:.85}
+#cmpdd label em{margin-left:auto;font-style:normal;font:500 9.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+/* thin scrollbars on the panels */
+.fyc #drvcard,.fyc #pnlcard .tbl{scrollbar-width:thin;scrollbar-color:#C8CBD6 transparent}
+.fyc #drvcard::-webkit-scrollbar,.fyc #pnlcard .tbl::-webkit-scrollbar{width:6px;height:6px}
+.fyc #drvcard::-webkit-scrollbar-track,.fyc #pnlcard .tbl::-webkit-scrollbar-track{background:transparent}
+.fyc #drvcard::-webkit-scrollbar-thumb,.fyc #pnlcard .tbl::-webkit-scrollbar-thumb{background:#C8CBD6;border-radius:3px}
+.fyc #drvcard::-webkit-scrollbar-thumb:hover,.fyc #pnlcard .tbl::-webkit-scrollbar-thumb:hover{background:#9EA3B5}
+.fyc #drvcard::-webkit-scrollbar-button,.fyc #pnlcard .tbl::-webkit-scrollbar-button{display:none;height:0}
 </style>
 
 <div id="app">
@@ -2734,6 +2790,58 @@ if(STORE){ try{ if(!localStorage.getItem("ofi_tour_seen")) setTimeout(tourStart,
   collapse();try{charts();}catch(e){}
   function fit(){document.documentElement.style.setProperty("--hdrh",mast.offsetHeight+"px");}
   addEventListener("resize",fit);fit();setOn("main");
+})();
+
+
+/* colour test 1-3 */
+(function(){
+  function paintSliders(){document.querySelectorAll("#drivers input[type=range]").forEach(i=>{
+    const c=i.style.accentColor; if(c) i.style.setProperty("--c",c);
+    const mn=+i.min,mx=+i.max,p=mx>mn?(+i.value-mn)/(mx-mn)*100:0; i.style.setProperty("--p",p.toFixed(1)+"%");});}
+  function paintPct(){document.querySelectorAll("#pnl tr.clk").forEach(tr=>{const td=tr.children[4],d=tr.children[3]&&tr.children[3].firstElementChild;
+    if(!td||!d) return; td.classList.toggle("dpn",d.classList.contains("neg")); td.classList.toggle("dpp",d.classList.contains("pos"));});}
+  const _r=render; render=function(){const x=_r.apply(this,arguments); paintSliders(); paintPct(); return x;};
+  const _p=pnl; pnl=function(){const x=_p.apply(this,arguments); paintPct(); return x;};
+  document.addEventListener("input",e=>{if(e.target.matches&&e.target.matches("#drivers input[type=range]")) paintSliders();},true);
+  paintSliders(); paintPct();
+})();
+/* column headers */
+(function(){const add=(id,n,t)=>{const el=document.getElementById(id);if(!el)return;
+  const col=el.parentElement.classList.contains("cols")?el:el.parentElement;
+  if(col.firstElementChild&&col.firstElementChild.classList.contains("zl"))return;
+  const s=document.createElement("div");s.className="zl z"+n;s.innerHTML=`<b>${n}</b>${t}`;col.insertBefore(s,col.firstElementChild);};
+ add("drvcard",1,"Inputs");add("pnlcard",2,"Results");add("mcharts",3,"Analytics");})();
+/* scenario comparison: tick-list drop-down of scenarios to show (current scenario always shown) */
+(function(){
+  let HIDE=new Set(); try{HIDE=new Set(JSON.parse(localStorage.getItem("fy26_cmp_hide")||"[]"));}catch(e){}
+  const save=()=>{try{localStorage.setItem("fy26_cmp_hide",JSON.stringify([...HIDE]));}catch(e){}};
+  let NAMES=[];
+  const _c=svgCompare;
+  svgCompare=function(d){
+    NAMES=d.names.slice();
+    const keep=d.names.map((n,i)=>(!HIDE.has(n)||n===cur)?i:-1).filter(i=>i>=0);
+    const f=a=>keep.map(i=>a[i]);
+    setTimeout(sync,0);
+    return _c(Object.assign({},d,{names:f(d.names),rev:f(d.rev),ebit:f(d.ebit),ni:f(d.ni)}));};
+  function ui(){
+    let w=document.getElementById("cmpdd"); if(w) return w;
+    const host=document.getElementById("cmp"); if(!host) return null;
+    const card=host.closest(".card"), hh=card&&card.querySelector(".chh"); if(!hh) return null;
+    w=document.createElement("div"); w.id="cmpdd";
+    w.innerHTML=`<button class="chx ddb" aria-haspopup="true" aria-expanded="false"><span class="ddl"></span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><div class="ddm" role="menu"></div>`;
+    const x=hh.querySelector(".chx"); const g=document.createElement("div"); g.className="chg"; hh.insertBefore(g,x); g.appendChild(w); g.appendChild(x);
+    const b=w.querySelector(".ddb"), m=w.querySelector(".ddm");
+    b.onclick=e=>{e.stopPropagation(); const o=!w.classList.contains("open"); w.classList.toggle("open",o); b.setAttribute("aria-expanded",o);};
+    m.addEventListener("click",e=>{e.stopPropagation(); const r=e.target.closest("label"); if(!r||r.classList.contains("lk")) return; e.preventDefault();
+      const n=r.dataset.n; HIDE.has(n)?HIDE.delete(n):HIDE.add(n); save(); charts();});
+    document.addEventListener("click",()=>{w.classList.remove("open");b.setAttribute("aria-expanded","false");});
+    return w;}
+  function sync(){
+    const w=ui(); if(!w) return;
+    const on=NAMES.filter(n=>!HIDE.has(n)||n===cur);
+    w.querySelector(".ddl").textContent=`Scenarios ${on.length}/${NAMES.length}`;
+    w.querySelector(".ddm").innerHTML=NAMES.map(n=>{const lk=n===cur, c=!HIDE.has(n)||lk;
+      return `<label data-n="${esc(n)}" class="${c?"on":""} ${lk?"lk":""}" ${lk?"title='Current scenario is always shown'":""}><i></i>${esc(n)}${lk?'<em>current</em>':''}</label>`;}).join("");}
 })();
 
 </script>
