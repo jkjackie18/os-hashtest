@@ -235,6 +235,11 @@
 .hubside .gcard2{padding:12px 14px!important}
 .foot{display:none!important}
 .rcol .rank td{white-space:nowrap}
+.hero2 .hey{display:none!important}
+.mapwrap{height:640px}
+#rank .rkmore{display:block;width:100%;margin-top:6px;padding:7px 0;border:0;border-radius:9px;background:#eef2fb;color:#13244f;font:600 12.5px "Segoe UI Variable Text","Segoe UI",Inter,system-ui,Arial;cursor:pointer}
+#rank .rkmore:hover{background:#e2e8f7}
+#rank tr.r.rkhide{display:none}
 </style></head><body>
 <div class="hero2">
   <div class="hleft"><div class="hico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cfe0ff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z" fill="rgba(120,170,255,.35)"/><path d="M3.5 7.2L12 12l8.5-4.8M12 12v9.5"/></svg></div>
@@ -1172,8 +1177,18 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
     const mb=$('mapbox');if(mb&&mb.offsetParent){const top=mb.getBoundingClientRect().top+scrollY;const h=Math.max(380,H-top-14);mb.style.height=h+'px';if(R)R.style.maxHeight=h+'px';}
     const st=$('stage');if(st&&st.offsetParent){const top=st.getBoundingClientRect().top+scrollY;const hp=Math.max(300,H-top-14);const w=Math.round(hp*PHOTO.W/PHOTO.H);
       if(HUB)HUB.style.gridTemplateColumns='minmax(0,'+w+'px) minmax(300px,1fr)';if(SIDE)SIDE.style.maxHeight=(st.getBoundingClientRect().bottom-HUB.getBoundingClientRect().top)+'px';}}
-  let busy=false;addEventListener('resize',()=>{if(busy)return;busy=true;fitAll();dispatchEvent(new Event('resize'));fitAll();busy=false;});
-  dispatchEvent(new Event('resize'));
+  // ranking: show only what fits above the insight card; "Show all" expands (the panel then scrolls)
+  let RKALL=false;const _rank=renderRank;
+  renderRank=function(rows,tot){_rank(rows,tot);const rk=$('rank'),ins=$('insight');if(!rk||!R)return;const trs=[...rk.querySelectorAll('tr.r')];if(!trs.length)return;
+    const avail=(parseFloat(R.style.maxHeight)||R.clientHeight)-(ins?ins.offsetHeight:0)-24;const head=rk.offsetHeight-trs.reduce((a,t)=>a+t.offsetHeight,0);
+    const rowH=trs[0].offsetHeight||35;let k=Math.max(4,Math.floor((avail-head-44)/rowH));if(RKALL||k>=trs.length)k=trs.length;
+    trs.forEach((t,i)=>t.classList.toggle('rkhide',i>=k));
+    if(trs.length>Math.max(4,Math.floor((avail-head-44)/rowH))){const b=document.createElement('button');b.className='rkmore';b.textContent=RKALL?'Show less ▴':'Show all '+trs.length+' ▾';
+      b.onclick=()=>{RKALL=!RKALL;renderMap();if(!RKALL)R.scrollTop=0;};rk.appendChild(b);}};
+  // flat map: ocean labels sized for the current box (they were sized once at start)
+  function oceans(){const t=document.querySelectorAll('#map text.ocean');if(!t.length)return;const of=HOME()[2]/115;t.forEach(el=>{el.setAttribute('font-size',of);const ts=el.querySelector('tspan');if(ts)ts.setAttribute('dy',of*1.45);});}
+  let busy=false;addEventListener('resize',()=>{if(busy)return;busy=true;fitAll();dispatchEvent(new Event('resize'));fitAll();oceans();busy=false;});
+  dispatchEvent(new Event('resize'));renderMap();
 })();
 
 </script><div id="osw-msg" style="display:none;position:fixed;inset:0;z-index:99999;background:#fff;font:14px Segoe UI,Arial,sans-serif;color:#33415c;align-items:center;justify-content:center;text-align:center;padding:24px"></div>
