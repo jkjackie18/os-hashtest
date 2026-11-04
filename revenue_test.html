@@ -1273,14 +1273,17 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
   const fs=document.createElement('select');fs.id='famSel';fs.className='regsel xsel';fs.title='Show the map for one product';
   const opts=[];const walk=(k,d)=>{(P[k].children||[]).forEach(c=>{opts.push([c,d]);if(DEEP&&SIMPLE)walk(c,d+1);});};
   if(SIMPLE)walk(D.root,0);else FAMS.forEach(f=>opts.push([f,0]));
-  fs.innerHTML=`<option value="">${esc(P[D.root].label)}</option>`+opts.map(([k,d])=>`<option value="${k}">${' '.repeat(d)}${esc(P[k].label)}</option>`).join('');
+  const live=(c,k)=>{const v=nodeVal(c,k);return v.slice(0,D.months).some(x=>x)||(v.py&&v.py.some(x=>x));};
+  const fillFam=()=>{const c=S.ctry&&D.countries[S.ctry];const cur=fs.value;   // a country is open: only products with revenue there
+    fs.innerHTML=`<option value="">${esc(P[D.root].label)}</option>`+opts.filter(([k])=>!c||!DEEP||live(c,k)||k===cur).map(([k,d])=>`<option value="${k}">${'\u2003'.repeat(d)}${esc(P[k].label)}</option>`).join('');fs.value=cur;};
+  fillFam();
   if(br&&$('regSel'))br.insertBefore(fs,$('regSel'));
   fs.onchange=()=>{const k=fs.value;FROMSEL=true;XLEAF=null;if(!k)drillTo([D.root]);else if(SIMPLE){const pa=pathTo(k);if(P[k].children.length)drillTo(pa);else{XLEAF=k;drillTo(pa.slice(0,-1));}}else drillTo(famPath(k));FROMSEL=false;};
   const syncFam=()=>{const n=node();fs.value=(n&&[...fs.options].some(o=>o.value===n))?n:(n&&!DEEP?(FAMS.includes(fam(n))?fam(n):''):'');};
   const syncCty=()=>{cs.value=CF||'';};
   const refreshProd=()=>{renderKpis();renderList();crumb();if(SCENE!=='photo')setTargets();renderPhoto();};
-  const _open=openCountry;openCountry=function(k,force){const r=_open.apply(this,arguments);if(S.ctry===k){CF=k;applyCF();syncCty();refreshProd();}return r;};
-  const _close=closeCountry;closeCountry=function(){CF=null;applyCF();syncCty();const r=_close.apply(this,arguments);refreshProd();return r;};
+  const _open=openCountry;openCountry=function(k,force){const r=_open.apply(this,arguments);if(S.ctry===k){CF=k;applyCF();syncCty();refreshProd();}fillFam();syncFam();return r;};
+  const _close=closeCountry;closeCountry=function(){CF=null;applyCF();syncCty();const r=_close.apply(this,arguments);refreshProd();fillFam();syncFam();return r;};
   const _drill=drillTo;drillTo=function(p){if(!FROMSEL)XLEAF=null;const r=_drill.apply(this,arguments);syncFam();return r;};
   const _all=renderAll;renderAll=function(){const r=_all.apply(this,arguments);fillCty();syncCty();return r;};
   // notes: Products page (country chip) and Regions page (states only carry the total)
