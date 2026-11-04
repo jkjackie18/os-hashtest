@@ -181,6 +181,16 @@
 .dn2{grid-template-columns:236px 1fr!important;gap:22px!important;align-items:center}.dl{gap:14px!important;font-size:14.5px!important}.dl div{grid-template-columns:13px 1fr auto!important}.dl i{width:12px!important;height:12px!important}
 .bseg.sm button{font-size:13.5px}
 .mapnone #map,.mapnone #cards,.mapnone #lines{opacity:.3}.mapnote{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);background:#fff;border:1px solid #e3e8f2;border-radius:14px;padding:14px 18px;box-shadow:0 10px 26px rgba(20,40,90,.14);font-size:14px;color:#1e2a4a;text-align:center;z-index:5;max-width:80%;line-height:1.5}
+
+.vtabs{display:flex;gap:4px;margin:16px 0 6px;padding:5px;background:#fff;border-radius:14px;width:max-content;box-shadow:0 6px 18px rgba(20,40,110,.10)}
+.vtabs button{display:flex;align-items:center;gap:9px;border:0;background:transparent;padding:10px 20px;border-radius:10px;font:600 14px "Segoe UI Variable Text","Segoe UI",Inter,system-ui,Arial;color:#4a5878;cursor:pointer;transition:background .15s,color .15s}
+.vtabs button:hover{background:#eef2fb}
+.vtabs button.on{background:#13244f;color:#fff}
+.vtabs button svg{flex:none}
+#globe{position:absolute;inset:0;width:100%;height:100%;display:none;cursor:grab;touch-action:none}
+.globe-on #globe{display:block}
+.globe-on #map,.globe-on #lines,.globe-on #cards{visibility:hidden}
+.gseg{margin-right:10px}
 </style></head><body>
 <div class="hero2">
   <div class="hleft"><div class="hico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cfe0ff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z" fill="rgba(120,170,255,.35)"/><path d="M3.5 7.2L12 12l8.5-4.8M12 12v9.5"/></svg></div>
@@ -195,7 +205,7 @@
   </div>
 </div>
 <div class="wrap">
-  <div class="kpis" id="kpis"></div>
+  <div class="kpis" id="kpis"></div><div class="vtabs" id="vtabs"><button data-v="prod" class="on"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z"/><path d="M3.5 7.2L12 12l8.5-4.8M12 12v9.5"/></svg>Products</button><button data-v="reg"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>Regions</button></div>
   <div class="hub">
     <div class="hubmain gcard2">
       <div class="ph"><div><h2 class="h2b"><span id="hview"></span> · product view</h2><div class="crumb" id="crumb"></div></div>
@@ -213,7 +223,7 @@
     <div class="bhead">
       <div><div class="eyebrow">Revenue analytics</div><h2 class="btitle">Global Revenue Map</h2><div class="bsub" id="bsub"></div></div>
       <div class="bseg" id="bseg"><button data-v="all">Global</button><button data-v="rev" class="on">Revenue</button><button data-v="mov">Movement</button></div>
-      <div class="bright"><div class="refresh"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e2a5a" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg></span><div><div class="rl">Last refresh</div><div class="rv" id="snap"></div></div></div>
+      <div class="bright"><div class="bseg sm gseg" id="gseg"><button data-v="globe" class="on">Globe</button><button data-v="flat">Flat</button></div><div class="refresh"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e2a5a" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg></span><div><div class="rl">Last refresh</div><div class="rv" id="snap"></div></div></div>
         <select id="regSel" class="regsel"></select></div>
     </div>
     <div class="bgrid">
@@ -979,6 +989,135 @@ $('mSel').innerHTML=MN.slice(0,D.months).map((m,i)=>`<option value="${i+1}" ${i+
 $('mSel').onchange=e=>{S.m=+e.target.value;renderAll();};$('cmp').onchange=e=>{S.cmp=e.target.value;renderAll();};
 $('viewSel').onchange=e=>{S.mode=e.target.value;renderAll();};$('unitSel').onchange=e=>{S.u=e.target.value;renderAll();};
 resize();initPhoto();initMap();renderAll();renderPhoto();
+
+
+// ---- view tabs (Products | Regions) + 3D globe for the region board (appended to the page script) ----
+(function(){
+  const DEG=Math.PI/180;
+  // ---------- tabs ----------
+  const hub=document.querySelector('.hub'),board=$('board'),tabs=$('vtabs');
+  let VIEW='prod';
+  function setView(v){VIEW=v;tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+    hub.style.display=v==='prod'?'':'none';board.style.display=v==='reg'?'':'none';
+    dispatchEvent(new Event('resize'));
+    if(v==='reg'){if(!GL.on){setVB(S.ctry?fit(gbox('#sl path'),S.ctry==='SG'?0.12:0.08):HOME());layoutCards();}GL.resize();GL.kick();}}
+  tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
+
+  // ---------- geometry: page Mercator paths -> unit vectors ----------
+  const inv=(x,y)=>{const lon=(x/KX+90)*DEG,lat=2*Math.atan(Math.exp(MY0-y/KY))-Math.PI/2;const c=Math.cos(lat);return [c*Math.sin(lon),Math.sin(lat),c*Math.cos(lon)];};
+  const CACHE=new Map();
+  function rings(d){if(!d)return [];let r=CACHE.get(d);if(r)return r;r=[];
+    if(/[a]/.test(d)){const m=d.match(/-?\d*\.?\d+/g).map(Number);const cx=m[0]+3.4,cy=m[1],o=[];for(let i=0;i<16;i++){const a=i/16*Math.PI*2;o.push(inv(cx+3.4*Math.cos(a),cy+3.4*Math.sin(a)));}r.push(o);CACHE.set(d,r);return r;}
+    const tk=d.match(/[MLCZmlcz]|-?\d*\.?\d+(?:e[-+]?\d+)?/g)||[];let cur=null,cmd='M',nums=[];
+    const flush=()=>{if(cmd==='C'){for(let i=0;i+5<nums.length;i+=6)cur&&cur.push(inv(nums[i+4],nums[i+5]));}else{for(let i=0;i+1<nums.length;i+=2){if(!cur){cur=[];r.push(cur);}cur.push(inv(nums[i],nums[i+1]));}}nums=[];};
+    for(const t of tk){if(/^[A-Za-z]$/.test(t)){flush();const u=t.toUpperCase();if(u==='M'){cur=null;}if(u==='Z'){cur=null;}cmd=u==='Z'?'M':u;}else nums.push(+t);}
+    flush();r=r.filter(x=>x.length>2);CACHE.set(d,r);return r;}
+  function centre(rs){let x=0,y=0,z=0,n=0;rs.forEach(r=>r.forEach(p=>{x+=p[0];y+=p[1];z+=p[2];n++;}));const l=Math.hypot(x,y,z)||1;const c=[x/l,y/l,z/l];
+    let a=0;rs.forEach(r=>r.forEach(p=>{a=Math.max(a,Math.acos(Math.max(-1,Math.min(1,p[0]*c[0]+p[1]*c[1]+p[2]*c[2]))));}));
+    return {lon:Math.atan2(c[0],c[2])/DEG,lat:Math.asin(c[1])/DEG,rad:a};}
+
+  // ---------- globe state ----------
+  const box=$('mapbox'),cvs=document.createElement('canvas');cvs.id='globe';box.insertBefore(cvs,box.firstChild);const g=cvs.getContext('2d');
+  const HOMEV={lon:112,lat:12,s:1};
+  const GL={on:true,lon:HOMEV.lon,lat:HOMEV.lat,s:HOMEV.s,anim:null,spin:true,idle:0,W:0,H:0,dpr:1,raf:0,hits:[],hover:null,drag:null,
+    resize(){const r=box.getBoundingClientRect();this.dpr=window.devicePixelRatio||1;this.W=r.width;this.H=r.height;cvs.width=Math.max(1,r.width*this.dpr);cvs.height=Math.max(1,r.height*this.dpr);this.kick();},
+    kick(){if(!this.raf)this.raf=requestAnimationFrame(frame);}};
+  const R=()=>Math.min(GL.W,GL.H)*0.44*GL.s;
+  function rot(p){const l=-GL.lon*DEG,ph=GL.lat*DEG;const cl=Math.cos(l),sl=Math.sin(l);const x=p[0]*cl+p[2]*sl,z0=-p[0]*sl+p[2]*cl;const cp=Math.cos(ph),sp=Math.sin(ph);
+    return [x,p[1]*cp-z0*sp,p[1]*sp+z0*cp];}
+  function proj(rs){const cx=GL.W/2,cy=GL.H/2,r=R(),out=[];let any=false;
+    for(const ring of rs){const s=[];let front=0;for(const p of ring){const q=rot(p);if(q[2]>0)front++;let x=q[0],y=q[1];if(q[2]<0){const l=Math.hypot(x,y)||1;x/=l;y/=l;}s.push([cx+x*r,cy-y*r]);}
+      if(front){out.push(s);any=true;}}
+    return any?out:null;}
+  function path(ss){g.beginPath();for(const s of ss){g.moveTo(s[0][0],s[0][1]);for(let i=1;i<s.length;i++)g.lineTo(s[i][0],s[i][1]);g.closePath();}}
+  const inP=(x,y,s)=>{let c=false;for(let i=0,j=s.length-1;i<s.length;j=i++){const a=s[i],b=s[j];if(((a[1]>y)!==(b[1]>y))&&(x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0]))c=!c;}return c;};
+
+  function draw(){const W=GL.W,H=GL.H;g.setTransform(GL.dpr,0,0,GL.dpr,0,0);g.clearRect(0,0,W,H);if(!W||!H)return;
+    const cx=W/2,cy=H/2,r=R();GL.hits=[];
+    // atmosphere + ocean
+    const at=g.createRadialGradient(cx,cy,r*0.9,cx,cy,r*1.12);at.addColorStop(0,'rgba(90,120,255,.28)');at.addColorStop(1,'rgba(90,120,255,0)');g.fillStyle=at;g.beginPath();g.arc(cx,cy,r*1.12,0,Math.PI*2);g.fill();
+    const oc=g.createRadialGradient(cx-r*0.35,cy-r*0.4,r*0.1,cx,cy,r);oc.addColorStop(0,'#f4f8ff');oc.addColorStop(1,'#c9d8f7');g.fillStyle=oc;g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fill();
+    g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
+    // graticule
+    g.strokeStyle='rgba(255,255,255,.75)';g.lineWidth=0.7;
+    for(let lo=-180;lo<180;lo+=30){const ln=[];for(let la=-80;la<=80;la+=5)ln.push(inv0(lo,la));line(ln);}
+    for(let la=-60;la<=60;la+=30){const ln=[];for(let lo=-180;lo<=180;lo+=5)ln.push(inv0(lo,la));line(ln);}
+    // context countries (no data)
+    const sel=S.ctry;
+    Object.entries(ctxPaths()).forEach(([n,d])=>{const ss=proj(rings(d));if(!ss)return;path(ss);g.fillStyle=sel?'#e3e8f3':'#e8ecf6';g.fill();g.strokeStyle='#ffffff';g.lineWidth=0.6;g.stroke();GL.hits.push({t:'w',n,ss});});
+    // data countries
+    Object.keys(D.countries).forEach(k=>{if(D.countries[k].ghost)return;const d=k==='SG'?D.geo.sgOutline:D.geo.paths[k];const ss=proj(rings(d));if(!ss)return;
+      path(ss);const v=cval(k);g.fillStyle=sel&&sel!==k?'#e3e8f3':(v&&+v[S.m-1]?colOf(v):'#e8ecf6');if(sel===k)g.fillStyle='#d9e0ee';g.fill();
+      g.strokeStyle=GL.hover&&GL.hover.k===k?'#14306e':'#ffffff';g.lineWidth=GL.hover&&GL.hover.k===k?1.6:0.8;g.stroke();GL.hits.push({t:'c',k,ss});});
+    // states of the open country
+    if(sel&&D.geo.states[sel]){const c=D.countries[sel],own={};c.subs.forEach((s,i)=>s.geo.forEach(n=>own[n]=i));
+      Object.entries(D.geo.states[sel]).forEach(([n,d])=>{const ss=proj(rings(d));if(!ss)return;path(ss);const si=own[n];
+        g.fillStyle=si==null?'#d9e0ee':colOf(c.subs[si].v);g.fill();g.strokeStyle=GL.hover&&GL.hover.n===n?'#14306e':'#ffffff';g.lineWidth=GL.hover&&GL.hover.n===n?1.6:0.7;g.stroke();GL.hits.push({t:'s',n,si,ss});});}
+    g.restore();
+    // value labels (front-facing, no overlaps)
+    const LB=[],FNT='"Segoe UI Variable Text","Segoe UI",Inter,system-ui,Arial';
+    const label=(rs,name,v)=>{if(!v||!+v[S.m-1])return;const c=CEN(rs);if(!c)return;const q=rot(c.v);if(q[2]<0.25)return;const x=cx+q[0]*r,y=cy-q[1]*r;
+      g.font='600 11px '+FNT;const t1=name,t2=fmt(v[S.m-1]);const w=Math.max(g.measureText(t1).width,(g.font='700 13px '+FNT,g.measureText(t2).width))+18,h=36;
+      const bx=x-w/2,by=y-h-8;if(LB.some(b=>bx<b[0]+b[2]&&bx+w>b[0]&&by<b[1]+b[3]&&by+h>b[1]))return;LB.push([bx,by,w,h]);
+      g.fillStyle='rgba(20,48,110,.85)';g.beginPath();g.arc(x,y,2.6,0,Math.PI*2);g.fill();
+      g.shadowColor='rgba(30,40,110,.18)';g.shadowBlur=8;g.fillStyle='rgba(255,255,255,.95)';g.beginPath();g.roundRect?g.roundRect(bx,by,w,h,8):g.rect(bx,by,w,h);g.fill();g.shadowBlur=0;
+      g.fillStyle='#4a5878';g.font='600 11px '+FNT;g.fillText(t1,bx+9,by+14);g.fillStyle='#0b1b3f';g.font='700 13px '+FNT;g.fillText(t2,bx+9,by+29);};
+    if(!sel){Object.keys(D.countries).map(k=>({k,v:cval(k)})).filter(o=>!D.countries[o.k].ghost&&o.v).sort((a,b)=>b.v[S.m-1]-a.v[S.m-1])
+      .forEach(o=>label(rings(o.k==='SG'?D.geo.sgOutline:D.geo.paths[o.k]),D.countries[o.k].name,o.v));}
+    else if(D.geo.states[sel]){const c=D.countries[sel];c.subs.map((s,i)=>({s,i})).sort((a,b)=>b.s.v[S.m-1]-a.s.v[S.m-1]).forEach(({s})=>{let rs=[];s.geo.forEach(n=>{const d=D.geo.states[sel][n];if(d)rs=rs.concat(rings(d));});if(rs.length)label(rs,s.n,s.v);});}
+    // rim + shine
+    g.strokeStyle='rgba(20,48,110,.18)';g.lineWidth=1.2;g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.stroke();
+    const sh=g.createRadialGradient(cx-r*0.45,cy-r*0.5,0,cx-r*0.45,cy-r*0.5,r*0.9);sh.addColorStop(0,'rgba(255,255,255,.35)');sh.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=sh;g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fill();}
+  const CC=new WeakMap();function CEN(rs){let c=CC.get(rs);if(c)return c;const o=centre(rs);const l=o.lon*DEG,p=o.lat*DEG,k=Math.cos(p);c={v:[k*Math.sin(l),Math.sin(p),k*Math.cos(l)]};CC.set(rs,c);return c;}
+  function inv0(lo,la){const l=lo*DEG,p=la*DEG,c=Math.cos(p);return [c*Math.sin(l),Math.sin(p),c*Math.cos(l)];}
+  function line(pts){const cx=GL.W/2,cy=GL.H/2,r=R();g.beginPath();let pen=false;for(const p of pts){const q=rot(p);if(q[2]<=0){pen=false;continue;}const x=cx+q[0]*r,y=cy-q[1]*r;if(pen)g.lineTo(x,y);else{g.moveTo(x,y);pen=true;}}g.stroke();}
+
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  function frame(now){GL.raf=0;if(!GL.on||VIEW!=='reg'){return;}let more=false;
+    if(GL.anim){const a=GL.anim,t=Math.min(1,(now-a.t0)/a.ms),k=ease(t);GL.lon=a.lon0+a.dl*k;GL.lat=a.lat0+(a.lat1-a.lat0)*k;GL.s=a.s0*Math.pow(a.s1/a.s0,k);if(t<1)more=true;else GL.anim=null;}
+    else if(GL.spin&&!S.ctry&&!GL.drag&&!GL.hover&&now-GL.idle>2500){GL.lon=(GL.lon+0.06)%360;more=true;}
+    else if(GL.spin&&!S.ctry)more=true;
+    draw();if(more)GL.kick();}
+  function flyTo(lon,lat,s,ms){let dl=((lon-GL.lon)%360+540)%360-180;GL.anim={t0:performance.now(),ms:ms||1300,lon0:GL.lon,dl,lat0:GL.lat,lat1:Math.max(-75,Math.min(75,lat)),s0:GL.s,s1:s};GL.kick();}
+  function flyCountry(k){const st=D.geo.states[k];let rs=[];if(st)Object.values(st).forEach(d=>rs=rs.concat(rings(d)));if(!rs.length)rs=rings(k==='SG'?D.geo.sgOutline:D.geo.paths[k]);if(!rs.length)return;
+    const c=centre(rs);const s=Math.max(1,Math.min(40,0.8/Math.max(0.004,Math.sin(Math.min(c.rad,1.4)))));flyTo(c.lon,c.lat,s);}
+
+  // ---------- interaction ----------
+  const hit=(x,y)=>{for(let i=GL.hits.length-1;i>=0;i--){const h=GL.hits[i];if(h.ss.some(s=>inP(x,y,s)))return h;}return null;};
+  const inside=(x,y)=>Math.hypot(x-GL.W/2,y-GL.H/2)<=R();
+  cvs.addEventListener('pointerdown',e=>{GL.anim=null;GL.drag={x:e.clientX,y:e.clientY,lon:GL.lon,lat:GL.lat,moved:false};cvs.setPointerCapture(e.pointerId);});
+  cvs.addEventListener('pointermove',e=>{const b=cvs.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;GL.idle=performance.now();
+    if(GL.drag){const dx=e.clientX-GL.drag.x,dy=e.clientY-GL.drag.y;if(Math.abs(dx)+Math.abs(dy)>4)GL.drag.moved=true;if(GL.drag.moved){const k=57/R()*1.6;GL.lon=GL.drag.lon-dx*k;GL.lat=Math.max(-80,Math.min(80,GL.drag.lat+dy*k));hideTip();GL.kick();return;}}
+    const h=inside(x,y)?hit(x,y):null;const key=h?(h.t+(h.k||h.n)):null,old=GL.hover?(GL.hover.t+(GL.hover.k||GL.hover.n)):null;
+    if(key!==old){GL.hover=h;hlRow(h&&h.t==='c'?h.k:h&&h.t==='s'&&h.si!=null?'s'+h.si:null);GL.kick();}
+    cvs.style.cursor=h&&(h.t==='c'||(h.t==='w'&&ghostable()))?'pointer':'grab';
+    if(!h){hideTip();return;}
+    if(h.t==='c'){const c=D.countries[h.k],v=cval(h.k);if(S.ctry===h.k){hideTip();return;}showTip(e.clientX,e.clientY,`<b>${c.name}</b>`+(v&&+v[S.m-1]?`<br>${MN[S.m-1]}: ${fmt(v[S.m-1])}<br><span style="color:${chg(v).cls==='up'?'#7dffb0':'#ffb3b3'}">${chg(v).txt}</span> ${cmpLbl()}<br><span style="opacity:.7">Click to open states</span>`:'<br><span style="opacity:.7">No revenue in '+MN[S.m-1]+'</span>'));}
+    else if(h.t==='w')showTip(e.clientX,e.clientY,`<b>${h.n}</b><br><span style="opacity:.7">Not in OneStream · no data</span>`+(ghostable()?'<br><span style="opacity:.7">Click to view its states</span>':''));
+    else{const c=D.countries[S.ctry];if(h.si==null){showTip(e.clientX,e.clientY,`<b>${h.n}</b><br><span style="opacity:.7">No UD2 member mapped</span>`);return;}const s=c.subs[h.si],cc=chg(s.v);
+      showTip(e.clientX,e.clientY,`<b>${s.n}</b>${s.geo.length>1?` <span style="opacity:.6">(${s.geo.length} provinces)</span>`:''}<br>${MN[S.m-1]}: ${fmt(s.v[S.m-1])}<br><span style="color:${cc.cls==='up'?'#7dffb0':'#ffb3b3'}">${cc.txt}</span> ${cmpLbl()}`);}});
+  cvs.addEventListener('pointerup',e=>{const d=GL.drag;GL.drag=null;GL.idle=performance.now();if(!d||d.moved){GL.kick();return;}
+    const b=cvs.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;const h=inside(x,y)?hit(x,y):null;
+    if(!h){if(S.ctry)closeCountry();return;}if(h.t==='c'&&S.ctry!==h.k)openCountry(h.k,true);else if(h.t==='w'&&ghostable())ghostOpen(h.n);});
+  cvs.addEventListener('pointerleave',()=>{GL.hover=null;hideTip();hlRow(null);GL.kick();});
+  cvs.addEventListener('wheel',e=>{e.preventDefault();GL.anim=null;GL.s=Math.max(0.8,Math.min(40,GL.s*(e.deltaY>0?1/1.15:1.15)));GL.idle=performance.now();GL.kick();},{passive:false});
+  addEventListener('resize',()=>GL.resize());
+
+  // ---------- hook into the existing map ----------
+  const _open=openCountry,_close=closeCountry,_render=renderMap;
+  openCountry=function(k,f){_open(k,f);if(S.ctry===k){if(GL.on)flyCountry(k);GL.kick();}};
+  closeCountry=function(){_close();if(GL.on)flyTo(GL.lon,HOMEV.lat,HOMEV.s,1100);GL.kick();};
+  renderMap=function(){_render();if(GL.on){$('mapHint').textContent=S.ctry?'Hover a state for detail · drag to rotate · scroll to zoom · click the ocean to go back':'Click a country to open its states · drag to rotate · scroll to zoom';}GL.kick();};
+  ['zin','zout','zfit'].forEach(id=>{const el=$(id),orig=el.onclick;el.onclick=e=>{if(!GL.on)return orig&&orig(e);GL.anim=null;
+    if(id==='zin')GL.s=Math.min(40,GL.s*1.4);else if(id==='zout')GL.s=Math.max(0.8,GL.s/1.4);else{S.ctry?flyCountry(S.ctry):flyTo(HOMEV.lon,HOMEV.lat,HOMEV.s,900);}GL.kick();};});
+  // globe / flat switch
+  const gs=$('gseg');
+  function setGlobe(on){GL.on=on;box.classList.toggle('globe-on',on);gs.querySelectorAll('button').forEach(b=>b.classList.toggle('on',(b.dataset.v==='globe')===on));
+    if(on){GL.resize();if(S.ctry)flyCountry(S.ctry);}else{setVB(S.ctry?fit(gbox('#sl path'),S.ctry==='SG'?0.12:0.08):HOME());layoutCards();}
+    renderMap();}
+  gs.querySelectorAll('button').forEach(b=>b.onclick=()=>setGlobe(b.dataset.v==='globe'));
+  setGlobe(true);setView('prod');
+})();
 
 </script><div id="osw-msg" style="display:none;position:fixed;inset:0;z-index:99999;background:#fff;font:14px Segoe UI,Arial,sans-serif;color:#33415c;align-items:center;justify-content:center;text-align:center;padding:24px"></div>
 <script>
