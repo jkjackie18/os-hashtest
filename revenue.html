@@ -268,6 +268,15 @@
 .vtrack>.hub{display:grid!important;flex:0 0 100%;width:100%;min-width:0;transition:opacity .55s ease}
 .vtrack>#board{display:block!important;flex:0 0 100%;width:100%;min-width:0;transition:opacity .55s ease}
 .vtrack:not(.reg)>#board,.vtrack.reg>.hub{opacity:.15;pointer-events:none}
+/* cross-filter (test) */
+.hub .ph .tools{display:flex;align-items:center;gap:8px}
+.xsel{min-width:150px!important;padding:6px 34px 6px 12px!important;font-size:13px!important;border-radius:12px!important;background-position:right 12px center!important}
+.xchip{display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:2px 4px 2px 10px;border-radius:999px;background:#eef2ff;color:#2f3ccb;font-size:12px;font-weight:600;white-space:nowrap}
+.xchip button{border:0;background:#dfe5ff;color:#2f3ccb;width:18px;height:18px;border-radius:50%;cursor:pointer;line-height:1;font-size:13px;padding:0}
+.xnote{font-size:12px;color:#5b6b82;background:#f1f4fb;border-radius:999px;padding:4px 10px;white-space:nowrap}
+#famSel{max-width:260px}
+.pcard.xleaf{outline:2px solid #2f6fed;outline-offset:2px;box-shadow:0 0 0 6px rgba(47,111,237,.15)!important}
+#famBars .fr.xleaf{background:#eef2ff;border-radius:8px}
 </style></head><body>
 <div class="hero2">
   <div class="hleft"><div class="hico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cfe0ff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z" fill="rgba(120,170,255,.35)"/><path d="M3.5 7.2L12 12l8.5-4.8M12 12v9.5"/></svg></div>
@@ -1133,15 +1142,27 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
     g.restore();
     // value labels (front-facing, no overlaps)
     const LB=[],FNT='"Segoe UI Variable Text","Segoe UI",Inter,system-ui,Arial';
-    const label=(rs,name,v)=>{if(!v||!+v[S.m-1])return;const c=CEN(rs);if(!c)return;const q=rot(c.v);if(q[2]<0.25)return;const x=cx+q[0]*r,y=cy-q[1]*r;
-      g.font='600 11px '+FNT;const t1=name,t2=fmt(v[S.m-1]);const w=Math.max(g.measureText(t1).width,(g.font='700 13px '+FNT,g.measureText(t2).width))+18,h=36;
-      const bx=x-w/2,by=y-h-8;if(LB.some(b=>bx<b[0]+b[2]&&bx+w>b[0]&&by<b[1]+b[3]&&by+h>b[1]))return;LB.push([bx,by,w,h]);
-      g.fillStyle='rgba(20,48,110,.85)';g.beginPath();g.arc(x,y,2.6,0,Math.PI*2);g.fill();
-      g.shadowColor='rgba(30,40,110,.18)';g.shadowBlur=8;g.fillStyle='rgba(255,255,255,.95)';g.beginPath();g.roundRect?g.roundRect(bx,by,w,h,8):g.rect(bx,by,w,h);g.fill();g.shadowBlur=0;
-      g.fillStyle='#4a5878';g.font='600 11px '+FNT;g.fillText(t1,bx+9,by+14);g.fillStyle='#0b1b3f';g.font='700 13px '+FNT;g.fillText(t2,bx+9,by+29);};
+    const ITEMS=[];
+    const label=(rs,name,v)=>{if(!v||!+v[S.m-1])return;const c=CEN(rs);if(!c)return;const q=rot(c.v);if(q[2]<0.25)return;ITEMS.push({a:[cx+q[0]*r,cy-q[1]*r],name,v,val:+v[S.m-1]||0});};
+    // cards like the flat map: largest 12, stacked in two side columns, nudged apart, joined to the point by a line
+    const drawCards=()=>{const W=GL.W,H=GL.H;const its=ITEMS.sort((a,b)=>b.val-a.val).slice(0,12);if(!its.length)return;
+      g.font='600 11px '+FNT;its.forEach(o=>{o.w=Math.max(104,g.measureText(o.name).width+22);o.h=58;});
+      const mx=its.reduce((t,o)=>t+o.a[0],0)/its.length;its.sort((a,b)=>a.a[1]-b.a[1]);const used={L:-1e9,R:-1e9};
+      its.forEach(o=>{const side=o.a[0]<mx||its.length===1?'L':'R';const y=Math.max(o.a[1],used[side]+o.h+10);used[side]=y;o.p=[side==='L'?o.a[0]-150:o.a[0]+150,y];});
+      for(let it=0;it<60;it++){let mv=false;for(let i=0;i<its.length;i++)for(let j=i+1;j<its.length;j++){const a=its[i],b=its[j];const ox=(a.w+b.w)/2+8-Math.abs(a.p[0]-b.p[0]),oy=(a.h+b.h)/2+8-Math.abs(a.p[1]-b.p[1]);
+          if(ox>0&&oy>0){mv=true;if(oy<ox*1.4){const s=(oy/2+1)*(a.p[1]<b.p[1]?-1:1);a.p[1]+=s;b.p[1]-=s;}else{const s=(ox/2+1)*(a.p[0]<b.p[0]?-1:1);a.p[0]+=s;b.p[0]-=s;}}}
+        its.forEach(o=>{o.p[0]=Math.max(o.w/2+6,Math.min(W-o.w/2-6,o.p[0]));o.p[1]=Math.max(o.h/2+6,Math.min(H-o.h/2-6,o.p[1]));});if(!mv)break;}
+      its.forEach(o=>{g.strokeStyle='rgba(125,137,176,.55)';g.lineWidth=1;g.beginPath();g.moveTo(o.a[0],o.a[1]);g.lineTo(o.p[0],o.p[1]);g.stroke();
+        g.fillStyle='#ffffff';g.beginPath();g.arc(o.a[0],o.a[1],5,0,Math.PI*2);g.fill();g.fillStyle='#1e2a5a';g.beginPath();g.arc(o.a[0],o.a[1],2.6,0,Math.PI*2);g.fill();});
+      its.forEach(o=>{const bx=o.p[0]-o.w/2,by=o.p[1]-o.h/2;const ch=chg(o.v),dc=cls(o.v);
+        g.shadowColor='rgba(30,40,110,.16)';g.shadowBlur=12;g.shadowOffsetY=3;g.fillStyle='#ffffff';g.beginPath();g.roundRect?g.roundRect(bx,by,o.w,o.h,10):g.rect(bx,by,o.w,o.h);g.fill();g.shadowBlur=0;g.shadowOffsetY=0;
+        g.fillStyle='#1e2a4a';g.font='500 11px '+FNT;g.fillText(o.name,bx+11,by+16);
+        g.fillStyle='#0b1b3f';g.font='700 15px '+FNT;g.fillText(fmt(o.v[S.m-1]),bx+11,by+34);
+        g.fillStyle=dc==='pos'?'#12a150':dc==='neg'?'#d64545':'#6b7896';g.font='600 11px '+FNT;g.fillText(ch.ar+' '+(S.mode==='abs'?ch.txt.slice(2):pct(o.v)),bx+11,by+50);});};
     if(!sel){Object.keys(D.countries).map(k=>({k,v:cval(k)})).filter(o=>!D.countries[o.k].ghost&&o.v).sort((a,b)=>b.v[S.m-1]-a.v[S.m-1])
       .forEach(o=>label(rings(o.k==='SG'?D.geo.sgOutline:D.geo.paths[o.k]),D.countries[o.k].name,o.v));}
     else if(D.geo.states[sel]){const c=D.countries[sel];c.subs.map((s,i)=>({s,i})).sort((a,b)=>b.s.v[S.m-1]-a.s.v[S.m-1]).forEach(({s})=>{let rs=[];s.geo.forEach(n=>{const d=D.geo.states[sel][n];if(d)rs=rs.concat(rings(d));});if(rs.length)label(rs,s.n,s.v);});}
+    drawCards();
     // rim + shine
     g.strokeStyle='rgba(20,48,110,.18)';g.lineWidth=1.2;g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.stroke();
     const sh=g.createRadialGradient(cx-r*0.45,cy-r*0.5,0,cx-r*0.45,cy-r*0.5,r*0.9);sh.addColorStop(0,'rgba(255,255,255,.35)');sh.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=sh;g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fill();}
@@ -1231,6 +1252,90 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
   dispatchEvent(new Event('resize'));renderMap();
 })();
 
+
+// ---- cross-filter (build xf4: family level in the page + header product focus): product node on the Regions page, country on the Products page ----
+(function(){
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  // full country x product tree when the rule sent it (WebUrl XF=1); otherwise families only
+  Object.entries(DATA.countries||{}).forEach(([m,o])=>{const k=GEOKEY[m]||m,c=D.countries[k];if(!c||!o.prod)return;c.prod={};Object.entries(o.prod).forEach(([q,x])=>c.prod[q]=withPy(x.v,x.p));});
+  const DEEP=Object.values(D.countries).some(c=>c.prod&&Object.keys(c.prod).length);
+  try{console.log('RA cross-filter xf4 deep='+DEEP);}catch(e){}
+  const SIMPLE=!D.mapDiv||D.mapDiv===D.root;
+  const FO=DATA.focus&&P[DATA.focus.k]?DATA.focus:null;const FOCUS=FO?FO.k:null;
+
+  const FAMS=(!SIMPLE&&P[D.mapDiv])?P[D.mapDiv].children:P[D.root].children;
+  const famPath=f=>SIMPLE?[D.root,f]:[D.root,D.mapDiv,f];
+  const ZERO=withPy([],null);
+  const KEYS=DEEP?Object.keys(P):[D.root].concat(FAMS.filter(f=>f!==D.root));
+  const ORIG={};KEYS.forEach(k=>ORIG[k]=P[k].values);
+  const nodeVal=(c,k)=>k===D.root?c.values:(DEEP?(c.prod&&c.prod[k]):null)||(c.fam&&c.fam[k])||ZERO;
+  let CF=null;
+  function applyCF(){if(!CF||!D.countries[CF]){CF=null;KEYS.forEach(k=>P[k].values=ORIG[k]);return;}const c=D.countries[CF];KEYS.forEach(k=>P[k].values=nodeVal(c,k));}
+  // map: colour countries by the selected node at any depth (families-only payload keeps the old behaviour)
+  let XLEAF=null,FROMSEL=false;
+  const node=()=>{const l=level();if(XLEAF&&PAR[XLEAF]===S.path[l])return XLEAF;return l===0?null:S.path[l];};
+  if(DEEP&&SIMPLE){mapFam=function(){return node();};const _cval=cval;cval=function(k){const n=node();if(!n)return _cval(k);const c=D.countries[k];if(!c||c.ghost)return _cval(k);const v=nodeVal(c,n);return v.some(x=>x)||(v.py&&v.py.some(x=>x))?v:null;};}
+  // Products page: countries with revenue in the year or the comparison year, largest first
+  const hasRev=c=>c.values.slice(0,D.months).some(x=>x)||(c.values.py&&c.values.py.some(x=>x));
+  const tools=document.querySelector('.hub .ph .tools');
+  const cs=document.createElement('select');cs.id='ctySel';cs.className='regsel xsel';cs.title='Show products for one country';
+  const fillCty=()=>{const v=cs.value;cs.innerHTML='<option value="">All countries</option>'+Object.entries(D.countries).filter(([k,c])=>!c.ghost&&hasRev(c)).sort((a,b)=>b[1].values[S.m-1]-a[1].values[S.m-1]).map(([k,c])=>`<option value="${k}">${esc(c.name)}</option>`).join('');cs.value=v;};
+  fillCty();if(tools)tools.insertBefore(cs,tools.firstChild);
+  cs.onchange=()=>{const v=cs.value;if(v){if(D.geo.states[v])openCountry(v,true);else{CF=v;applyCF();renderAll();}}else closeCountry();};
+  // Regions page: product drop-down (full tree indented when available)
+  const br=document.querySelector('.board .bright')||($('regSel')&&$('regSel').parentNode);
+  const fs=document.createElement('select');fs.id='famSel';fs.className='regsel xsel';fs.title='Show the map for one product';
+  const opts=[];const walk=(k,d)=>{(P[k].children||[]).forEach(c=>{opts.push([c,d]);if(DEEP&&SIMPLE)walk(c,d+1);});};
+  if(SIMPLE)walk(D.root,0);else FAMS.forEach(f=>opts.push([f,0]));
+  const live=(c,k)=>{const v=nodeVal(c,k);return v.slice(0,D.months).some(x=>x)||(v.py&&v.py.some(x=>x));};
+  const fillFam=()=>{const c=S.ctry&&D.countries[S.ctry];const cur=fs.value;   // a country is open: only products with revenue there
+    fs.innerHTML=`<option value="">${esc(P[D.root].label)}</option>`+(FOCUS&&!FAMS.includes(FOCUS)?`<option value="${FOCUS}">\u2605 ${esc(P[FOCUS].label)} (header)</option>`:'')+opts.filter(([k])=>!c||!DEEP||live(c,k)||k===cur).map(([k,d])=>`<option value="${k}">${'\u2003'.repeat(d)}${esc(P[k].label)}</option>`).join('');fs.value=cur;};
+  fillFam();
+  if(br&&$('regSel'))br.insertBefore(fs,$('regSel'));
+  fs.onchange=()=>{const k=fs.value;FROMSEL=true;XLEAF=null;if(!k)drillTo([D.root]);else if(SIMPLE){const pa=pathTo(k);if(P[k].children.length)drillTo(pa);else{XLEAF=k;drillTo(pa.slice(0,-1));}}else drillTo(famPath(k));FROMSEL=false;};
+  const syncFam=()=>{const n=node();if(FOCUS&&n===FOCUS){fs.value=FOCUS;return;}fs.value=(n&&[...fs.options].some(o=>o.value===n))?n:(n&&!DEEP?(FAMS.includes(fam(n))?fam(n):''):'');};
+  const syncCty=()=>{cs.value=CF||'';};
+  const refreshProd=()=>{renderKpis();renderList();crumb();if(SCENE!=='photo')setTargets();renderPhoto();};
+  const _open=openCountry;openCountry=function(k,force){const r=_open.apply(this,arguments);if(S.ctry===k){CF=k;applyCF();syncCty();refreshProd();}fillFam();syncFam();return r;};
+  const _close=closeCountry;closeCountry=function(){CF=null;applyCF();syncCty();const r=_close.apply(this,arguments);refreshProd();fillFam();syncFam();return r;};
+  const _drill=drillTo;drillTo=function(p){if(!FROMSEL)XLEAF=null;const r=_drill.apply(this,arguments);syncFam();return r;};
+  const _all=renderAll;renderAll=function(){const r=_all.apply(this,arguments);fillCty();syncCty();return r;};
+  // notes: Products page (country chip) and Regions page (states only carry the total)
+  const _cr=crumb;crumb=function(){_cr();if(!CF)return;const n=D.countries[CF].name;
+    $('crumb').insertAdjacentHTML('beforeend',`<span class="xchip">${esc(n)}${!DEEP&&level()>0?' · families only, categories show all countries':''}<button title="Clear country">×</button></span>`);
+    const b=$('crumb').querySelector('.xchip button');if(b)b.onclick=e=>{e.stopPropagation();closeCountry();};};
+  const _rm=renderMap;renderMap=function(){const r=_rm.apply(this,arguments);let t=$('xnote');if(!t&&br){t=document.createElement('span');t.id='xnote';t.className='xnote';br.insertBefore(t,br.firstChild);}
+    if(t){const mf=mapFam();t.textContent=S.ctry&&mf&&mf!=='__none'&&mf!==FOCUS?'Regions show all products · pick a product in the header':'';t.style.display=t.textContent?'':'none';}return r;};
+
+  // lowest-level products: a click on the Products page selects the product (it has nothing to drill into);
+  // the map on the Regions page then shows that product. Click it again to clear.
+  function selectLeaf(k){XLEAF=XLEAF===k?null:k;crumb();renderMap();syncFam();markLeaf();}
+  function markLeaf(){document.querySelectorAll('#pcards .pcard,#famBars .fr').forEach(el=>el.classList.toggle('xleaf',!!XLEAF&&el.dataset.k===XLEAF));}
+  if(SIMPLE&&(DEEP||FOCUS)){
+    if(DEEP)document.addEventListener('click',e=>{const el=e.target.closest&&e.target.closest('#pcards .pcard,#famBars .fr');if(!el)return;const k=el.dataset.k;
+      if(P[k]&&!P[k].children.length){e.stopPropagation();e.preventDefault();selectLeaf(k);}},true);
+    const _ci=clickItem;if(DEEP)clickItem=function(id){if(P[id]&&!P[id].children.length&&PAR[id]===S.path[level()]){selectLeaf(id);return;}return _ci.apply(this,arguments);};
+    const _rp=renderPhoto;renderPhoto=function(){const r=_rp.apply(this,arguments);markLeaf();return r;};
+    const _rl=renderList;renderList=function(){const r=_rl.apply(this,arguments);markLeaf();return r;};
+    const _cr2=crumb;crumb=function(){_cr2();if(XLEAF&&PAR[XLEAF]===S.path[level()]){const c=$('crumb');const chip=c.querySelector('.xchip');const h=` › <b class="xlb" style="color:var(--ink)">${esc(P[XLEAF].label)}</b>`;
+      if(level()===0||!c.innerHTML.trim()){c.insertAdjacentHTML('afterbegin',h.replace(' › ',''));}else if(chip)chip.insertAdjacentHTML('beforebegin',h);else c.insertAdjacentHTML('beforeend',h);}};
+  }
+
+  // ---- header focus (OneStream header Product box -> Focus=<product>): countries and their regions for that product ----
+  if(FO){const C={},SS=FO.S||{};Object.entries(FO.C||{}).forEach(([m,x])=>C[GEOKEY[m]||m]=withPy(x.v,x.p));FO.CC=C;FO.SS={};Object.entries(SS).forEach(([m,x])=>FO.SS[m]=withPy(x.v,x.p));
+    const _mf=mapFam;mapFam=function(){return node()===FOCUS?FOCUS:_mf();};
+    const _cv=cval;cval=function(k){if(mapFam()===FOCUS){const c=D.countries[k];if(!c||c.ghost)return _cv(k);return FO.CC[k]||null;}return _cv(k);};
+    // regions inside the open country carry the focus product while it is shown (cards and globe read them later)
+    let SW=null,KEEP=null;const _rm2=renderMap;renderMap=function(){const want=S.ctry&&mapFam()===FOCUS?S.ctry:null;
+      if(SW!==want){if(SW){D.countries[SW].subs.forEach((s,i)=>s.v=KEEP[i]);}SW=want;KEEP=null;if(want){const subs=D.countries[want].subs;KEEP=subs.map(s=>s.v);subs.forEach(s=>{s.v=FO.SS[s.m]||ZERO;});}}
+      return _rm2.apply(this,arguments);};
+    fillFam();
+    const goFocus=()=>{const pa=pathTo(FOCUS);if(P[FOCUS].children.length)drillTo(pa);else{FROMSEL=true;XLEAF=FOCUS;drillTo(pa.slice(0,-1));FROMSEL=false;}};
+    const _fch=fs.onchange;fs.onchange=()=>{if(fs.value===FOCUS){goFocus();return;}_fch();};
+    goFocus();}
+  syncFam();syncCty();renderMap();
+})();
+
 </script><div id="osw-msg" style="display:none;position:fixed;inset:0;z-index:99999;background:#fff;font:14px Segoe UI,Arial,sans-serif;color:#33415c;align-items:center;justify-content:center;text-align:center;padding:24px"></div>
 <script>
 (function(){
@@ -1285,7 +1390,15 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
       var subs=r[3].map(function(s){var x=s.length<3?tot:(s[2]===0?add([]):ser(s[2]));return {n:s[1],m:s[0],v:x.v,p:x.p};});
       countries[r[0]]={name:r[1],v:tot.v,p:tot.p,fam:fam,subs:subs};
     });
+    // cross-filter (XF=1): CP = [[country,[[productIndex, series]...]]...] -> countries[c].prod = {code:{v,p}} for the full tree
+    if(c.CP){var cu=c.cu||u,pm=[];for(var q=0;q<m;q++)pm.push(q);if(m===1)pm.push(11);
+      var ser2=function(s){var p=[],v=[],a=0,i;for(i=0;i<12;i++){p.push(0);v.push(0);}for(i=0;i<pm.length;i++){a+=(s[i]||0);p[pm[i]]=a*cu;}for(i=0;i<m;i++)v[i]=((s[pm.length+i]||0)*cu)+p[i];return {v:v,p:p};};
+      c.CP.forEach(function(r){var ctry=countries[r[0]];if(!ctry)return;var own={};r[1].forEach(function(e){own[codes[e[0]]]=ser2(e[1]);});
+        var memo={},has={};var val=function(k){if(memo[k])return memo[k];var x=own[k]||(prods[k].children.length?add(prods[k].children.map(val)):add([]));memo[k]=x;return x;};
+        var out={};codes.forEach(function(k,i){if(i===0)return;var x=val(k);if(x.v.some(function(y){return y;})||x.p.some(function(y){return y;}))out[k]={v:x.v,p:x.p};});ctry.prod=out;});}
     var d={entity:c.e,scenario:c.s,account:c.a,region:c.r,year:c.y,pyear:c.py,months:m,root:c.root,mapDiv:c.root,products:products,countries:countries};
+    // header focus (Focus=<product>): fo = [product, [[country, series]...], [[region, series]...]]
+    if(c.fo){var fC={},fS={};c.fo[1].forEach(function(r){fC[r[0]]=ser(r[1]);});c.fo[2].forEach(function(r){fS[r[0]]=ser(r[1]);});d.focus={k:c.fo[0],C:fC,S:fS};}
     if(c.t){var t=ser(c.t[1]);d.tile={label:c.t[0],v:t.v,p:t.p};}
     if(c.mg){d.margins={};c.mg.forEach(function(g){var v=g[2].map(function(x){return x/1e4;});while(v.length<12)v.push(0);d.margins[g[0]]={label:g[1],v:v,p:g[3].map(function(x){return x/1e4;})};});}
     return d;
