@@ -12,8 +12,8 @@ window.FY26THEME={
          hint:"Ocean freight and energy prices; pass through to freight, utilities, warehouse and production overhead."},
   infl: {n:"Wage & overhead inflation", label:"Wage & overhead inflation", min:0, max:8, step:.1,
          hint:"Incremental Q4 inflation above plan on compensation and fixed operating costs."},
-  fx:   {n:"FX - sourcing currencies", label:"FX vs reporting currency", min:-20, max:10, step:.5,
-         hint:"Move of the currencies where components are sourced and products sold, against the reporting currency. Negative = they weaken."},
+  fx:   {n:"FX vs EUR (non-EUR currencies)", label:"FX vs EUR", min:-20, max:10, step:.5,
+         hint:"Move of the non-EUR operating currencies against EUR; applies to the non-EUR share of revenue, COGS and opex (set in Model factors). Negative = they weaken."},
   rate: {n:"Interest rate", label:"Interest rate", min:-100, max:400, step:25,
          hint:"Scales the finance-cost line, where one exists. Only the repricing share moves - set that in Model factors."}},
  lines:{   // [demand, component cost, freight & energy, inflation]  - baseline assumptions, edit in Model factors
