@@ -2842,6 +2842,7 @@ if(STORE){ try{ if(!localStorage.getItem("ofi_tour_seen")) setTimeout(tourStart,
     w.querySelector(".ddl").textContent=`Scenarios ${on.length}/${NAMES.length}`;
     w.querySelector(".ddm").innerHTML=NAMES.map(n=>{const lk=n===cur, c=!HIDE.has(n)||lk;
       return `<label data-n="${esc(n)}" class="${c?"on":""} ${lk?"lk":""}" ${lk?"title='Current scenario is always shown'":""}><i></i>${esc(n)}${lk?'<em>current</em>':''}</label>`;}).join("");}
+  try{charts();}catch(e){setTimeout(sync,0);}
 })();
 
 </script>
