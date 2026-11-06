@@ -1,4 +1,4 @@
-<!doctype html> 
+<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Global Revenue Analysis</title>
 <style>
@@ -914,9 +914,10 @@ function renderPhoto(){const d=$('photo');if(!d)return;d.style.display=SCENE==='
     else{const ci=cats.indexOf(S.path[2]);const [x,y]=PHOTO.cats[z][ci];const node=S.path[l],prods=P[node].children;html+=`<div class="ppin" style="left:${x}px;top:${y}px"><span></span></div>`;
       const n=prods.length,cols=n<=4?n:Math.ceil(n/Math.ceil(n/4)),rows=Math.ceil(n/cols),zs=n<=4?2.3:n<=8?1.7:1.45,sp=n<=4?60:78;
       prods.forEach((p,i)=>{const c=i%cols,r=Math.floor(i/cols);const dx=(c-(cols-1)/2)*sp,dy=n<=4?(i%2?18:0):(r-(rows-1)/2)*44;html+=pcard(p,x+dx,y-4+dy,false,true);});focusPV(x,y-30,zs);}}
-  $('pcards').innerHTML=html;applyPV(true);
+  // only rebuild (and animate) the cards when they actually change - repeat redraws during start-up and resizes update in place
+  if(html!==renderPhoto._h){renderPhoto._h=html;$('pcards').innerHTML=html;applyPV(!!renderPhoto._shown);renderPhoto._shown=true;
   $('pcards').querySelectorAll('.pcard').forEach(el=>{const k=el.dataset.k;el.onclick=e=>{e.stopPropagation();drillK(k);};
-    el.onmouseenter=()=>hl(k);el.onmouseleave=()=>hl(null);});
+    el.onmouseenter=()=>hl(k);el.onmouseleave=()=>hl(null);});}else applyPV(false);
   fitCards();}
 // Card layout: keep every card fully inside the visible stage and free of overlaps; if the stage is too
 // small for that, shrink the cards a little (down to 72%). Scene coords; card anchor = bottom-centre.
