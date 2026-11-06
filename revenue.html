@@ -900,7 +900,7 @@ function initPhoto(){const st=$('stage');const d=document.createElement('div');d
   addEventListener('pointermove',e=>{if(!pd)return;pd.m+=Math.abs(e.movementX)+Math.abs(e.movementY);PV.tx=pd.tx+e.clientX-pd.x;PV.ty=pd.ty+e.clientY-pd.y;applyPV(false);});
   addEventListener('pointerup',()=>{if(pd){d.classList.remove('drag');if(pd.m>4){d.addEventListener('click',ev=>ev.stopPropagation(),{capture:true,once:true});}pd=null;}});
   d.addEventListener('wheel',e=>{e.preventDefault();const r=d.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;const k=e.deltaY>0?0.9:1.11;const ns=Math.max(1,Math.min(4,PV.s*k));const kk=ns/PV.s;PV.tx=mx-(mx-PV.tx)*kk;PV.ty=my-(my-PV.ty)*kk;PV.s=ns;applyPV(false);},{passive:false});
-  addEventListener('resize',()=>renderPhoto());}
+  let _rzT=0;addEventListener('resize',()=>{clearTimeout(_rzT);_rzT=setTimeout(renderPhoto,180);});}
 const PV={s:1,tx:0,ty:0,b:1,k:1};
 function applyPV(anim){const d=$('photo');if(!d)return;const W=d.clientWidth,H=d.clientHeight;const b=Math.max(W/PHOTO.W,H/PHOTO.H);PV.b=b;const sc=b*PV.s;
   PV.tx=Math.min(0,Math.max(W-PHOTO.W*sc,PV.tx));PV.ty=Math.min(0,Math.max(H-PHOTO.H*sc,PV.ty));const im=$('pimg');im.style.transition=anim?'transform .9s cubic-bezier(.65,0,.25,1)':'none';
@@ -918,7 +918,9 @@ function renderPhoto(){const d=$('photo');if(!d)return;d.style.display=SCENE==='
     else{const ci=cats.indexOf(S.path[2]);const [x,y]=PHOTO.cats[z][ci];const node=S.path[l],prods=P[node].children;html+=`<div class="ppin" style="left:${x}px;top:${y}px"><span></span></div>`;
       const n=prods.length,cols=n<=4?n:Math.ceil(n/Math.ceil(n/4)),rows=Math.ceil(n/cols),zs=n<=4?2.3:n<=8?1.7:1.45,sp=n<=4?60:78;
       prods.forEach((p,i)=>{const c=i%cols,r=Math.floor(i/cols);const dx=(c-(cols-1)/2)*sp,dy=n<=4?(i%2?18:0):(r-(rows-1)/2)*44;html+=pcard(p,x+dx,y-4+dy,false,true);});focusPV(x,y-30,zs);}}
-  $('pcards').innerHTML=html;applyPV(true);
+  // render-once guard: repeat calls with the same cards and width (start-up, resize bursts) only re-fit, so cards do not pop in again
+  const _pc=$('pcards'),_key=html+'|'+$('stage').clientWidth,_first=_pc._k===undefined;if(_pc._k===_key){applyPV(false);fitCards();return;}_pc._k=_key;
+  _pc.innerHTML=html;applyPV(!_first);
   $('pcards').querySelectorAll('.pcard').forEach(el=>{const k=el.dataset.k;el.onclick=e=>{e.stopPropagation();drillK(k);};
     el.onmouseenter=()=>hl(k);el.onmouseleave=()=>hl(null);});
   fitCards();}
