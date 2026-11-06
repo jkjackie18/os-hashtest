@@ -1026,11 +1026,13 @@ function drivers(){
   document.getElementById("scennote").innerHTML=note;
 }
 
+// section headers follow the live description of the block total (leading "Total " dropped)
+const hdName=r=>{const d=r[2]&&DESC[r[2]];if(!d)return r[1];const s=String(d).replace(/^Total\s+/i,"");return esc(s.charAt(0).toUpperCase()+s.slice(1));};
 const ROWS=[
- ["hd","Revenue"],["41000"],["49000"],["40000","tot","Net revenue"],
- ["hd","Cost of goods sold"],["51010"],["52010"],["53010"],["59010"],["50000","tot","Total COGS"],
+ ["hd","Revenue","40000"],["41000"],["49000"],["40000","tot","Net revenue"],
+ ["hd","Cost of goods sold","50000"],["51010"],["52010"],["53010"],["59010"],["50000","tot","Total COGS"],
  ["59999","tot","Gross margin"],
- ["hd","Operating expenses"],["61000"],["62000"],["63000"],["64000"],["65000"],["66000"],["66500"],["67000"],["67500"],["69000"],["69999","tot","Total operating expenses"],
+ ["hd","Operating expenses","69999"],["61000"],["62000"],["63000"],["64000"],["65000"],["66000"],["66500"],["67000"],["67500"],["69000"],["69999","tot","Total operating expenses"],
  ["79999","tot","Depreciation &amp; amortisation"],
  ["96999","tot","Total operating income (EBIT)"],
  ["85999","tot","Finance costs"],
@@ -1051,7 +1053,7 @@ function pnl(){
   const b=calc(SC.Base)[view], s=calc(E())[view];
   let h=`<tr><th>FY2026 line</th><th>6p6 base</th><th>${cur}</th><th>Δ</th><th>Δ%</th><th style="width:82px">Driver mix</th></tr>`;
   for(const r of ROWS){
-    if(r[0]==="hd"){h+=`<tr class="hd"><td colspan="6">${r[1]}</td></tr>`;continue;}
+    if(r[0]==="hd"){h+=`<tr class="hd"><td colspan="6">${hdName(r)}</td></tr>`;continue;}
     const k=r[0], isTot=r[1]==="tot", nm=DESC[k]?esc(DESC[k]):(r[2]||L[k][5]), ind=!isTot&&L[k]&&L[k][6]?"ind":"";
     const bv=(b[k]||0)/1e6, sv=(s[k]||0)/1e6, dv=sv-bv, exp=EXP.has(k);
     const pct=Math.abs(bv)>0.05?(sv/bv-1)*100:0;
@@ -1217,11 +1219,12 @@ function charts(){
 }
 function kpis(){
   const b=calc(SC.Base)[view], s=calc(E())[view];
-  const rows=[["Net revenue",s["40000"]/1e6,(s["40000"]-b["40000"])/1e6,false],
-              ["Gross margin %",s["59999"]/s["40000"]*100,(s["59999"]/s["40000"]-b["59999"]/b["40000"])*100,false,"%"],
-              ["EBIT",s["96999"]/1e6,(s["96999"]-b["96999"])/1e6,false],
-              ["EBIT %",s["96999"]/s["40000"]*100,(s["96999"]/s["40000"]-b["96999"]/b["40000"])*100,false,"%"],
-              ["Net income",s["99999"]/1e6,(s["99999"]-b["99999"])/1e6,false]];
+  const kl=(k,fb)=>{const d=DESC[k];if(!d)return fb;const s=String(d).replace(/^Total\s+/i,"");return esc(s.charAt(0).toUpperCase()+s.slice(1));};
+  const rows=[[kl("40000","Net revenue"),s["40000"]/1e6,(s["40000"]-b["40000"])/1e6,false],
+              [kl("59999","Gross margin")+" %",s["59999"]/s["40000"]*100,(s["59999"]/s["40000"]-b["59999"]/b["40000"])*100,false,"%"],
+              [kl("96999","EBIT"),s["96999"]/1e6,(s["96999"]-b["96999"])/1e6,false],
+              [kl("96999","EBIT")+" %",s["96999"]/s["40000"]*100,(s["96999"]/s["40000"]-b["96999"]/b["40000"])*100,false,"%"],
+              [kl("99999","Net income"),s["99999"]/1e6,(s["99999"]-b["99999"])/1e6,false]];
   document.getElementById("kpis").innerHTML=rows.map(r=>{
     const p=r[4]==="%", flat=Math.abs(r[2])<0.049;
     return `<div class="kpi ${flat?"":(r[2]<0?"dn":"up")}"><div class="l">${r[0]}${p?"":" · EUR m"}</div>
