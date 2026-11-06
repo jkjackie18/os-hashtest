@@ -278,6 +278,7 @@
 .pcard.xleaf{outline:2px solid #2f6fed;outline-offset:2px;box-shadow:0 0 0 6px rgba(47,111,237,.15)!important}
 #famBars .fr.xleaf{background:#eef2ff;border-radius:8px}
 .hubside>#famBars{flex:none!important}.hubside>#donut{justify-content:center}
+.kpi2.mg .mgsp{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:112px;height:42px;line-height:0;pointer-events:none}.kpi2.mg .mgsp svg{width:100%;height:100%;display:block}
 </style></head><body>
 <div class="hero2">
   <div class="hleft"><div class="hico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cfe0ff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z" fill="rgba(120,170,255,.35)"/><path d="M3.5 7.2L12 12l8.5-4.8M12 12v9.5"/></svg></div>
@@ -398,8 +399,8 @@ function mgTile(key,fallback,icon){const o=D.margins&&D.margins[key];
   const sv=v.slice(0,S.m),w=118,h=44,mx=Math.max(...sv),mn=Math.min(...sv),rg=mx-mn||1;
   const pts=sv.map((x,i)=>[(sv.length===1?w/2:i*(w-8)/(sv.length-1))+4,h-5-(x-mn)/rg*(h-12)]);
   const pd=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' '),l=pts[pts.length-1];
-  const sp=`<svg width="${w}" height="${h}"><path d="${pd} L${l[0]} ${h} L4 ${h}Z" fill="#3352d6" opacity=".10"/><path d="${pd}" fill="none" stroke="#3352d6" stroke-width="2" stroke-linejoin="round"/><circle cx="${l[0]}" cy="${l[1]}" r="3.2" fill="#3352d6"/></svg>`;
-  return head+`<div class="kl">${o.label||fallback} · ${MN[S.m-1]}</div><div class="kv">${cur==null?'–':pct(cur)}</div>${dl}<div class="ks">${cmpLbl()}${b!=null?' ('+pct(b)+')':''}</div></div><div class="bars">${sp}</div></div>`;}
+  const sp=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="visible"><path d="${pd} L${l[0]} ${h} L4 ${h}Z" fill="#3352d6" opacity=".10"/><path d="${pd}" fill="none" stroke="#3352d6" stroke-width="2" stroke-linejoin="round"/><circle cx="${l[0]}" cy="${l[1]}" r="3.2" fill="#3352d6"/></svg>`;
+  return head+`<div class="kl">${o.label||fallback} · ${MN[S.m-1]}</div><div class="kv">${cur==null?'–':pct(cur)}</div>${dl}<div class="ks">${cmpLbl()}${b!=null?' ('+pct(b)+')':''}</div></div><div class="mgsp">${sp}</div></div>`;}
 function mixHex(a,b,t){const A=parseInt(a.slice(1),16),B=parseInt(b.slice(1),16);const r=Math.round((A>>16)*(1-t)+(B>>16)*t),g=Math.round((A>>8&255)*(1-t)+(B>>8&255)*t),bb=Math.round((A&255)*(1-t)+(B&255)*t);return '#'+((1<<24)+(r<<16)+(g<<8)+bb).toString(16).slice(1);}
 function movHex(v){const c=chg(v);if(c.cls==='flat')return '#94a3b8';const t=Math.min(1,Math.abs(c.p)/0.06);return c.cls==='up'?mixHex('#9be3b4','#08914a',t):mixHex('#f8b4b4','#c81e1e',t);}
 // ======================= tiny canvas 3D engine =======================
