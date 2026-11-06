@@ -277,6 +277,7 @@
 #famSel{max-width:260px}
 .pcard.xleaf{outline:2px solid #2f6fed;outline-offset:2px;box-shadow:0 0 0 6px rgba(47,111,237,.15)!important}
 #famBars .fr.xleaf{background:#eef2ff;border-radius:8px}
+.hubside>#famBars{flex:none!important}.hubside>#donut{justify-content:center}
 </style></head><body>
 <div class="hero2">
   <div class="hleft"><div class="hico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cfe0ff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z" fill="rgba(120,170,255,.35)"/><path d="M3.5 7.2L12 12l8.5-4.8M12 12v9.5"/></svg></div>
@@ -909,7 +910,7 @@ function focusPV(px,py,s){const d=$('photo'),W=d.clientWidth,H=d.clientHeight;co
 function pcard(code,x,y,big,thumbImg){const n=P[code],c=chg(n.values);const pc=base(n.values)==null?'':` (${c.p>=0?'+':'−'}${Math.abs(c.p*100).toFixed(1)}%)`;const chev=n.children.length>0;
   return `<div class="pcard ${big?'big':''}" data-k="${code}" style="left:${x}px;top:${y}px">${thumbImg?`<img class="pth" src="${thumb(code)}">`:''}<div class="pci"><div class="pn"><i style="background:${S.color==='mov'?movHex(n.values):FAMC[fam(code)][0]}"></i>${n.label}</div><div class="pv"><b>${fmt(n.values[S.m-1])}</b> <span class="${c.cls}">${c.ar} ${(S.mode==='abs'?c.txt.slice(2)+pc:c.txt.slice(2))}</span></div></div>${chev?'<span class="chev">›</span>':''}</div>`;}
 function renderPhoto(){const d=$('photo');if(!d)return;d.style.display=SCENE==='photo'?'block':'none';$('cv').style.display=SCENE==='photo'?'none':'block';document.querySelector('.compass').style.display=SCENE==='photo'?'none':'block';
-  const stg=$('stage');stg.style.setProperty('height',SCENE==='photo'?Math.round(stg.clientWidth*PHOTO.H/PHOTO.W)+'px':'680px','important');if(SCENE!=='photo')return;const l=level();let html='';
+  const stg=$('stage');const _h=SCENE==='photo'?Math.round(stg.clientWidth*PHOTO.H/PHOTO.W)+'px':(THEME.sceneAspect?Math.max(440,Math.min(680,Math.round(stg.clientWidth*THEME.sceneAspect)))+'px':'680px');if(stg.style.height!==_h){stg.style.setProperty('height',_h,'important');if(SCENE!=='photo'&&typeof resize==='function')resize();}if(SCENE!=='photo')return;const l=level();let html='';
   document.querySelectorAll('.pzone').forEach(z=>{const k=z.dataset.z;z.classList.toggle('act',l>0&&S.path[1]===k);z.classList.toggle('lv0',l===0);});
   const pb=$('pblur');if(l===0){$('pmask').setAttribute('d','');pb.style.opacity=0;Object.keys(PHOTO.famCard).forEach(k=>{const [x,y]=PHOTO.famCard[k];html+=pcard(k,x,y,true);});focusPV(PHOTO.W/2,PHOTO.H/2,1);}
   else{const z=S.path[1];const poly=PHOTO.zones[z];const hole=`M0,0H${PHOTO.W}V${PHOTO.H}H0Z M${poly.map(q=>q.join(',')).join('L')}Z`;$('pmask').setAttribute('d',hole);pb.style.clipPath=`path(evenodd,'${hole}')`;pb.style.opacity=1;
