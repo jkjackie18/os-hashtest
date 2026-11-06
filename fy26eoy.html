@@ -2844,6 +2844,35 @@ if(STORE){ try{ if(!localStorage.getItem("ofi_tour_seen")) setTimeout(tourStart,
       return `<label data-n="${esc(n)}" class="${c?"on":""} ${lk?"lk":""}" ${lk?"title='Current scenario is always shown'":""}><i></i>${esc(n)}${lk?'<em>current</em>':''}</label>`;}).join("");}
   try{charts();}catch(e){setTimeout(sync,0);}
 })();
+// ---- driver theme: optional page hooks (Nov 2026). All keys optional; themes without them are unchanged.
+// ccy / restate: reporting currency and USD per unit of it; method: Notes & method HTML; factorNames: the four per-line
+// factor names; ne / neNotes: non-reporting-currency shares; rate: {flt, base}; tour: {stepIndex: body}; text: {phrase: replacement}.
+(function(){
+  if(typeof FYT==="undefined"||!FYT)return;
+  const C=FYT.ccy&&/^[A-Z]{3}$/.test(FYT.ccy)?FYT.ccy:null;
+  let rer=false;
+  if(typeof FYT.restate==="number"&&FYT.restate>0){
+    RESTATE=FYT.restate;const r=document.getElementById("rst");if(r){r.value=RESTATE.toFixed(4);r.min="0.01";}rer=true;}
+  if(Array.isArray(FYT.factorNames))FYT.factorNames.forEach((n,i)=>{if(typeof n==="string"&&i<FNAME.length)FNAME[i]=n;});
+  if(FYT.ne&&typeof FYT.ne==="object")["rev","cogs","opex","fin"].forEach(k=>{const v=+FYT.ne[k];if(isFinite(v)&&FYT.ne[k]!=null){NE[k]=v;NE0[k]=v;rer=true;}});
+  if(FYT.rate&&typeof FYT.rate==="object")["flt","base"].forEach(k=>{const v=+FYT.rate[k];if(isFinite(v)&&FYT.rate[k]!=null){RATE[k]=v;RATE0[k]=v;rer=true;}});
+  if(FYT.tour&&typeof TOUR!=="undefined")Object.keys(FYT.tour).forEach(i=>{if(TOUR[+i]&&typeof FYT.tour[i]==="string")TOUR[+i].body=FYT.tour[i];});
+  if(rer){try{render();}catch(e){}}
+  if(FYT.method){const mc=document.getElementById("mcard"),nt=mc&&mc.querySelector(".note");
+    if(nt){const bs=nt.querySelector(".basis");nt.innerHTML="";if(bs)nt.appendChild(bs);const d=document.createElement("div");d.innerHTML=FYT.method;nt.appendChild(d);}}
+  const reps=[];
+  if(C&&C!=="EUR"){
+    reps.push([/\bEUR\/USD(?: \d\.\d{4})?|\bnon-EUR\b|\bNon-EUR\b|\bEUR\b/g,x=>x.indexOf("EUR/USD")===0?C+"/USD"+(x.length>7?" "+RESTATE.toFixed(4):""):x==="non-EUR"?"non-"+C:x==="Non-EUR"?"Non-"+C:C]);}
+  if(FYT.text&&typeof FYT.text==="object"){const ks=Object.keys(FYT.text).sort((a,b)=>b.length-a.length);
+    if(ks.length)reps.push([new RegExp(ks.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g"),x=>FYT.text[x]]);}
+  if(!reps.length)return;
+  const apply=s=>{let t=s;reps.forEach(([rx,f])=>{rx.lastIndex=0;t=t.replace(rx,f);});return t;};
+  const fix=root=>{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const ns=[];while(w.nextNode())ns.push(w.currentNode);
+    ns.forEach(n=>{const p=n.parentNode;if(!p||/^(SCRIPT|STYLE|TEXTAREA)$/.test(p.nodeName))return;const s=n.nodeValue;if(!s||s.length<3)return;const t=apply(s);if(t!==s)n.nodeValue=t;});
+    root.querySelectorAll&&root.querySelectorAll("[title]").forEach(e=>{const s=e.getAttribute("title"),t=apply(s);if(t!==s)e.setAttribute("title",t);});};
+  let pend=false;new MutationObserver(()=>{if(pend)return;pend=true;requestAnimationFrame(()=>{pend=false;fix(document.body);});}).observe(document.body,{subtree:true,childList:true,characterData:true});
+  fix(document.body);
+})();
 
 </script>
 
