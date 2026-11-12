@@ -282,6 +282,14 @@
 
 /* family cards with long names wrap onto two lines instead of pushing each other out of their zones (all themes) */
 .pcard.big{white-space:normal!important;min-width:0!important;max-width:250px}.pcard.big .pn{line-height:1.25}.pcard.big .pv{white-space:nowrap}
+
+
+/* donut box: chart centred and sized to the box, legend as full-width rows underneath */
+#donut .dn2{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:space-evenly!important;gap:14px!important}
+#donut .dl{width:100%;gap:0!important}
+#donut .dl div{font-size:13px!important;padding:7px 4px!important;border-bottom:1px solid #eef1f6}
+#donut .dl div:last-child{border-bottom:0}
+#donut .dl div span:last-child{font-weight:600;color:#0b1b3f}
 </style></head><body>
 <div class="hero2">
   <div class="hleft"><div class="hico"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cfe0ff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z" fill="rgba(120,170,255,.35)"/><path d="M3.5 7.2L12 12l8.5-4.8M12 12v9.5"/></svg></div>
@@ -1247,12 +1255,12 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
   function fitAll(){const H=innerHeight;
     const mb=$('mapbox');if(mb&&mb.offsetParent){const top=mb.getBoundingClientRect().top+scrollY;const h=Math.max(380,H-top-14);mb.style.height=h+'px';if(R)R.style.maxHeight=h+'px';}
     const st=$('stage');if(st&&st.offsetParent){const top=st.getBoundingClientRect().top+scrollY;const hp=Math.max(300,H-top-26);const w=Math.round(hp*PHOTO.W/PHOTO.H);
-      if(HUB)HUB.style.setProperty('grid-template-columns','minmax(0,'+w+'px) minmax(300px,1fr)','important');if(SIDE)SIDE.style.maxHeight=(st.getBoundingClientRect().bottom-HUB.getBoundingClientRect().top)+'px';}}
+      if(HUB){const k4=document.querySelector('.kpis>:last-child'),hr=HUB.getBoundingClientRect();const kl=k4&&k4.offsetParent?k4.getBoundingClientRect().left:0;const sw=kl?Math.round(hr.right-kl):0;HUB.style.setProperty('grid-template-columns',sw>=300?'minmax(0,1fr) '+sw+'px':'minmax(0,'+w+'px) minmax(300px,1fr)','important');if(sw>=300){const kg=parseFloat(getComputedStyle(k4.parentNode).columnGap);if(kg>=0)HUB.style.setProperty('column-gap',kg+'px','important');}}if(SIDE)SIDE.style.maxHeight=(st.getBoundingClientRect().bottom-HUB.getBoundingClientRect().top)+'px';}}
   // live descriptions: panel title = product root description; breadcrumb only once drilled in
   const ROOTL=P[D.root].label;const hv=$('hview');if(hv&&hv.parentNode)hv.parentNode.textContent=ROOTL;THEME.all=ROOTL;
   const _crumb=crumb;crumb=function(){_crumb();if(level()===0)$('crumb').innerHTML='';};crumb();
   // donut: scalable
-  const _list=renderList;renderList=function(){_list();const sv=document.querySelector('#donut svg');if(sv)sv.setAttribute('viewBox','0 0 236 236');};renderList();
+  const _list=renderList;function sizeDonut(){const b=$('donut'),sv=b&&b.querySelector('svg');if(!sv||!b.offsetParent)return;sv.style.width=sv.style.height='132px';const h3=b.querySelector('h3'),dl=b.querySelector('.dl');const cs=getComputedStyle(b);const pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom);const avail=b.clientHeight-pad-(h3?h3.offsetHeight+10:0)-(dl?dl.offsetHeight:0)-28;const s=Math.round(Math.max(132,Math.min(b.clientWidth-60,avail,280)));sv.style.width=sv.style.height=s+'px';}renderList=function(){_list();const sv=document.querySelector('#donut svg');if(sv)sv.setAttribute('viewBox','0 0 236 236');requestAnimationFrame(sizeDonut);};renderList();addEventListener('resize',()=>requestAnimationFrame(()=>requestAnimationFrame(sizeDonut)));
   // ranking: show only what fits above the insight card; "Show all" expands (the panel then scrolls)
   let RKALL=false;const _rank=renderRank;
   renderRank=function(rows,tot){const nz=rows.filter(r=>+r.v[S.m-1]||+(base(r.v)||0)),nzero=rows.length-nz.length;_rank(nz,tot);const rk=$('rank'),ins=$('insight');if(!rk||!R)return;const trs=[...rk.querySelectorAll('tr.r')];if(!trs.length)return;
@@ -1264,6 +1272,14 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
   // flat map: ocean labels sized for the current box (they were sized once at start)
   function oceans(){const t=document.querySelectorAll('#map text.ocean');if(!t.length)return;const of=HOME()[2]/115;t.forEach(el=>{el.setAttribute('font-size',of);const ts=el.querySelector('tspan');if(ts)ts.setAttribute('dy',of*1.45);});}
   let busy=false;addEventListener('resize',()=>{if(busy)return;busy=true;fitAll();dispatchEvent(new Event('resize'));fitAll();oceans();vpH();busy=false;});
+  // cards: appear once. Until the layout has been quiet for 450 ms (data, fonts, KPI tiles, fit-to-window, OneStream frame), the cards stay
+  // hidden and every re-render snaps without animation; then they fade in in their final place. Later window resizes do the same.
+  try{let tm,shown=false;const t0=performance.now();
+    const snap=()=>document.querySelectorAll('#pimg,#pcards .pcard,#pcards .ppin').forEach(e=>{e.style.transition='none';});
+    const settle=()=>{const c=$('pcards');if(!c)return;c.style.transition='none';c.style.opacity='0';snap();clearTimeout(tm);
+      tm=setTimeout(()=>{shown=true;c.style.transition='opacity .35s';c.style.opacity='1';},performance.now()-t0>4000?250:450);};
+    const _rp=renderPhoto;renderPhoto=function(){_rp.apply(this,arguments);if(!shown)settle();};
+    settle();let lw=0,lh=0;new ResizeObserver(()=>{const s=$('stage');if(!s)return;const w=s.clientWidth,h=s.clientHeight;if(w===lw&&h===lh)return;lw=w;lh=h;settle();}).observe($('stage'));}catch(e){}
   dispatchEvent(new Event('resize'));renderMap();
 })();
 
