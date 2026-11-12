@@ -284,8 +284,9 @@
 .pcard.big{white-space:normal!important;min-width:0!important;max-width:250px}.pcard.big .pn{line-height:1.25}.pcard.big .pv{white-space:nowrap}
 
 
-/* donut box: chart centred and sized to the box, legend as full-width rows underneath */
-#donut .dn2{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:space-evenly!important;gap:14px!important}
+/* donut box: chart on top sized to the space left under the bars and legend, legend rows underneath */
+#donut .dn2{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:space-evenly!important;gap:12px!important}
+#donut .dl{width:100%}
 #donut .dl{width:100%;gap:0!important}
 #donut .dl div{font-size:13px!important;padding:7px 4px!important;border-bottom:1px solid #eef1f6}
 #donut .dl div:last-child{border-bottom:0}
@@ -1255,12 +1256,12 @@ resize();initPhoto();initMap();renderAll();renderPhoto();
   function fitAll(){const H=innerHeight;
     const mb=$('mapbox');if(mb&&mb.offsetParent){const top=mb.getBoundingClientRect().top+scrollY;const h=Math.max(380,H-top-14);mb.style.height=h+'px';if(R)R.style.maxHeight=h+'px';}
     const st=$('stage');if(st&&st.offsetParent){const top=st.getBoundingClientRect().top+scrollY;const hp=Math.max(300,H-top-26);const w=Math.round(hp*PHOTO.W/PHOTO.H);
-      if(HUB){const k4=document.querySelector('.kpis>:last-child'),hr=HUB.getBoundingClientRect();const kl=k4&&k4.offsetParent?k4.getBoundingClientRect().left:0;const sw=kl?Math.round(hr.right-kl):0;HUB.style.setProperty('grid-template-columns',sw>=300?'minmax(0,1fr) '+sw+'px':'minmax(0,'+w+'px) minmax(300px,1fr)','important');if(sw>=300){const kg=parseFloat(getComputedStyle(k4.parentNode).columnGap);if(kg>=0)HUB.style.setProperty('column-gap',kg+'px','important');}}if(SIDE)SIDE.style.maxHeight=(st.getBoundingClientRect().bottom-HUB.getBoundingClientRect().top)+'px';}}
+      if(HUB){const k4=document.querySelector('.kpis>:last-child'),hr=HUB.getBoundingClientRect();const kl=k4&&k4.offsetParent?k4.getBoundingClientRect().left:0;const sw=kl?Math.max(340,Math.round((hr.right-kl)*0.88)):0;HUB.style.setProperty('grid-template-columns',sw>=300?'minmax(0,1fr) '+sw+'px':'minmax(0,'+w+'px) minmax(300px,1fr)','important');if(sw>=300){const kg=parseFloat(getComputedStyle(k4.parentNode).columnGap);if(kg>=0)HUB.style.setProperty('column-gap',kg+'px','important');}}if(SIDE)SIDE.style.maxHeight=(st.getBoundingClientRect().bottom-HUB.getBoundingClientRect().top)+'px';}if(typeof sizeDonut==='function')requestAnimationFrame(sizeDonut);}
   // live descriptions: panel title = product root description; breadcrumb only once drilled in
   const ROOTL=P[D.root].label;const hv=$('hview');if(hv&&hv.parentNode)hv.parentNode.textContent=ROOTL;THEME.all=ROOTL;
   const _crumb=crumb;crumb=function(){_crumb();if(level()===0)$('crumb').innerHTML='';};crumb();
   // donut: scalable
-  const _list=renderList;function sizeDonut(){const b=$('donut'),sv=b&&b.querySelector('svg');if(!sv||!b.offsetParent)return;sv.style.width=sv.style.height='132px';const h3=b.querySelector('h3'),dl=b.querySelector('.dl');const cs=getComputedStyle(b);const pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom);const avail=b.clientHeight-pad-(h3?h3.offsetHeight+10:0)-(dl?dl.offsetHeight:0)-28;const s=Math.round(Math.max(132,Math.min(b.clientWidth-60,avail,280)));sv.style.width=sv.style.height=s+'px';}renderList=function(){_list();const sv=document.querySelector('#donut svg');if(sv)sv.setAttribute('viewBox','0 0 236 236');requestAnimationFrame(sizeDonut);};renderList();addEventListener('resize',()=>requestAnimationFrame(()=>requestAnimationFrame(sizeDonut)));
+  const _list=renderList;function sizeDonut(){const b=$('donut'),sv=b&&b.querySelector('svg');if(!sv||!b.offsetParent)return;sv.style.width=sv.style.height='120px';const sd=b.parentNode,fb=$('famBars'),h3=b.querySelector('h3');const cs=getComputedStyle(b),ss=getComputedStyle(sd);const pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom);const mh=parseFloat(sd.style.maxHeight)||sd.clientHeight;const gap=parseFloat(ss.rowGap)||10;const dl=b.querySelector('.dl');const availH=mh-(fb?fb.offsetHeight:0)-gap-pad-(h3?h3.offsetHeight+10:0)-(dl?dl.offsetHeight+12:0)-6;const availW=b.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-20;const s=Math.round(Math.max(110,Math.min(availW,availH,230)));sv.style.width=sv.style.height=s+'px';}renderList=function(){_list();const sv=document.querySelector('#donut svg');if(sv)sv.setAttribute('viewBox','0 0 236 236');requestAnimationFrame(sizeDonut);};renderList();addEventListener('resize',()=>requestAnimationFrame(()=>requestAnimationFrame(sizeDonut)));
   // ranking: show only what fits above the insight card; "Show all" expands (the panel then scrolls)
   let RKALL=false;const _rank=renderRank;
   renderRank=function(rows,tot){const nz=rows.filter(r=>+r.v[S.m-1]||+(base(r.v)||0)),nzero=rows.length-nz.length;_rank(nz,tot);const rk=$('rank'),ins=$('insight');if(!rk||!R)return;const trs=[...rk.querySelectorAll('tr.r')];if(!trs.length)return;
