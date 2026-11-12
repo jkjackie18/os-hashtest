@@ -17,7 +17,7 @@ window.UTM=(function(){const M={},MO='#1f2329',CU='#c9824a',AU='#e3b341',SUB='#2
   M.root=A=>{sub(M.qfn,A,-26,0,0,.7,0);sub(M.bga,A,26,0,0,.7,0);};
   return M;})();
 
-window.THEME=Object.assign({"key":"utac","name":"UTAC","view":"Semiconductor assembly","top":"family","gp":"Gross profit margin","np":"Net profit margin","keep":[],"levels":["package family","package type","package"]},{
+window.THEME=Object.assign({"key":"utac","name":"UTAC","view":"Semiconductor assembly","top":"family","gp":"Gross profit margin","np":"Net profit margin","keep":[],"photoFocusY":0,"levels":["package family","package type","package"]},{
  famc:{"PRD110":["#c2772c","#a5621f","#7f4a16","#fbeedd"],"PRD120":["#2f9e55","#258044","#1b6234","#dcf6e5"],"PRD177":["#2f7fd8","#2366b3","#1b4f8c","#e3efff"],"PRD190":["#7b5cc9","#6447ad","#4d3687","#ece6fb"]},
  models3d:{root:A=>UTM.root(A),qfn:A=>UTM.qfn(A),soic:A=>UTM.soic(A),qfp:A=>UTM.qfp(A),bga:A=>UTM.bga(A),flip:A=>UTM.flip(A),wafer:A=>UTM.wafer(A),sip:A=>UTM.sip(A),mems:A=>UTM.mems(A),sensor:A=>UTM.sensor(A),power:A=>UTM.power(A)},
  map:{"PRD100":"root","PRD110":"qfn","PRD110P":"qfn","PRD110P7":"qfn","PRD110P8":"qfn","PRD110P9":"qfn","PRD110R":"soic","PRD110R4":"soic","PRD110R5":"soic","PRD110R6":"soic","PRD110W":"qfp","PRD110W1":"qfp","PRD110W2":"qfp","PRD110W3":"qfp",
