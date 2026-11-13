@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UTAC</title>
+<style>html,body{margin:0;height:100%;background:#000;overflow:hidden}video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#000}#msg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;color:#9aa3b5;font:14px "Segoe UI",system-ui,sans-serif}</style></head>
+<body><video id="v" autoplay muted loop playsinline preload="auto"></video><div id="msg">The video could not be loaded.</div>
+<script>
+// Full-page video on repeat. Video address: ?v=<https .mp4/.webm> (set by XFBR_11_UTACVideo), else the default below.
+(function(){var DEF='https://utacgroup.com/wp-content/uploads/2026/10/homepage-hero-video.mp4';
+ var ok=/^https:\/\/[A-Za-z0-9.\-]+\/[A-Za-z0-9._~\-\/%]+\.(mp4|webm)$/i,q=null;try{q=new URLSearchParams(location.search).get('v');}catch(e){}
+ var src=(q&&ok.test(q))?q:DEF,v=document.getElementById('v'),m=document.getElementById('msg'),tries=0;
+ v.muted=true;v.defaultMuted=true;v.loop=true;v.src=src;
+ function play(){var p=v.play();if(p&&p.catch)p.catch(function(){});}
+ v.addEventListener('ended',function(){v.currentTime=0;play();});            // auto-replay even where loop is ignored
+ v.addEventListener('canplay',function(){m.style.display='none';play();});
+ v.addEventListener('error',function(){if(tries++<5){setTimeout(function(){v.src=src+(src.indexOf('?')<0?'?':'&')+'r='+tries;v.load();play();},3000*tries);}else m.style.display='flex';});
+ document.addEventListener('visibilitychange',function(){if(!document.hidden)play();});
+ setInterval(function(){if(v.paused&&v.readyState>2)play();},4000);       // resume after a stall or a paused frame
+ play();})();
+</script></body></html>
